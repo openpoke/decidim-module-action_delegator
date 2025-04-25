@@ -10,15 +10,16 @@ $(() => {
   };
 
   $button.on("click", openModal);
-
+  let timeout;
   $div.bind("DOMSubtreeModified", function() {
-    // console.log("tree changed", path);
-    $usersAnswers.load(path, () => {
-      $button = $usersAnswers.find("#consultations-questions-summary-button");
-      $modal = $usersAnswers.find("#consultations-questions-summary-modal");
-      // console.log("usersanswer loaded")
-      $usersAnswers.foundation();
-      $button.on("click", openModal);
-    });
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      $usersAnswers.load(path, () => {
+        $button = $usersAnswers.find("#consultations-questions-summary-button");
+        $modal = $usersAnswers.find("#consultations-questions-summary-modal");
+        $usersAnswers.foundation();
+        $button.on("click", openModal);
+      });
+    }, 300); // Adjust the timeout duration as needed
   });
 });
