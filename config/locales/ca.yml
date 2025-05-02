@@ -309,8 +309,8 @@ ca:
           modal_table_header_answer: Has respost?
           modal_table_header_question: Pregunta
           modal_votes_title: Els teus vots a "%{title}"
-        question_not_answered: Vot pendent
-        question_answered: Ja votat
+        question_answered: Already voted
+        question_not_answered: Vote pending
       sms_message: El teu codi de verificació és %{code}
       user_delegations:
         index:
