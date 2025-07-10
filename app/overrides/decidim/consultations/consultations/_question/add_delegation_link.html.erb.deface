@@ -1,3 +1,0 @@
-<!-- insert_after "erb[loud]:contains('display_take_part_button_for(question)')" -->
-
-<%= render partial: "decidim/action_delegator/consultations/link_to_question", locals: { question: question } %>

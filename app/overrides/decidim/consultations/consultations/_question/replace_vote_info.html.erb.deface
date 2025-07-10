@@ -1,4 +1,0 @@
-<!-- replace_contents "erb[silent]:contains('if question.results_published?')"
-     closing_selector "erb[silent]:contains('else')" -->
-
-<%= render partial: "decidim/action_delegator/consultations/link_with_results", locals: { question: question } %>

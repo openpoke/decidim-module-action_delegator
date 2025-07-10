@@ -1,5 +1,0 @@
-<!-- replace 'h3.heading6' -->
-
-<% next if questions.blank? %>
-<% next if Decidim::ActionDelegator.remove_duplicated_highlighted_questions && current_consultation.highlighted_scope == questions.first.scope %>
-<h3 class="heading6"><%= translated_attribute questions&.first&.scope&.name %></h3>
