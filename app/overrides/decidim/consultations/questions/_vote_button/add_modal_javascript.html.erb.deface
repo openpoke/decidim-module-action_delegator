@@ -1,3 +1,0 @@
-<!-- insert_before "erb[loud]:contains('javascript_pack_tag')" -->
-
-<%= javascript_pack_tag "decidim_action_delegator_questions" %>
