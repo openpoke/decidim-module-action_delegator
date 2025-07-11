@@ -48,20 +48,13 @@ module Decidim
       /^\d{6,15}$/ # 6 to 15 digits
     end
 
-    # Consultations has an annoying and totally useless deprecation warning
-    # This plugin removes it by default.
-    # If you want to keep it, you can set this config to false
-    config_accessor :remove_consultation_deprecation_warning do
-      true
-    end
-
-    # In a consultation the highlighted questions are duplicated in the list of regular questions
+    # In an election the highlighted questions are duplicated in the list of regular questions
     # this maintains the highlighted questions in the highlighted list and removes them from the regular list
     config_accessor :remove_duplicated_highlighted_questions do
       true
     end
 
-    # If true, admins can view the result of a consultation even if the consultation is ongoing
+    # If true, admins can view the result of an election even if the election is ongoing
     config_accessor :admin_preview_results do
       true
     end

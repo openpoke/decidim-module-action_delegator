@@ -20,7 +20,6 @@ end
 
 def install_module(path)
   Dir.chdir(path) do
-    system("bundle exec rake decidim_elections:install:migrations")
     system("bundle exec rake decidim_action_delegator:install:migrations")
     system("bundle exec rake db:migrate")
   end
@@ -48,9 +47,8 @@ task :development_app do
       "--path",
       "..",
       "--recreate_db",
-      "--demo",
-      "--locales", "en,ca,es",
-      "--queue=sidekiq"
+      "--skip_spring",
+      "--demo"
     )
   end
 

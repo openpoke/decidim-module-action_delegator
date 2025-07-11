@@ -9,22 +9,22 @@ module Decidim
           return status unless status == [:ok, {}]
 
           # if used outside a consultation, allow all
-          return [:ok, {}] if consultation.blank?
-          return [:ok, {}] if belongs_to_consultation? && user_in_census?
+          return [:ok, {}] if election.blank?
+          return [:ok, {}] if belongs_to_election? && user_in_census?
 
           [:unauthorized, { extra_explanation: extra_explanations }]
         end
 
         private
 
-        def belongs_to_consultation?
-          return unless setting&.consultation
+        def belongs_to_election?
+          return false unless setting&.election
 
-          setting.consultation == consultation
+          setting.election == election
         end
 
         def user_in_census?
-          return unless setting&.participants
+          return false unless setting&.participants
 
           setting.participants.exists?(decidim_user: authorization.user) || setting.participants.exists?(census_params)
         end
@@ -67,11 +67,12 @@ module Decidim
         end
 
         def setting
-          @setting ||= Decidim::ActionDelegator::Setting.find_by(consultation: consultation)
+          @setting ||= Decidim::ActionDelegator::Setting.find_by(election:)
         end
 
-        def consultation
-          @consultation ||= (component.participatory_space if component&.participatory_space.is_a?(Decidim::Consultation))
+        def election
+          byebug
+          @election ||= Decidim::Elections::Election.find_by(id: authorization.metadata["election_id"])
         end
 
         def manifest

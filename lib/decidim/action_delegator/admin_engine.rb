@@ -28,14 +28,15 @@ module Decidim
           end
         end
 
-        resources :consultations, param: :slug, only: [] do
+        # TODO: replace with real implementation once results pages for elections are ready
+        resources :elections, param: :slug, only: [] do
           get :results, on: :member
-          get :weighted_results, on: :member
-          resources :exports, only: :create, module: :consultations
+          # get :weighted_results, on: :member
+          # resources :exports, only: :create, module: :elections
 
-          namespace :exports do
-            resources :sum_of_weights, only: :create
-          end
+          # namespace :exports do
+          #   resources :sum_of_weights, only: :create
+          # end
         end
 
         root to: "delegations#index"

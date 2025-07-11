@@ -11,7 +11,7 @@ base_path = "../" if File.basename(__dir__) == "development_app"
 require_relative "#{base_path}lib/decidim/action_delegator/version"
 
 # DECIDIM_VERSION = Decidim::ActionDelegator::DECIDIM_VERSION
-DECIDIM_VERSION = { github: "decidim/decidim", branch: "develop" }
+DECIDIM_VERSION = { github: "decidim/decidim", branch: "feature/add-election-voting-booth" }
 
 gem "decidim", DECIDIM_VERSION
 gem "decidim-action_delegator", path: "."
