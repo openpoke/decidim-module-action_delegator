@@ -10,11 +10,13 @@ base_path = ""
 base_path = "../" if File.basename(__dir__) == "development_app"
 require_relative "#{base_path}lib/decidim/action_delegator/version"
 
-DECIDIM_VERSION = Decidim::ActionDelegator::DECIDIM_VERSION
+# DECIDIM_VERSION = Decidim::ActionDelegator::DECIDIM_VERSION
+DECIDIM_VERSION = { github: "decidim/decidim", branch: "develop" }
 
 gem "decidim", DECIDIM_VERSION
 gem "decidim-action_delegator", path: "."
-gem "decidim-consultations", DECIDIM_VERSION
+gem "decidim-elections", DECIDIM_VERSION
+gem "decidim-initiatives", DECIDIM_VERSION
 
 gem "bootsnap", "~> 1.4"
 gem "savon", "~> 2.12"
@@ -27,12 +29,10 @@ group :development, :test do
 end
 
 group :development do
-  gem "faker", "~> 2.14"
+  gem "faker", "~> 3.2"
   gem "letter_opener_web", "~> 2.0"
   gem "listen", "~> 3.1"
   gem "rubocop-faker"
-  gem "spring"
-  gem "spring-watcher-listen"
   gem "web-console"
 end
 

@@ -8,7 +8,7 @@ data:
     - "<%= %x[bundle info decidim-core --path].chomp %>/config/locales/%{locale}.yml"
     - "<%= %x[bundle info decidim-admin --path].chomp %>/config/locales/%{locale}.yml"
     - "<%= %x[bundle info decidim-participatory_processes --path].chomp %>/config/locales/%{locale}.yml"
-    - "<%= %x[bundle info decidim-consultations --path].chomp %>/config/locales/%{locale}.yml"
+#    - "<%#= %x[bundle info decidim-consultations --path].chomp %>/config/locales/%{locale}.yml"
     - "<%= %x[bundle info decidim-verifications --path].chomp %>/config/locales/%{locale}.yml"
 
 ignore_unused:

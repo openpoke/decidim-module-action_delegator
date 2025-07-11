@@ -1,10 +1,26 @@
 # frozen_string_literal: true
 
-require "decidim/dev/common_rake"
+require "decidim/generators/app_generator"
+
+def generate_decidim_app(*options)
+  app_path = File.expand_path(options.first, Dir.pwd)
+
+  sh "rm -fR #{app_path}", verbose: false
+
+  original_folder = Dir.pwd
+
+  Decidim::Generators::AppGenerator.start(options)
+
+  Dir.chdir(original_folder)
+end
+
+def base_app_name
+  File.basename(Dir.pwd).underscore
+end
 
 def install_module(path)
   Dir.chdir(path) do
-    system("bundle exec rake decidim_consultations:install:migrations")
+    system("bundle exec rake decidim_elections:install:migrations")
     system("bundle exec rake decidim_action_delegator:install:migrations")
     system("bundle exec rake db:migrate")
   end
@@ -32,7 +48,9 @@ task :development_app do
       "--path",
       "..",
       "--recreate_db",
-      "--demo"
+      "--demo",
+      "--locales", "en,ca,es",
+      "--queue=sidekiq"
     )
   end
 

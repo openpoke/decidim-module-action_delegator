@@ -3,7 +3,7 @@
 require "savon"
 require "rails"
 require "decidim/core"
-require "decidim/consultations"
+require "decidim/elections"
 require "deface"
 
 module Decidim
