@@ -21,7 +21,12 @@ module Decidim
         end
 
         def organization_consultations
-          Decidim::Consultations::OrganizationConsultations.new(current_organization).query
+          # TODO: Need to create a query for this in Decidim::Elections
+          Decidim::Elections::Election
+            .joins(:component)
+            .joins("INNER JOIN decidim_participatory_processes ON decidim_participatory_processes.id = decidim_components.participatory_space_id")
+            .where(decidim_components: { participatory_space_type: "Decidim::ParticipatoryProcess" })
+            .where("decidim_participatory_processes.decidim_organization_id = ?", organization.id)
         end
 
         def missing_verifications_for(resources, action)

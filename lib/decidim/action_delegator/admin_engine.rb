@@ -65,12 +65,12 @@ module Decidim
         end
       end
 
-      initializer "decidim_admin_action_delegator.admin_consultation_menu" do
-        Decidim.menu :admin_consultation_menu do |menu|
-          menu.remove_item :results_consultation
-          is_results = is_active_link?(decidim_admin_consultations.results_consultation_path(current_consultation)) ||
-                       is_active_link?(decidim_admin_action_delegator.results_consultation_path(current_consultation)) ||
-                       is_active_link?(decidim_admin_action_delegator.weighted_results_consultation_path(current_consultation))
+      initializer "decidim_admin_action_delegator.admin_election_menu" do
+        Decidim.menu :admin_election_menu do |menu|
+          menu.remove_item :results_election
+          is_results = is_active_link?(decidim_admin_elections.results_election_path(current_election)) ||
+                       is_active_link?(decidim_admin_action_delegator.results_election_path(current_election)) ||
+                       is_active_link?(decidim_admin_action_delegator.weighted_results_election_path(current_election))
           params = {
             position: 1.2,
             active: is_results,
@@ -78,31 +78,31 @@ module Decidim
           }
           params[:submenu] = { target_menu: :admin_delegation_results_submenu } if is_results
           menu.add_item :delegated_results,
-                        I18n.t("results", scope: "decidim.admin.menu.consultations_submenu"),
-                        decidim_admin_consultations.results_consultation_path(current_consultation),
+                        I18n.t("results", scope: "decidim.admin.menu.elections_submenu"),
+                        decidim_admin_elections.results_election_path(current_election),
                         params
         end
       end
 
-      initializer "decidim_admin_action_delegator.admin_consultation_menu" do
+      initializer "decidim_admin_action_delegator.admin_election_menu" do
         Decidim.menu :admin_delegation_results_submenu do |menu|
           menu.add_item :by_answer,
-                        I18n.t("by_answer", scope: "decidim.action_delegator.admin.menu.consultations_submenu"),
-                        decidim_admin_consultations.results_consultation_path(current_consultation),
+                        I18n.t("by_answer", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
+                        decidim_admin_elections.results_election_path(current_election),
                         position: 1.0,
-                        active: is_active_link?(decidim_admin_consultations.results_consultation_path(current_consultation)),
+                        active: is_active_link?(decidim_admin_elections.results_election_path(current_election)),
                         if: allowed_to?(:read, :question)
           menu.add_item :by_type_and_weight,
-                        I18n.t("by_type_and_weight", scope: "decidim.action_delegator.admin.menu.consultations_submenu"),
-                        decidim_admin_action_delegator.results_consultation_path(current_consultation),
+                        I18n.t("by_type_and_weight", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
+                        decidim_admin_action_delegator.results_election_path(current_election),
                         position: 1.1,
-                        active: is_active_link?(decidim_admin_action_delegator.results_consultation_path(current_consultation), :exact),
+                        active: is_active_link?(decidim_admin_action_delegator.results_election_path(current_election), :exact),
                         if: allowed_to?(:read, :question)
           menu.add_item :sum_of_weights,
-                        I18n.t("sum_of_weights", scope: "decidim.action_delegator.admin.menu.consultations_submenu"),
-                        decidim_admin_action_delegator.weighted_results_consultation_path(current_consultation),
+                        I18n.t("sum_of_weights", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
+                        decidim_admin_action_delegator.weighted_results_election_path(current_election),
                         position: 1.2,
-                        active: is_active_link?(decidim_admin_action_delegator.weighted_results_consultation_path(current_consultation)),
+                        active: is_active_link?(decidim_admin_action_delegator.weighted_results_election_path(current_election)),
                         if: allowed_to?(:read, :question)
         end
       end

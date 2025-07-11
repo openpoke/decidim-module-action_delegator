@@ -12,7 +12,7 @@
       <table class="table-list">
         <thead>
           <tr>
-            <th><%= t(".consultation") %></th>
+            <th><%= t(".election") %></th>
             <th><%= t(".max_grants") %></th>
             <th><%= t(".authorization_method") %></th>
             <th><%= t(".delegations") %></th>
@@ -26,7 +26,7 @@
         <tbody>
           <% settings.each do |setting| %>
             <tr data-setting-id="<%= setting.id %>">
-              <td><%= link_to translated_attribute(setting.title), decidim_consultations.consultation_path(setting.consultation), target: :blank %></td>
+              <td><%= link_to translated_attribute(setting.title), decidim_elections.election_path(setting.election), target: :blank %></td>
               <td><%= setting.max_grants %></td>
               <td class="text-<%= setting.phone_required? ? (setting.verify_with_both? ? "success" : "secondary") : "warning" %>"><%= t setting.authorization_method, scope: "decidim.action_delegator.admin.settings.authorization_method" %></td>
               <td><%= setting.delegations.count %></td>

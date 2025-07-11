@@ -57,7 +57,7 @@ en:
             actions:
               csv_import: Import via csv
               new_delegation: New delegation
-            consultation: Consultation
+            election: Election
             created_at: Created at
             delete: Delete
             description_html: This is the current delegations for this consultation
@@ -236,7 +236,7 @@ en:
               ponderate: Set weights for vote ponderation
             authorization_method: Authorization method
             census: Census total
-            consultation: Consultation
+            election: Election
             created_at: Created at
             delegations: Delegations
             description_html: |

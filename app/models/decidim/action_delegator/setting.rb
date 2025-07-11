@@ -2,7 +2,7 @@
 
 module Decidim
   module ActionDelegator
-    # Contains the delegation settings of a consultation. Rather than a single attribute here
+    # Contains the delegation settings of an election. Rather than a single attribute here
     # a setting is the record itself: a bunch of configuration values.
     class Setting < ApplicationRecord
       self.table_name = "decidim_action_delegator_settings"

@@ -4,6 +4,7 @@ module Decidim
   module ActionDelegator
     module Admin
       class SettingsController < ActionDelegator::Admin::ApplicationController
+        puts "⚠️ SettingsController loaded"
         helper ::Decidim::ActionDelegator::Admin::DelegationHelper
         include Filterable
         include Paginable
@@ -78,7 +79,7 @@ module Decidim
         private
 
         def setting_params
-          params.require(:setting).permit(:max_grants, :decidim_consultation_id)
+          params.require(:setting).permit(:max_grants, :decidim_election_id)
         end
 
         def build_setting
@@ -98,11 +99,11 @@ module Decidim
         end
 
         def settings_select_options
-          collection.to_h { |setting| [setting.consultation.id, translated_attribute(setting.title)] }
+          collection.to_h { |setting| [setting.election.id, translated_attribute(setting.title)] }
         end
 
         def copy_from_setting
-          @copy_from_setting ||= Setting.find_by(decidim_consultation_id: params[:setting][:copy_from_setting_id])
+          @copy_from_setting ||= Setting.find_by(decidim_election_id: params[:setting][:copy_from_setting_id])
         end
       end
     end
