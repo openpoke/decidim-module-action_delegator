@@ -1,3 +1,0 @@
-<!-- insert_before "erb[silent]:contains('elsif question.consultation.active?')" -->
-
-<%= render partial: "decidim/action_delegator/consultations/questions/link_to_delegations", locals: { question: question } %>

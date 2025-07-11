@@ -1,3 +1,0 @@
-<!-- replace_contents ".card--list" -->
-
-<%= render partial: "decidim/action_delegator/consultations/questions/weight_results", locals: { response: response, question: question } %>

@@ -1,3 +1,0 @@
-<!-- insert_after "erb[loud]:contains('form.hidden_field :decidim_consultations_response_id')" -->
-
-<%= hidden_field_tag :decidim_consultations_delegation_id, nil, id: "decidim_consultations_delegation_id" %>

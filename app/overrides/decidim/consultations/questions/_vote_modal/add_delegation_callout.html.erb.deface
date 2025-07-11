@@ -1,3 +1,0 @@
-<!-- insert_after ".reveal__header" -->
-
-<%= render partial: "decidim/action_delegator/consultations/questions/callout", locals: { consultation: question.consultation } %>

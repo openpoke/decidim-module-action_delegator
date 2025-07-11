@@ -1,8 +1,0 @@
-<!-- replace_contents "erb[silent]:contains('if question.multiple?')"
-     closing_selector "erb[silent]:contains('else')" -->
-
-<%= link_to decidim_consultations.question_question_multiple_votes_path(question, delegation: 0),
-      class: "card__button button expanded",
-      id: "multivote_button" do %>
-  <div class="vote-button-caption"><%= t "questions.vote_button.vote", scope: "decidim" %></div>
-<% end %>

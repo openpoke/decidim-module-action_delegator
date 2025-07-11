@@ -1,8 +1,0 @@
-<!-- insert_before ".card__content.multiple_votes_form" -->
-
-<% if delegation %>
-  <div class="delegation-callout callout warning">
-    <p><%= t "action_delegator.delegations_modal.callout", scope: "decidim" %> <strong><%= delegation.granter.name %></strong></p>
-  </div>
-  <%= hidden_field_tag :decidim_consultations_delegation_id, delegation.id %>
-<% end %>
