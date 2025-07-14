@@ -47,7 +47,6 @@ task :development_app do
       "--path",
       "..",
       "--recreate_db",
-      "--skip_spring",
       "--demo"
     )
   end

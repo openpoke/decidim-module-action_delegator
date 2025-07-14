@@ -19,7 +19,7 @@ module Decidim
       attr_reader :organization
 
       def organization_consultations
-        Decidim::Consultations::OrganizationConsultations.new(organization).query
+        Decidim::ActionDelegator::OrganizationElections.for(organization)
       end
     end
   end

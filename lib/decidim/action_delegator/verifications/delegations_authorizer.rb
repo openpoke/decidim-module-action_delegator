@@ -71,7 +71,6 @@ module Decidim
         end
 
         def election
-          byebug
           @election ||= Decidim::Elections::Election.find_by(id: authorization.metadata["election_id"])
         end
 

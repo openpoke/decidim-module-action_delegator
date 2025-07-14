@@ -205,8 +205,9 @@ en:
             both: Email and phone number
             email: Only email
             phone: Only phone number
-          authorization_method_help: |
+          authorization_method_help_html: |
             Available options are:
+            <br><br>
             <ul>
               <li><b>Only phone number:</b> Uses SMS verification. Participants must input their phone number that matches the census.</li>
               <li><b>Only email:</b> Participant's email must match the census.</li>

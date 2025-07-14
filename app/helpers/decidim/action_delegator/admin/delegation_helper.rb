@@ -12,21 +12,16 @@ module Decidim
           current_organization.users
         end
 
-        def consultations_for_select
-          organization_consultations.map { |consultation| [translated_attribute(consultation.title), consultation.id] }
+        def elections_for_select
+          organization_elections.map { |election| [translated_attribute(election.title), election.id] }
         end
 
         def ponderations_for_select(setting)
           setting.ponderations.map { |ponderation| [ponderation.title, ponderation.id] }
         end
 
-        def organization_consultations
-          # TODO: Need to create a query for this in Decidim::Elections
-          Decidim::Elections::Election
-            .joins(:component)
-            .joins("INNER JOIN decidim_participatory_processes ON decidim_participatory_processes.id = decidim_components.participatory_space_id")
-            .where(decidim_components: { participatory_space_type: "Decidim::ParticipatoryProcess" })
-            .where("decidim_participatory_processes.decidim_organization_id = ?", organization.id)
+        def organization_elections
+          Decidim::ActionDelegator::OrganizationElections.for(organization)
         end
 
         def missing_verifications_for(resources, action)

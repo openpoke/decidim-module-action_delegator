@@ -6,7 +6,6 @@ module Decidim
       module Consultations
         class ExportsController < ActionDelegator::Admin::ApplicationController
           include NeedsPermission
-          include Decidim::Consultations::NeedsConsultation
 
           def create
             enforce_permission_to :export_consultation_results, :consultation, consultation: current_consultation
