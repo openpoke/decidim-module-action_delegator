@@ -1,12 +1,12 @@
 <div class="card with-overflow" id='user-groups'>
-  <div class="card-divider">
-    <h2 class="card-title flex--sbc">
+  <div class="item_show__header">
+    <h1 class="item_show__header-title">
       <div>
         <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
         <%= t ".title" %>
       </div>
       <div>
-        <%= link_to t(".actions.new_participant"), decidim_admin_action_delegator.new_setting_participant_path(current_setting), class: "button tiny button--title" %>
+        <%= link_to t(".actions.new_participant"), decidim_admin_action_delegator.new_setting_participant_path(current_setting), class: "button button__sm button__secondary button--title" %>
         <%= link_to t(".actions.csv_import"),
                     decidim_admin_action_delegator.new_setting_manage_participant_path(setting_id: current_setting.id),
                     class: "button tiny button--title" %>
@@ -15,7 +15,7 @@
                     data: { confirm: t("participants.remove_census.confirm", scope: "decidim.action_delegator.admin") },
                     class: "button tiny alert button--title" %>
       </div>
-    </h2>
+    </h1>
   </div>
   <div class="card-section">
     <%= render "decidim/action_delegator/admin/settings/participants_email_check", setting: current_setting if (current_setting.authorization_method == "phone") %>

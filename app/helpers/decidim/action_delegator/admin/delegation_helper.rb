@@ -21,7 +21,7 @@ module Decidim
         end
 
         def organization_elections
-          Decidim::ActionDelegator::OrganizationElections.for(organization)
+          Decidim::ActionDelegator::OrganizationElections.new(current_organization).query
         end
 
         def missing_verifications_for(resources, action)

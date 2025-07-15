@@ -8,24 +8,23 @@
   </div>
 
   <div class="card-section">
-  <%= decidim_form_for @form, url: { action: "create" }, html: { class: "form new_delegation" } do |f| %>
-    <% prompt_options = { url: decidim_admin.users_organization_url, placeholder: t(".select_member") } %>
+    <%= decidim_form_for @form, url: { action: "create" }, html: { class: "form new_delegation" } do |f| %>
+      <% prompt_options = { url: decidim_admin.users_organization_url, placeholder: t(".select_member") } %>
 
-    <div class="row column">
-      <%= f.autocomplete_select(:granter_id, @form.granter,  { multiple: false, label: t(".granter") }, prompt_options) do |user|
-        { value: user.id, label: "#{user.name} (@#{user.nickname})" }
-      end %>
-    </div>
-    <div class="row column">
-      <%= f.autocomplete_select(:grantee_id, @form.grantee,  { multiple: false, label: t(".grantee") }, prompt_options) do |user|
-        { value: user.id, label: "#{user.name} (@#{user.nickname})" }
-      end %>
-    </div>
+      <div class="row column">
+        <%= f.autocomplete_select(:granter_id, @form.granter, { multiple: false, label: t(".granter") }, prompt_options) do |user|
+          { value: user.id, label: "#{user.name} (@#{user.nickname})" }
+        end %>
+      </div>
+      <div class="row column">
+        <%= f.autocomplete_select(:grantee_id, @form.grantee, { multiple: false, label: t(".grantee") }, prompt_options) do |user|
+          { value: user.id, label: "#{user.name} (@#{user.nickname})" }
+        end %>
+      </div>
 
-    <div class="button--double form-general-submit">
-      <%= f.submit t(".save") %>
-    </div>
-  <% end %>
-
+      <div class="button--double form-general-submit">
+        <%= f.submit t(".save") %>
+      </div>
+    <% end %>
   </div>
 </div>

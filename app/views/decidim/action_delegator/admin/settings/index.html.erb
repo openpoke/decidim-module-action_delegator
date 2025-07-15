@@ -1,9 +1,11 @@
+<% add_decidim_page_title(t(".title")) %>
+
 <div class="card with-overflow" id='user-groups'>
-  <div class="card-divider">
-    <h2 class="card-title">
+  <div class="item_show__header">
+    <h1 class="item_show__header-title">
       <%= t ".title" %>
-      <%= link_to t(".actions.new_setting"), decidim_admin_action_delegator.new_setting_path, class: "button tiny button--title" %>
-    </h2>
+      <%= link_to t(".actions.new_setting"), decidim_admin_action_delegator.new_setting_path, class: "button button__sm button__secondary" %>
+    </h1>
   </div>
   <div class="card-section">
     <p class="help-text"><%= t ".description_html" %></p>

@@ -1,8 +1,14 @@
-<div class="row column">
-  <%= form.text_field :name, placeholder: t(".name_placeholder") %>
-  <p class="help-text"><%== t(".name_help") %></p>
-</div>
-<div class="row column">
-  <%= form.number_field :weight, step: 0.01 %>
-  <p class="help-text"><%== t(".weight_help") %></p>
+<div class="form__wrapper">
+  <div class="card pt-4">
+    <div class="card-section">
+      <div class="row column">
+        <%= form.text_field :name, placeholder: t(".name_placeholder") %>
+        <p class="help-text"><%== t(".name_help") %></p>
+      </div>
+      <div class="row column">
+        <%= form.number_field :weight, step: 0.01 %>
+        <p class="help-text"><%== t(".weight_help") %></p>
+      </div>
+    </div>
+  </div>
 </div>
