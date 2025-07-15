@@ -12,6 +12,10 @@ module Decidim
       end
 
       def query
+        Decidim::Elections::Election.where(id: query_ids)
+      end
+
+      def query_ids
         participatory_space_types.flat_map do |klass|
           Decidim::Elections::Election
             .joins(:component)

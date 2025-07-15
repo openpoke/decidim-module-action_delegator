@@ -24,7 +24,7 @@ module Decidim
       attr_reader :organization
 
       def organization_elections
-        Decidim::ActionDelegator::OrganizationElections.for(organization)
+        Decidim::ActionDelegator::OrganizationElections.new(organization).query
       end
     end
   end

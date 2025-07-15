@@ -6,7 +6,7 @@
           <div class="card--list__text">
             <div>
               <h5 class="card--list__heading">
-              <%= link_to translated_attribute(delegation.consultation.title), decidim_consultations.consultation_path(delegation.consultation) %>
+                <%= link_to translated_attribute(delegation.consultation.title), decidim_consultations.consultation_path(delegation.consultation) %>
               </h5>
               <span class="text-small">
                 <%= t(".vote_delegated", name: "<strong>#{delegation.granter.name}</strong>").html_safe %>
@@ -15,5 +15,6 @@
           </div>
         </div>
       <% end %>
+    </div>
   </section>
 </div>
