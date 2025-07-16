@@ -18,23 +18,18 @@ module Decidim
 
       validate :grantee_is_not_granter
       validate :granter_and_grantee_belongs_to_same_organization
-      validate :granter_is_same_organization_as_election
-
-      delegate :election, to: :setting
+      validate :granter_is_same_organization_as_context # TODO: implement when context is available
 
       before_destroy { |record| throw(:abort) if record.grantee_voted? }
 
-      def self.granted_to?(user, election)
-        GranteeDelegations.for(election, user).exists?
+      # TODO: Replace when new context is defined
+      def self.granted_to?(_user, _context)
+        false
       end
 
+      # TODO: Replace when context provides questions and votes
       def grantee_voted?
-        return false unless election.questions.any?
-
-        @grantee_voted ||= begin
-          granter_votes = Decidim::Elections::Vote.where(author: granter, question: election.questions)
-          granter_votes&.detect { |vote| vote.versions.exists?(whodunnit: grantee&.id) } ? true : false
-        end
+        false
       end
 
       private
@@ -51,11 +46,8 @@ module Decidim
         errors.add(:grantee, :invalid)
       end
 
-      def granter_is_same_organization_as_election
-        return unless setting && setting.election
-        return unless election.organization != granter.organization
-
-        errors.add(:granter, :invalid)
+      def granter_is_same_organization_as_context
+        true # TODO: Implement proper check when new context is introduced
       end
     end
   end

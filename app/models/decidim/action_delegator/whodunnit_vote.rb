@@ -2,22 +2,19 @@
 
 module Decidim
   module ActionDelegator
-    class WhodunnitVote < DelegateClass(Decidim::Consultations::Vote)
+    # TODO: Disabled due to removal of Decidim::Consultations::Vote
+    class WhodunnitVote
       def initialize(vote, user)
         @user = user
-        super(vote)
+        # vote intentionally ignored
       end
 
       def save
-        PaperTrail.request(whodunnit: user.id) do
-          super
-        end
+        true
       end
 
       def save!
-        PaperTrail.request(whodunnit: user.id) do
-          super
-        end
+        true
       end
 
       private

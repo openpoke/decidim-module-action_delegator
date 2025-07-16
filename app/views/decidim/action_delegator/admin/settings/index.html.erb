@@ -28,7 +28,8 @@
         <tbody>
           <% settings.each do |setting| %>
             <tr data-setting-id="<%= setting.id %>">
-              <td><%= link_to translated_attribute(setting.title), decidim_elections.election_path(setting.election), target: :blank %></td>
+<!--              TODO: replace with election path-->
+              <td><%= link_to translated_attribute(setting.title), "#", target: :blank %></td>
               <td><%= setting.max_grants %></td>
               <td class="text-<%= setting.phone_required? ? (setting.verify_with_both? ? "success" : "secondary") : "warning" %>"><%= t setting.authorization_method, scope: "decidim.action_delegator.admin.settings.authorization_method" %></td>
               <td><%= setting.delegations.count %></td>

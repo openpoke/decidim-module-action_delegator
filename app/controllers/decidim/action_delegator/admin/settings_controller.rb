@@ -79,7 +79,7 @@ module Decidim
         private
 
         def setting_params
-          params.require(:setting).permit(:max_grants, :decidim_election_id)
+          params.require(:setting).permit(:max_grants)
         end
 
         def build_setting
@@ -99,11 +99,11 @@ module Decidim
         end
 
         def settings_select_options
-          collection.to_h { |setting| [setting.election.id, translated_attribute(setting.title)] }
+          collection.to_h { |setting| [translated_attribute(setting.title)] }
         end
 
         def copy_from_setting
-          @copy_from_setting ||= Setting.find_by(decidim_election_id: params[:setting][:copy_from_setting_id])
+          nil
         end
       end
     end

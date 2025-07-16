@@ -2,10 +2,6 @@
   <div class="card pt-4">
     <div class="card-section">
       <div class="row column">
-        <%= form.select :decidim_election_id, elections_for_select %>
-      </div>
-
-      <div class="row column">
         <%= form.number_field :max_grants, min: 1, autofocus: true %>
       </div>
 

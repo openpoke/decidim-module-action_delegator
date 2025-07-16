@@ -8,15 +8,11 @@ module Decidim
       end
 
       def query
-        Setting
-          .joins(:election)
-          .merge(organization_elections)
+        Setting.all # TODO: needs to be changed
       end
 
       def active
-        Setting
-          .joins(:election)
-          .merge(organization_elections.ongoing)
+        Setting.all # TODO: needs to be changed
       end
 
       private

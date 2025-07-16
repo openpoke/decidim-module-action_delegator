@@ -3,7 +3,7 @@
 module Decidim
   module ActionDelegator
     class Permissions < Decidim::DefaultPermissions
-      SUBJECTS_WHITELIST = [:delegation, :ponderation, :participant, :setting, :consultation].freeze
+      SUBJECTS_WHITELIST = [:delegation, :ponderation, :participant, :setting].freeze
 
       def permissions
         allowed_delegation_action?
@@ -48,14 +48,6 @@ module Decidim
 
       def ponderation
         @ponderation ||= context.fetch(:ponderation, nil)
-      end
-
-      def consultation_results_exports_action?
-        permission_action.subject == :consultation && permission_action.action == :export_results
-      end
-
-      def consultation
-        @consultation ||= context.fetch(:consultation)
       end
 
       def action_delegator_subject?

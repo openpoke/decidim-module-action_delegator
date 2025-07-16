@@ -7,8 +7,6 @@ module Decidim
     class Setting < ApplicationRecord
       self.table_name = "decidim_action_delegator_settings"
 
-      belongs_to :election, class_name: "Decidim::Elections::Election"
-
       has_many :delegations,
                inverse_of: :setting,
                foreign_key: "decidim_action_delegator_setting_id",
@@ -27,22 +25,13 @@ module Decidim
 
       validates :max_grants, presence: true
       validates :max_grants, numericality: { greater_than: 0 }
-      validates :election_id, uniqueness: true
 
       enum authorization_method: { phone: 0, email: 1, both: 2 }, _prefix: :verify_with
-
-      delegate :title, :organization, to: :election
 
       default_scope { order(created_at: :desc) }
 
       def state
-        @state ||= if election.end_at < Time.zone.now
-                     :closed
-                   elsif election.start_at&.<= Time.zone.now
-                     :ongoing
-                   else
-                     :pending
-                   end
+        @state ||= :ongoing # This is a placeholder. The actual state should be determined by the election's state.
       end
 
       def ongoing? = state == :ongoing

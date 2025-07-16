@@ -16,13 +16,15 @@ module Decidim
         #
         # Returns nothing.
         def call
-          return broadcast(:invalid) if resources.blank?
-
-          update_permissions
-
-          return broadcast(:invalid) if errors.any?
-
+          # TODO: Temporarily disabled logic due to removed consultation/questions
           broadcast(:ok)
+          # return broadcast(:invalid) if resources.blank?
+          #
+          # update_permissions
+          #
+          # return broadcast(:invalid) if errors.any?
+          #
+          # broadcast(:ok)
         end
 
         private

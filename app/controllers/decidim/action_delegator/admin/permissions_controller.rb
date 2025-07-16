@@ -6,9 +6,9 @@ module Decidim
       class PermissionsController < ActionDelegator::Admin::ApplicationController
         def create
           enforce_permission_to :update, :setting
-          return redirect_to decidim_admin_action_delegator.settings_path unless setting&.consultation
+          # return redirect_to decidim_admin_action_delegator.settings_path unless setting&.consultation
 
-          FixResourcePermissions.call(setting.consultation.questions) do
+          FixResourcePermissions.call([]) do # TODO: Temporarily disabled logic due to removed consultation/questions
             on(:ok) do
               notice = I18n.t("permissions.update.success", scope: "decidim.action_delegator.admin")
               redirect_to decidim_admin_action_delegator.settings_path, notice: notice
