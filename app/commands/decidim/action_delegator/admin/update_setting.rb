@@ -33,6 +33,8 @@ module Decidim
 
         def update_setting
           setting.assign_attributes(
+            resource_type: form.resource_type,
+            resource_id: form.resource_id,
             max_grants: form.max_grants,
             authorization_method: form.authorization_method
           )

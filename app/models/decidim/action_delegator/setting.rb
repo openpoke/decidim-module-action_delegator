@@ -23,15 +23,26 @@ module Decidim
                class_name: "Decidim::ActionDelegator::Participant",
                dependent: :restrict_with_error
 
+      belongs_to :resource, polymorphic: true, optional: true
+
       validates :max_grants, presence: true
       validates :max_grants, numericality: { greater_than: 0 }
 
       enum authorization_method: { phone: 0, email: 1, both: 2 }, _prefix: :verify_with
 
+      delegate :title, to: :resource
+      delegate :organization, to: :resource
+
       default_scope { order(created_at: :desc) }
 
       def state
-        @state ||= :ongoing # This is a placeholder. The actual state should be determined by the election's state.
+        @state ||= if resource.end_at < Time.zone.now
+                     :closed
+                   elsif resource.start_at <= Time.zone.now
+                     :ongoing
+                   else
+                     :pending
+                   end
       end
 
       def ongoing? = state == :ongoing

@@ -1,8 +1,8 @@
-<% missing_questions =  missing_verifications_for(setting&.consultation&.questions, "vote") %>
+<% missing_questions =  missing_verifications_for(setting&.resource&.questions, "vote") %>
 <% missing_registered =  missing_registered_users(setting&.participants) %>
 <% total_missing_authorizations =  total_missing_authorizations(setting&.participants) %>
 <% status_err = (missing_questions.present? || missing_registered.present? || setting.participants.blank? || total_missing_authorizations.positive?)
-  if setting&.consultation&.questions&.count == missing_questions.count
+  if setting&.resource&.questions&.count == missing_questions.count
     status_err = false
   end %>
 
@@ -11,7 +11,7 @@
 <div class="callout <%= status_err ? "warning" : "success" %> text-left">
 
   <ul class="happy-faces">
-    <% if setting.consultation %>
+    <% if setting.resource %>
       <% if missing_questions.present? %>
         <li class="<%= status_err ? "unhappy" : "warning" %>">
           <%= t(".consultation_questions_missing_verifier_html", count: missing_questions.count) %><br>

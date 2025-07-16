@@ -19,6 +19,7 @@ module Decidim
         #
         # Returns nothing.
         def call
+          byebug
           return broadcast(:invalid) if form.invalid?
 
           create_setting
@@ -31,10 +32,11 @@ module Decidim
         attr_reader :form, :setting
 
         def create_setting
-          # selected = @copy_from_setting || Setting.new(ponderations: [], participants: [])
-          selected = Setting.new(ponderations: [], participants: [])
+          selected = @copy_from_setting || Setting.new(ponderations: [], participants: [])
 
           created_setting = Setting.new(
+            resource_type: form.resource_type,
+            resource_id: form.resource_id,
             max_grants: form.max_grants,
             authorization_method: form.authorization_method,
             ponderations: selected.ponderations.map(&:dup),

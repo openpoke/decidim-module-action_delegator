@@ -12,7 +12,7 @@ module Decidim
           current_organization.users
         end
 
-        def elections_for_select
+        def resources_for_select
           organization_elections.map { |election| [translated_attribute(election.title), election.id] }
         end
 

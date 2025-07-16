@@ -4,7 +4,6 @@ module Decidim
   module ActionDelegator
     module Admin
       class SettingsController < ActionDelegator::Admin::ApplicationController
-        puts "⚠️ SettingsController loaded"
         helper ::Decidim::ActionDelegator::Admin::DelegationHelper
         include Filterable
         include Paginable
@@ -103,7 +102,8 @@ module Decidim
         end
 
         def copy_from_setting
-          nil
+          byebug
+          @copy_from_setting ||= Setting.find_by(resource_id: params[:setting][:copy_from_setting_id], resource_type: params[:setting][:resource_type])
         end
       end
     end
