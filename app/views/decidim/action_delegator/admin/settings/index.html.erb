@@ -40,7 +40,7 @@
                 <%= icon_link_to "pencil-line", decidim_admin_action_delegator.edit_setting_path(setting), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
                 <%= icon_link_to "layout-grid-line", decidim_admin_action_delegator.setting_ponderations_path(setting), t(".actions.ponderate"), class: "action-icon--edit" %>
                 <%= icon_link_to "group-line", decidim_admin_action_delegator.setting_participants_path(setting), t(".actions.census"), class: "action-icon--edit" %>
-                <%= icon_link_to "loop-line", decidim_admin_action_delegator.setting_delegations_path(setting), t(".actions.delegations"), class: "action-icon--edit" %>
+                <%= icon_link_to "loop-right-line", decidim_admin_action_delegator.setting_delegations_path(setting), t(".actions.delegations"), class: "action-icon--edit" %>
                 <%= icon_link_to "delete-bin-line", decidim_admin_action_delegator.setting_path(setting), t("actions.destroy", scope: "decidim.admin"), class: "action-icon--remove", method: :delete, data: { confirm: t("actions.confirm_destroy", scope: "decidim.admin") } if setting.destroyable? %>
               </td>
             </tr>

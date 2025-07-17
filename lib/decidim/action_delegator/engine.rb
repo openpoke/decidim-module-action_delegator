@@ -54,7 +54,8 @@ module Decidim
       end
 
       Decidim.icons.register(name: "layout-grid-line", icon: "layout-grid-line", category: "system", description: "", engine: :core)
-      Decidim.icons.register(name: "loop-line", icon: "loop-line", category: "system", description: "", engine: :core)
+      Decidim.icons.register(name: "loop-right-line", icon: "loop-right-line", category: "system", description: "", engine: :core)
+      Decidim.icons.register(name: "arrow-go-forward-line", icon: "arrow-go-forward-line", category: "system", description: "", engine: :core)
     end
   end
 end

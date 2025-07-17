@@ -49,7 +49,7 @@ module Decidim
       end
 
       def self.verifier_ids(seeds)
-        seeds.map { |seed| Digest::MD5.hexdigest("#{seed}-#{Digest::MD5.hexdigest(Rails.application.secrets.secret_key_base)}") }
+        seeds.map { |seed| Digest::MD5.hexdigest("#{seed}-#{Digest::MD5.hexdigest(Rails.application.secret_key_base)}") }
       end
 
       def self.phone_combinations(phones)
