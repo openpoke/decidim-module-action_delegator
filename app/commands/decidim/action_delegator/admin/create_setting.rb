@@ -19,7 +19,6 @@ module Decidim
         #
         # Returns nothing.
         def call
-          byebug
           return broadcast(:invalid) if form.invalid?
 
           create_setting

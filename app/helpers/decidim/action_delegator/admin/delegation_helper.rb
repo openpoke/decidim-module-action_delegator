@@ -34,9 +34,10 @@ module Decidim
           participants.where(decidim_user: nil).or(participants.where.not(decidim_user: current_organization.users)).where.not(id: missing_registered_users(participants))
         end
 
+        # TODO: need to check
         def missing_registered_users(participants)
           participants.where.not(email: current_organization.users.select(:email))
-                      .where.not("MD5(CONCAT(phone,'-',?,'-',?)) IN (?)",
+                      .where.not("MD5(CONCAT(phone, '-', CAST(? AS text), '-', CAST(? AS text))) IN (?)",
                                  current_organization.id,
                                  Digest::MD5.hexdigest(Rails.application.secret_key_base),
                                  Authorization.select(:unique_id).where.not(unique_id: nil))
