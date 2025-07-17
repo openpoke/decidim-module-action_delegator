@@ -55,7 +55,6 @@ module Decidim
 
       Decidim.icons.register(name: "layout-grid-line", icon: "layout-grid-line", category: "system", description: "", engine: :core)
       Decidim.icons.register(name: "loop-line", icon: "loop-line", category: "system", description: "", engine: :core)
-      Decidim.icons.register(name: "circle-line", icon: "circle-line", category: "system", description: "", engine: :core)
     end
   end
 end

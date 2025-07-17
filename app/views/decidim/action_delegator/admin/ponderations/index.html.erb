@@ -27,8 +27,8 @@
               <td><%= l ponderation.created_at, format: :short %></td>
 
               <td class="table-list__actions">
-                <%= icon_link_to "pencil", decidim_admin_action_delegator.edit_setting_ponderation_path(ponderation.setting, ponderation), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
-                <%= icon_link_to "circle-x", decidim_admin_action_delegator.setting_ponderation_path(ponderation.setting, ponderation), t("actions.destroy", scope: "decidim.admin"), class: "action-icon--remove", method: :delete, data: { confirm: t("actions.confirm_destroy", scope: "decidim.admin") } if ponderation.destroyable? %>
+                <%= icon_link_to "pencil-line", decidim_admin_action_delegator.edit_setting_ponderation_path(ponderation.setting, ponderation), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
+                <%= icon_link_to "delete-bin-line", decidim_admin_action_delegator.setting_ponderation_path(ponderation.setting, ponderation), t("actions.destroy", scope: "decidim.admin"), class: "action-icon--remove", method: :delete, data: { confirm: t("actions.confirm_destroy", scope: "decidim.admin") } if ponderation.destroyable? %>
               </td>
             </tr>
           <% end %>
