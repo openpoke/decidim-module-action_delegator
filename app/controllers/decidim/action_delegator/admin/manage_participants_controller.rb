@@ -15,21 +15,23 @@ module Decidim
         def new
           enforce_permission_to :create, :participant
 
+          @form = CsvImportForm.from_params(params)
           @errors = []
         end
 
         def create
           enforce_permission_to :create, :participant
 
-          @csv_file = params[:csv_file]
-          redirect_to seting_manage_participants_path && return if @csv_file.blank?
+          @form = CsvImportForm.from_params(params)
 
-          csv_file = @csv_file.read.force_encoding("utf-8").encode("utf-8")
-          @import_summary = Decidim::ActionDelegator::Admin::ImportCsvJob.perform_later("ParticipantsCsvImporter", csv_file, current_user, current_setting)
-
-          flash[:notice] = t(".success")
-
-          redirect_to decidim_admin_action_delegator.setting_participants_path(current_setting)
+          if @form.valid?
+            csv = @form.csv_file.download.force_encoding("utf-8").encode("utf-8")
+            @import_summary = ImportCsvJob.perform_now("ParticipantsCsvImporter", csv, current_user, current_setting)
+            flash[:notice] = t(".success")
+            redirect_to setting_participants_path(current_setting)
+          else
+            render :new
+          end
         end
 
         def destroy_all

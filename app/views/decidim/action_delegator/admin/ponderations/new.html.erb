@@ -1,8 +1,10 @@
 <div class="item_show__header">
   <h1 class="item_show__header-title">
-    <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
-    <%= link_to t("title", scope: "decidim.action_delegator.admin.ponderations.index"), decidim_admin_action_delegator.setting_ponderations_path(current_setting) %> &gt;
-    <%= t ".title" %>
+    <div>
+      <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
+      <%= link_to t("title", scope: "decidim.action_delegator.admin.ponderations.index"), decidim_admin_action_delegator.setting_ponderations_path(current_setting) %> &gt;
+      <%= t ".title" %>
+    </div>
   </h1>
 </div>
 <div class="item__edit item__edit-1col">

@@ -16,15 +16,15 @@ module Decidim
         #
         # Returns nothing.
         def call
-          # TODO: Temporarily disabled logic due to removed consultation/questions
           broadcast(:ok)
-          # return broadcast(:invalid) if resources.blank?
-          #
-          # update_permissions
-          #
-          # return broadcast(:invalid) if errors.any?
-          #
-          # broadcast(:ok)
+
+          return broadcast(:invalid) if resources.blank?
+
+          update_permissions
+
+          return broadcast(:invalid) if errors.any?
+
+          broadcast(:ok)
         end
 
         private
@@ -32,6 +32,7 @@ module Decidim
         attr_reader :resources, :errors
 
         def update_permissions
+          # TODO: This won't work because `Decidim::Elections::Question` does not include `HasResourcePermission`.
           resources.each do |resource|
             resource.resource_manifest.actions.each do |action|
               resource_permission ||= resource.resource_permission || resource.build_resource_permission

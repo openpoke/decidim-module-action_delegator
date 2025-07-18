@@ -1,8 +1,10 @@
 <div class="card with-overflow" id='user-groups'>
   <div class="item_show__header">
     <h1 class="item_show__header-title">
-      <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
-      <%= t ".title" %>
+      <div>
+        <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
+        <%= t ".title" %>
+      </div>
       <%= link_to t(".actions.new_ponderation"), decidim_admin_action_delegator.new_setting_ponderation_path(current_setting), class: "button button__sm button__secondary button--title" %>
     </h1>
   </div>

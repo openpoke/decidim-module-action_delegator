@@ -2,6 +2,8 @@
 en:
   activemodel:
     attributes:
+      csv_import:
+        csv_file: CSV file
       delegations_verifier:
         email: Email
         phone: Mobile phone number
@@ -96,6 +98,8 @@ en:
             title: Import delegations
             title_example: 'Example:'
             upload_instructions: Must be a file in CSV format with a header.
+            upload_button: Upload CSV file
+            upload_help: 'Must be a file in CSV format with a header. Required columns: from, to.'
         manage_participants:
           create:
             error: There was a problem importing the participants
@@ -103,6 +107,8 @@ en:
               refresh the page to see the list of participants. Import results will
               be sent by email.
           new:
+            upload_button: Upload CSV file
+            upload_help: Must be a file in CSV format with a header.
             authorization_method:
               both: email and phone number
               email: email
