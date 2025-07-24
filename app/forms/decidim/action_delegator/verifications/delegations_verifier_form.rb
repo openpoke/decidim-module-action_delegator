@@ -24,7 +24,7 @@ module Decidim
 
         def unique_id
           Digest::MD5.hexdigest(
-            "#{setting&.phone_required? ? phone : email}-#{setting&.organization&.id}-#{Digest::MD5.hexdigest(Rails.application.secrets.secret_key_base)}"
+            "#{setting&.phone_required? ? phone : email}-#{setting&.organization&.id}-#{Digest::MD5.hexdigest(Rails.application.secret_key_base)}"
           )
         end
 
