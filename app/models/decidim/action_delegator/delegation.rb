@@ -20,6 +20,8 @@ module Decidim
       validate :granter_and_grantee_belongs_to_same_organization
       validate :granter_is_same_organization_as_context # TODO: implement when context is available
 
+      delegate :resource, to: :setting
+
       before_destroy { |record| throw(:abort) if record.grantee_voted? }
 
       # TODO: Replace when new context is defined
