@@ -386,7 +386,7 @@ en:
                 email is not in the census. Please contact the admin if you feel this
                 is a mistake.
               participate_in: 'This authorization allows you to participate in the
-                following consultations: %{consultations}'
+                following elections: %{resources}'
               phone_warning: This phone number has been imported by the admin. Please,
                 reach out if it's not correct.
               send_code: Send verification code
