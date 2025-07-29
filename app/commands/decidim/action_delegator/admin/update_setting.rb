@@ -45,7 +45,7 @@ module Decidim
               existing_participants.any? { |p| p.email == participant.email || p.phone == participant.phone }
             end
             setting.participants += new_participants.map(&:dup)
-          
+
             new_ponderations = copy_from_setting.ponderations.reject do |ponderation|
               existing_ponderations.any? { |p| p.name == ponderation.name }
             end

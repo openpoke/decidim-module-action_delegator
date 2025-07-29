@@ -1,5 +1,5 @@
-<% missing_registered =  missing_registered_users(setting&.participants) %>
-<% total_missing_authorizations =  total_missing_authorizations(setting&.participants) %>
+<% missing_registered = missing_registered_users(setting&.participants) %>
+<% total_missing_authorizations = total_missing_authorizations(setting&.participants) %>
 <% status_err = (missing_registered.present? || setting.participants.blank? || total_missing_authorizations.positive?) %>
 
 <%= render "decidim/action_delegator/admin/settings/participants_sync_check", setting: setting %>

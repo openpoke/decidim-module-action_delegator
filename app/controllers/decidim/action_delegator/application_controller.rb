@@ -7,7 +7,7 @@ module Decidim
     #
     class ApplicationController < Decidim::ApplicationController
       def permission_class_chain
-       [::Decidim::ActionDelegator::Permissions] + super
+        [::Decidim::ActionDelegator::Permissions] + super
       end
     end
   end

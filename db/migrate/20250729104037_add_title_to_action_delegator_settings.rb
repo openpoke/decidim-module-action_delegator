@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 class AddTitleToActionDelegatorSettings < ActiveRecord::Migration[7.2]
-
   class Setting < ApplicationRecord
     self.table_name = :decidim_action_delegator_settings
   end
@@ -14,6 +14,7 @@ class AddTitleToActionDelegatorSettings < ActiveRecord::Migration[7.2]
       Setting.find_each do |setting|
         consultation = ActiveRecord::Base.connection.execute("SELECT * FROM decidim_consultations WHERE id = #{setting.decidim_consultation_id}").first
         next unless consultation
+
         setting.update!(title: JSON.parse(consultation["title"]), organization_id: consultation["decidim_organization_id"])
       end
     end
@@ -28,4 +29,3 @@ class AddTitleToActionDelegatorSettings < ActiveRecord::Migration[7.2]
     remove_column :decidim_action_delegator_settings, :active
   end
 end
-

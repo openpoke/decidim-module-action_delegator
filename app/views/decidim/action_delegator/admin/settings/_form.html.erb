@@ -18,7 +18,7 @@
       </div>
 
       <div class="row column">
-        <%= form.select :authorization_method, [:both, :phone, :email].map { |op| [t(op, scope: "decidim.action_delegator.admin.settings.authorization_method"), op] } %>
+        <%= form.select(:authorization_method, [:both, :phone, :email].map { |op| [t(op, scope: "decidim.action_delegator.admin.settings.authorization_method"), op] }) %>
         <span class="help-text mt-4"><%= t("authorization_method_help_html", scope: "decidim.action_delegator.admin.settings") %></span>
       </div>
 

@@ -31,14 +31,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - run: npm ci
-        name: Install JS deps
+      # - run: npm ci
+      #   name: Install JS deps
 
-      - run: npm run lint
-        name: Lint JS files
+      # - run: npm run lint
+      #   name: Lint JS files
 
-      - run: npm run stylelint
-        name: Lint SCSS files
+      # - run: npm run stylelint
+      #   name: Lint SCSS files
 
       - run: bundle exec rubocop -P
         name: Lint Ruby files

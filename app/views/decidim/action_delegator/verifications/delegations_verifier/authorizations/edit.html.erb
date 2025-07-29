@@ -14,7 +14,7 @@
           <%= form.text_field :verification_code %>
 
           <div class="form__wrapper-block">
-            <%= form.submit t("send", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.edit"), class: "button button__lg button__secondary", "data-disable-with" => "#{t('send', scope: 'decidim.action_delegator.verifications.delegations_verifier.authorizations.edit')}..." %>
+            <%= form.submit t("send", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.edit"), :class => "button button__lg button__secondary", "data-disable-with" => "#{t("send", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.edit")}..." %>
           </div>
         </div>
       <% end %>

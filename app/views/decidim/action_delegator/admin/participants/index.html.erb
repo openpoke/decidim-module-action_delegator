@@ -11,14 +11,14 @@
   </div>
 <% end %>
 
-<div class="card with-overflow" id='user-groups'>
+<div class="card" id='user-groups'>
   <div class="card-section">
-    <%= render "decidim/action_delegator/admin/settings/participants_email_check", setting: current_setting if (current_setting.authorization_method == "phone") %>
+    <%= render "decidim/action_delegator/admin/settings/participants_email_check", setting: current_setting if current_setting.authorization_method == "phone" %>
     <%= render "decidim/action_delegator/admin/settings/participants_sync_check", setting: current_setting %>
     <% if Decidim::ActionDelegator.allow_to_invite_users %>
-      <%= render "decidim/action_delegator/admin/participants/missing_registered_check", setting: current_setting unless (current_setting.authorization_method == "phone") %>
+      <%= render "decidim/action_delegator/admin/participants/missing_registered_check", setting: current_setting unless current_setting.authorization_method == "phone" %>
     <% end %>
-    <div class="table-scroll">
+    <div class="table-stacked">
       <table class="table-list">
         <thead>
         <tr>

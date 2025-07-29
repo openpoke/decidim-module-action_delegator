@@ -57,7 +57,8 @@ module Decidim
                         I18n.t("main", scope: "decidim.admin.menu.action_delegator_menu"),
                         current_setting ? decidim_admin_action_delegator.edit_setting_path(current_setting) : decidim_admin_action_delegator.new_setting_path,
                         icon_name: "bill-line",
-                        active: is_active_link?(current_setting ? decidim_admin_action_delegator.edit_setting_path(current_setting) : decidim_admin_action_delegator.new_setting_path)
+                        active: is_active_link?(decidim_admin_action_delegator.new_setting_path) ||
+                                (current_setting && is_active_link?(decidim_admin_action_delegator.edit_setting_path(current_setting)))
 
           menu.add_item :setting_ponderations,
                         I18n.t("ponderations", scope: "decidim.admin.menu.action_delegator_menu"),
@@ -72,7 +73,7 @@ module Decidim
                         active: current_setting && (is_active_link?(decidim_admin_action_delegator.setting_participants_path(current_setting)) ||
                                                     is_active_link?(decidim_admin_action_delegator.new_setting_participant_path(current_setting)) ||
                                                     is_active_link?(decidim_admin_action_delegator.new_setting_manage_participant_path(current_setting)) ||
-                                                    @participant && is_active_link?(decidim_admin_action_delegator.edit_setting_participant_path(current_setting, @participant)))
+                                                    (@participant && is_active_link?(decidim_admin_action_delegator.edit_setting_participant_path(current_setting, @participant))))
 
           menu.add_item :setting_delegations,
                         I18n.t("delegations", scope: "decidim.admin.menu.action_delegator_menu"),
