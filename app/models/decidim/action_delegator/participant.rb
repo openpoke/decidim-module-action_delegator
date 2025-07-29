@@ -81,7 +81,7 @@ module Decidim
         ponderation&.title
       end
 
-      # checks if the user has voted in the setting's consultation
+      # checks if the user has voted
       def voted?
         return false if user.blank?
 

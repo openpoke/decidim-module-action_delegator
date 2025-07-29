@@ -19,7 +19,6 @@ module Decidim
           resources :user_delegations, controller: :user_delegations, only: [:index]
           root to: "user_delegations#index"
         end
-        resources :questions_summary, param: :slug, only: [:show]
       end
 
       initializer "decidim_action_delegator.overrides", after: "decidim.action_controller" do

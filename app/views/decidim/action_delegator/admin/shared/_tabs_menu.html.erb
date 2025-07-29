@@ -1,0 +1,15 @@
+<div class="item_show__header">
+  <h1 class="item_show__header-title">
+    <%= current_setting ? translated_attribute(current_setting.title) : t("decidim.action_delegator.admin.settings.new.title") %>
+  </h1>
+</div>
+
+<div class="main-tabs-menu">
+  <div class="main-tabs-menu__tabs">
+    <%= admin_tabs(:admin_action_delegator_menu).render %>
+  </div>
+
+  <div class="main-tabs-menu__buttons">
+    <%= yield if block_given? %>
+  </div>
+</div>

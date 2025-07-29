@@ -12,13 +12,13 @@ Combines a CSV-like verification method with impersonation capabilities that all
 
 Admin can set limits to the number of delegation per users an other characteristics.
 
-Initially, only votes on consultations can be delegated.
+Also, provides a Census handler for Decidim elections that uses the configuration of the verificator and shows results according weights and delegations.
 
 ## Dependencies
 
-* [decidim-consultations](https://github.com/decidim/decidim/tree/master/decidim-consultations) >= v0.27.0
-* [decidim-admin](https://github.com/decidim/decidim/tree/master/decidim-admin) >= v0.27.0
-* [decidim-core](https://github.com/decidim/decidim/tree/master/decidim-core) >= v0.27.0
+* [decidim-elections](https://github.com/decidim/decidim/tree/master/decidim-elections) >= v0.31
+* [decidim-admin](https://github.com/decidim/decidim/tree/master/decidim-admin) >= v0.31
+* [decidim-core](https://github.com/decidim/decidim/tree/master/decidim-core) >= v0.31
 
 ## Installation
 
@@ -87,6 +87,7 @@ Depending on your Decidim version, you can choose the corresponding version to e
 
 | Version | Compatible Decidim versions |
 |---------|-----------------------------|
+| 0.9.x   | 0.31.x                      |
 | 0.8.x   | 0.27.x                      |
 | 0.7.x   | 0.26.x                      |
 | 0.6.x   | 0.26.x                      |
@@ -104,26 +105,26 @@ ActionDelegator does not provides new Components or Participatory Spaces but enh
 
 Currently it is designed to work with the Consultations module.
 
-- On one side, provides a custom verification method that allows admins to ensure only those in specific census (that can be uploaded via CSV) are able to vote. This census can be different for each consultation. This is optional and doesn't affect weighted voting or delegations.
+- On one side, provides a custom verification method that allows admins to ensure only those in specific census (that can be uploaded via CSV) are able to vote. This census can be different for each election. This is optional and doesn't affect weighted voting or delegations.
 
 - On the other, each set of census can work with a different set of weights and delegation.
 
 ![](docs/settings.png)
 
-### Extended consultation results
+### Extended elections results
 
-This gem modifies the consultation's results page adding two extra columns
-`Membership type` and `Membership weight`. This is based on the census uploaded for each consultation and the weights assigned to each participant.
+This gem modifies the elections's results page (if installed) adding two extra columns
+`Membership type` and `Membership weight`. This is based on the census uploaded for each election and the weights assigned to each participant.
 
 ### Authorization verfifier and SMS gateway setup
 
-The integrated authorization method is called "Delegations verifier". If included in each question of a consultation, it will check if the user is authorized and present in the census before letting him vote.
+The integrated authorization method is called "Delegations verifier". When an election uses the Corporate Verifier authorization, it will check if the user is authorized and present in the census before letting him vote.
 
 It can be used in 3 modes:
 
-1. **Email only**: This means that the participants list for each consultation setting relies on the email only. No SMS gateway integration is needed. The user is verified if the email is found in the census.
-2. **Email and phone**: This means that the participants list for each consultation setting relies on the email and the phone number. An SMS gateway integration is needed. The user is verified if the email is found in the census and then sending a verification code to the phone number that the user cannot edit.
-3. **Phone only**: This means that the participants list for each consultation setting relies on the phone number only. An SMS gateway integration is needed. The user is verified by a form where a phone number must be introduced. The user can edit the phone number and the verification code is sent to the new phone number if that phone number is found in the participant's list. This method is useful to avoid to relay on keeping track of email changes for user's database.
+1. **Email only**: This means that the participants list relies on the email only. No SMS gateway integration is needed. The user is verified if the email is found in the census.
+2. **Email and phone**: This means that the participants list relies on the email and the phone number. An SMS gateway integration is needed. The user is verified if the email is found in the census and then sending a verification code to the phone number that the user cannot edit.
+3. **Phone only**: This means that the participants list relies on the phone number only. An SMS gateway integration is needed. The user is verified by a form where a phone number must be introduced. The user can edit the phone number and the verification code is sent to the new phone number if that phone number is found in the participant's list. This method is useful to avoid to relay on keeping track of email changes for user's database.
 
 
 In order to use this new sms gateway you need to configure your application. It can work on two modes,
@@ -196,11 +197,6 @@ Decidim::ActionDelegator.configure do |config|
 
   # The regex for validating phone numbers
   config.phone_regex = /^\d{6,15}$/ # 6 to 15 digits
-
-  # Consultations has an annoying and totally useless deprecation warning
-  # This plugin removes it by default.
-  # If you want to keep it, you can set this config to false
-  config.remove_consultation_deprecation_warning = true
 end
 ```
 
@@ -208,7 +204,7 @@ end
 
 Votes and revocations done on behalf of other members are tracked through the
 `versions` table using `PaperTrail`. This enables fetching a log of actions
-involving a particular delegation or consultation for auditing purposes. This
+involving a particular delegation or vote for auditing purposes. This
 keeps out regular votes and unvotes.
 
 When performing votes and unvotes of delegations you'll see things like the
@@ -217,13 +213,13 @@ following in your `versions` table:
 ```sql
   id  |          item_type           | item_id |  event  | whodunnit | decidim_action_delegator_delegation_id 
 ------+------------------------------+---------+---------+-----------+----------------------------------------
- 2019 | Decidim::Consultations::Vote |     143 | destroy | 1         |                                     22
- 2018 | Decidim::Consultations::Vote |     143 | create  | 1         |                                     22
- 2017 | Decidim::Consultations::Vote |     142 | create  | 1         |                                     23
- 2016 | Decidim::Consultations::Vote |     138 | destroy | 1         |                                     23
+ 2019 | Decidim::Election::Vote |     143 | destroy | 1         |                                     22
+ 2018 | Decidim::Election::Vote |     143 | create  | 1         |                                     22
+ 2017 | Decidim::Election::Vote |     142 | create  | 1         |                                     23
+ 2016 | Decidim::Election::Vote |     138 | destroy | 1         |                                     23
 ```
 
-Note that the `item_type` is `Decidim::Consultations::Vote` and `whoddunit`
+Note that the `item_type` is `Decidim::Election::Vote` and `whoddunit`
 refers to a `Decidim::User` record. This enables joining `versions` and
 `decidim_users` tables although this doesn't follow Decidim's convention of
 using gids, such as `gid://decidim/Decidim::User/1`.

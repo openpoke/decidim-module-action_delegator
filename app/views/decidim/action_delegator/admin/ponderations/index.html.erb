@@ -1,13 +1,8 @@
+<%= render "decidim/action_delegator/admin/shared/tabs_menu" do %>
+  <%= link_to t("decidim.action_delegator.admin.ponderations.new.title"), decidim_admin_action_delegator.new_setting_ponderation_path, class: "main-tabs-menu__cta-button" %>
+<% end %>
+
 <div class="card with-overflow" id='user-groups'>
-  <div class="item_show__header">
-    <h1 class="item_show__header-title">
-      <div>
-        <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
-        <%= t ".title" %>
-      </div>
-      <%= link_to t(".actions.new_ponderation"), decidim_admin_action_delegator.new_setting_ponderation_path(current_setting), class: "button button__sm button__secondary button--title" %>
-    </h1>
-  </div>
   <div class="card-section">
     <div class="table-scroll">
       <table class="table-list">

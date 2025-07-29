@@ -36,20 +36,21 @@ module Decidim
             title: form.title,
             description: form.description,
             max_grants: form.max_grants,
-            authorization_method: form.authorization_method
+            authorization_method: form.authorization_method,
+            active: form.active
           )
 
-          # if copy_from_setting.present?
-          #   new_participants = copy_from_setting.participants.reject do |participant|
-          #     existing_participants.any? { |p| p.email == participant.email || p.phone == participant.phone }
-          #   end
-          #   setting.participants += new_participants.map(&:dup)
-          #
-          #   new_ponderations = copy_from_setting.ponderations.reject do |ponderation|
-          #     existing_ponderations.any? { |p| p.name == ponderation.name }
-          #   end
-          #   setting.ponderations += new_ponderations.map(&:dup)
-          # end
+          if copy_from_setting.present?
+            new_participants = copy_from_setting.participants.reject do |participant|
+              existing_participants.any? { |p| p.email == participant.email || p.phone == participant.phone }
+            end
+            setting.participants += new_participants.map(&:dup)
+          
+            new_ponderations = copy_from_setting.ponderations.reject do |ponderation|
+              existing_ponderations.any? { |p| p.name == ponderation.name }
+            end
+            setting.ponderations += new_ponderations.map(&:dup)
+          end
 
           setting.save!
         end

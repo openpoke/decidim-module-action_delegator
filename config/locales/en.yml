@@ -15,7 +15,7 @@ en:
         name: Membership type
         name_help: Membership type
       setting:
-        decidim_consultation_id: Consultation
+        active: Active
         max_grants: Maximum vote delegations a participant can receive
         phone_freezed: Use phone number from the census. Don't allow participants
           to edit it.
@@ -33,13 +33,6 @@ en:
   decidim:
     action_delegator:
       admin:
-        consultations:
-          results:
-            ongoing_consultation: This consultations is still ongoing. Be aware that
-              results may change as more people vote.
-            title: Results by answer, membership type and weight
-          weighted_results:
-            title: Results by answer summing membership weights
         delegations:
           create:
             error: There was a problem creating the delegation
@@ -247,13 +240,16 @@ en:
             created_at: Created at
             delegations: Delegations
             description_html: |
-              This module is designed for organizations that do voting through consultations. The functionalities we have available are: compilation of census, delegations of participants and weights by type of member. We can also use the integrated verifier via SMS, email or both. It is possible to use this module without importing a census, you can manage it in order to make delegations and/or weightings. If you need more information, go to guia.cercles.coop.
-              <br>
-              Each group can be configured with a different number of maximum delegations per user, different user delegations grants and different sets of ponderation types.
+              <ul>
+                <li>This module is designed for organizations that require a robust system for managing participant delegations</li>
+                <li><b>Features:</b> fully managed census, delegations of participants and weights by type of member. Verification by SMS, email or both. Using a census is optional.</li>
+                <li>Each entry can be used as a unique <b>delegation group</b> with a different number of maximum delegations per user, different user delegations grants and different sets of ponderation types.</li>
+                <li><b>Usage:</b> After configuring a delegation group, you can use the <b>Corporate Governance Verifier</b> to ensure all participants are properly authorized in whatever component you require. Also, make sure to use the <b>Corporate Governance census</b> while configuring an election.</li>
+              </ul>
             max_grants: Max delegations/user
             open: Open
             ponderations: Ponderation types
-            state: State
+            active: Active
             title: Corporate Governance
             name: Name
           new:
@@ -395,18 +391,17 @@ en:
           not_active: The Corporate Governance Verifier cannot be granted at this
             time as there are no active voting spaces.
     admin:
+      menu:
+        action_delegator_menu:
+          main: Main
+          delegations: Delegations
+          participants: Participants
+          ponderations: Ponderations
+          settings: Settings
       actions:
         invite: Send invitation
         invite_all: Send invitations to non-existing users
         resend: Resend invitation
-      consultations:
-        results:
-          default_metadata: "(membership data not available)"
-          export: Export
-          export_filename: consultation_results
-          membership_type: Membership type
-          membership_weight: Weight
-          total_delegates: "%{count} delegated votes"
     authorization_handlers:
       admin:
         delegations_verifier:

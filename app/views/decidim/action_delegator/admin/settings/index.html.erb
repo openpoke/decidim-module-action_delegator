@@ -1,14 +1,16 @@
 <% add_decidim_page_title(t(".title")) %>
 
+<div class="item_show__header">
+  <h1 class="item_show__header-title">
+    <%= t ".title" %>
+    <%= link_to t(".actions.new_setting"), decidim_admin_action_delegator.new_setting_path, class: "button button__sm button__secondary" %>
+  </h1>
+</div>
+
 <div class="card with-overflow" id='user-groups'>
-  <div class="item_show__header">
-    <h1 class="item_show__header-title">
-      <%= t ".title" %>
-      <%= link_to t(".actions.new_setting"), decidim_admin_action_delegator.new_setting_path, class: "button button__sm button__secondary" %>
-    </h1>
-  </div>
   <div class="card-section">
-    <p class="help-text"><%= t ".description_html" %></p>
+    <div class="help-text my-4"><%= t ".description_html" %></div>
+
     <%= render "check_verifier" %>
     <div class="table-scroll">
       <table class="table-list">
@@ -21,7 +23,7 @@
             <th><%= t(".ponderations") %></th>
             <th><%= t(".census") %></th>
             <th><%= t(".created_at") %></th>
-            <th><%= t(".state") %></th>
+            <th><%= t(".active") %></th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -35,7 +37,7 @@
               <td><%= setting.ponderations.count %></td>
               <td><%= setting.participants.count %></td>
               <td><%= l setting.created_at, format: :short %></td>
-              <td class="text-<%= setting.ongoing? ? "warning" : (setting.editable? ? "success" : "alert") %>"><%= t setting.state, scope: "decidim.action_delegator.admin.settings.state" %></td>
+              <td class="text-<%= setting.active? ? "success" : "alert" %>"><%= t "booleans.#{setting.active}" %></td>
               <td class="table-list__actions">
                 <%= icon_link_to "pencil-line", edit_setting_path(setting), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
                 <%= icon_link_to "scales-line", setting_ponderations_path(setting), t(".actions.ponderate"), class: "action-icon--edit" %>

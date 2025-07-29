@@ -30,15 +30,10 @@ module Decidim
       validates :max_grants, numericality: { greater_than: 0 }
 
       enum :authorization_method, [:phone, :email, :both], prefix: :verify_with
+      scope :active, -> { where(active: true) }
       default_scope { order(created_at: :desc) }
 
-      def state
-        :pending
-      end
-
-      def ongoing? = state == :ongoing
-
-      def editable? = state != :closed
+      def editable? = active?
 
       def destroyable? = participants.empty? && ponderations.empty? && delegations.empty?
 

@@ -3,34 +3,33 @@
 require "spec_helper"
 
 describe Decidim::ActionDelegator::Admin::SettingForm do
-  subject { described_class.from_params(attributes) }
+  subject { described_class.from_params(attributes).with_context(context) }
 
-  let(:consultation) { create(:consultation) }
+  let(:organization) { create(:organization) }
   let(:attributes) do
     {
-      decidim_consultation_id: consultation.id,
+      title:,
+      description:,
       max_grants: 5,
       authorization_method: authorization_method
     }
   end
+  let(:title) { { ca: "Títol", es: "Título", en: "Title" } }
+  let(:description) { { ca: "Descripció", es: "Descripción", en: "Description" } }
+
   let(:authorization_method) { :both }
+  let(:context) { { current_organization: organization } }
 
   it { is_expected.to be_valid }
 
-  context "when decidim_consultation_id is missing" do
-    let(:attributes) { super().except(:decidim_consultation_id) }
+  context "when title is missing" do
+    let(:title) { { ca: "", es: "", en: "" } }
 
     it { is_expected.to be_invalid }
   end
 
   context "when max_grants is missing" do
     let(:attributes) { super().except(:max_grants) }
-
-    it { is_expected.to be_invalid }
-  end
-
-  context "when decidim_consultation_id is already taken" do
-    let!(:setting) { create(:setting, decidim_consultation_id: consultation.id) }
 
     it { is_expected.to be_invalid }
   end

@@ -42,26 +42,45 @@ module Decidim
         root to: "delegations#index"
       end
 
-      # marks the main "Users" menu in the admin always active when we are in the action_delegator admin space
-      initializer "decidim_admin_action_delegator.main_menu" do
-        Decidim.menu :admin_menu do |menu|
-          if (item = menu.items.find { |it| it.identifier == :impersonatable_users })
-            item.active.first << "decidim/action_delegator/admin/settings"
-            item.active.first << "decidim/action_delegator/admin/ponderations"
-            item.active.first << "decidim/action_delegator/admin/participants"
-            item.active.first << "decidim/action_delegator/admin/manage_participants"
-            item.active.first << "decidim/action_delegator/admin/delegations"
-            item.active.first << "decidim/action_delegator/admin/manage_delegations"
-          end
-        end
-      end
-
       initializer "decidim_admin_action_delegator.admin_user_menu" do
         Decidim.menu :admin_user_menu do |menu|
           menu.add_item :action_delegator,
                         I18n.t("menu.delegations", scope: "decidim.action_delegator.admin"), decidim_admin_action_delegator.settings_path,
                         active: is_active_link?(decidim_admin_action_delegator.settings_path),
                         if: allowed_to?(:index, :impersonatable_user)
+        end
+      end
+
+      initializer "decidim_elections_admin.menu" do
+        Decidim.menu :admin_action_delegator_menu do |menu|
+          menu.add_item :setting_main,
+                        I18n.t("main", scope: "decidim.admin.menu.action_delegator_menu"),
+                        current_setting ? decidim_admin_action_delegator.edit_setting_path(current_setting) : decidim_admin_action_delegator.new_setting_path,
+                        icon_name: "bill-line",
+                        active: is_active_link?(current_setting ? decidim_admin_action_delegator.edit_setting_path(current_setting) : decidim_admin_action_delegator.new_setting_path)
+
+          menu.add_item :setting_ponderations,
+                        I18n.t("ponderations", scope: "decidim.admin.menu.action_delegator_menu"),
+                        current_setting ? decidim_admin_action_delegator.setting_ponderations_path(current_setting) : "#",
+                        icon_name: "scales-line",
+                        active: current_setting && is_active_link?(decidim_admin_action_delegator.setting_ponderations_path(current_setting))
+
+          menu.add_item :setting_participants,
+                        I18n.t("participants", scope: "decidim.admin.menu.action_delegator_menu"),
+                        current_setting ? decidim_admin_action_delegator.setting_participants_path(current_setting) : "#",
+                        icon_name: "group-line",
+                        active: current_setting && (is_active_link?(decidim_admin_action_delegator.setting_participants_path(current_setting)) ||
+                                                    is_active_link?(decidim_admin_action_delegator.new_setting_participant_path(current_setting)) ||
+                                                    is_active_link?(decidim_admin_action_delegator.new_setting_manage_participant_path(current_setting)) ||
+                                                    @participant && is_active_link?(decidim_admin_action_delegator.edit_setting_participant_path(current_setting, @participant)))
+
+          menu.add_item :setting_delegations,
+                        I18n.t("delegations", scope: "decidim.admin.menu.action_delegator_menu"),
+                        current_setting ? decidim_admin_action_delegator.setting_delegations_path(current_setting) : "#",
+                        icon_name: "user-shared-line",
+                        active: current_setting && (is_active_link?(decidim_admin_action_delegator.setting_delegations_path(current_setting)) ||
+                                                    is_active_link?(decidim_admin_action_delegator.new_setting_delegation_path(current_setting)) ||
+                                                    is_active_link?(decidim_admin_action_delegator.new_setting_manage_delegation_path(current_setting)))
         end
       end
 

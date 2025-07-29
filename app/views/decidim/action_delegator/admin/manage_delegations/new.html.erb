@@ -1,30 +1,25 @@
-<div class="item_show__header">
-  <h1 class="item_show__header-title">
-    <div>
-      <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
-      <%= link_to t("title", scope: "decidim.action_delegator.admin.delegations.index"), decidim_admin_action_delegator.setting_delegations_path(current_setting) %> &gt;
-      <%= t ".title" %>
-    </div>
-  </h1>
-</div>
+<%= render "decidim/action_delegator/admin/shared/tabs_menu" %>
 
 <div class="item__edit item__edit-1col">
   <div class="item__edit-form">
-    <%= decidim_form_for @form, url: setting_manage_delegations_path(current_setting), multipart: true, html: { class: "form form-defaults new_import" } do |form| %>
+    <%= decidim_form_for @form, url: setting_manage_delegations_path(current_setting), multipart: true, html: { class: "form-defaults new_import" } do |form| %>
       <div class="form__wrapper">
         <div class="card pt-4">
           <div class="card-section">
             <%= form.hidden_field :setting_id, value: current_setting.id %>
             <div class="row column">
-            <p><%= t(".upload_instructions") %></p>
-            <p><%= t(".required_fields") %></p>
-            <p><%= t(".title_example") %></p>
-            <pre class="code-block">
-from,to
-user_1@example.org,user_2@example.org
-user_3@example.org,user_4@example.org
-...
-            </pre>
+              <h2 class="h3 mb-4">
+                <%= t("decidim.action_delegator.admin.manage_delegations.new.title") %>
+              </h2>
+              <p><%= t(".upload_instructions") %></p>
+              <p><%= t(".required_fields") %></p>
+              <p><%= t(".title_example") %></p>
+              <pre class="code-block">
+  from,to
+  user_1@example.org,user_2@example.org
+  user_3@example.org,user_4@example.org
+  ...
+              </pre>
             </div>
             <div class="row column">
               <%= form.upload :csv_file,

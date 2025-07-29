@@ -38,6 +38,7 @@ module Decidim
             description: form.description,
             max_grants: form.max_grants,
             authorization_method: form.authorization_method,
+            active: form.active,
             ponderations: selected.ponderations.map(&:dup),
             participants: selected.participants.map(&:dup),
             organization: form.context.current_organization

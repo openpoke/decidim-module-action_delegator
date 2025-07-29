@@ -1,15 +1,10 @@
-<div class="item_show__header">
-  <h1 class="item_show__header-title">
-    <div>
-      <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
-      <%= link_to t("title", scope: "decidim.action_delegator.admin.ponderations.index"), decidim_admin_action_delegator.setting_ponderations_path(current_setting) %> &gt;
-      <%= t ".title" %>
-    </div>
-  </h1>
-</div>
+<%= render "decidim/action_delegator/admin/shared/tabs_menu" do %>
+  <%= button_tag t("decidim.action_delegator.admin.settings.new.save"), class: "main-tabs-menu__cta-button", form: "ponderation-form-edit" %>
+<% end %>
+
 <div class="item__edit item__edit-1col">
   <div class="item__edit-form">
-    <%= decidim_form_for @form, url: { action: "create" }, html: { class: "form-defaults form new_ponderation" } do |form| %>
+    <%= decidim_form_for @form, url: { action: "create" }, html: { id: "ponderation-form-edit", class: "form-defaults form new_ponderation" } do |form| %>
       <%= render partial: "form", object: form %>
 
       <div class="item__edit-sticky">
