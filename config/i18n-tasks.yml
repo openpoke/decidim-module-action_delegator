@@ -12,7 +12,19 @@ data:
     - "<%= %x[bundle info decidim-verifications --path].chomp %>/config/locales/%{locale}.yml"
 
 ignore_unused:
-  - "decidim.components.action_delegator.name"
-
-ignore_missing:
-  - decidim.participatory_processes.scopes.global
+  - "layouts.decidim.user_profile.vote_delegations"
+  - "devise.mailer.*"
+  - "decidim.verifications.authorizations.first_login.*"
+  - "decidim.authorization_handlers.*"
+  - "decidim.admin.menu.action_delegator_menu.*"
+  - "decidim.admin.actions.invite_all"
+  - "activemodel.attributes.*"
+  - "activemodel.errors.*"
+  - "decidim.action_delegator.participants_csv_importer.import.*"
+  - "decidim.action_delegator.admin.settings.authorization_method.*"
+  - "decidim.action_delegator.admin.invite_participants.*"
+  - "decidim.action_delegator.invite_participants_mailer.*"
+  - "decidim.action_delegator.admin.delegations.csv_imports.*"
+  - "decidim.action_delegator.admin.menu.*"
+  - "decidim.action_delegator.verification.admin.members.index.*"
+  - "decidim.action_delegator.verifications.delegations_verifier*"
