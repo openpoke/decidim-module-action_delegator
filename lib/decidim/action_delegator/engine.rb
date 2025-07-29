@@ -12,6 +12,7 @@ module Decidim
     # Handles all the logic related to delegation except verifications
     class Engine < ::Rails::Engine
       isolate_namespace Decidim::ActionDelegator
+      include Decidim::TranslatableAttributes
 
       routes do
         # Add engine routes here
@@ -35,6 +36,13 @@ module Decidim
           workflow.engine = Decidim::ActionDelegator::Verifications::DelegationsVerifier::Engine
           workflow.expires_in = Decidim::ActionDelegator.authorization_expiration_time
           workflow.time_between_renewals = 1.minute
+          workflow.options do |options|
+            options.attribute :setting, type: :select, raw_choices: true, choices: ->(context) do
+              Decidim::ActionDelegator::Setting.where(organization: context[:component]&.organization).map do |setting|
+                [translated_attribute(setting.title), setting.id]
+              end
+            end
+          end
         end
       end
 
