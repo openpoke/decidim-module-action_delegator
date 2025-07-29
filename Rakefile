@@ -1,22 +1,7 @@
 # frozen_string_literal: true
 
-require "decidim/generators/app_generator"
-
-def generate_decidim_app(*options)
-  app_path = File.expand_path(options.first, Dir.pwd)
-
-  sh "rm -fR #{app_path}", verbose: false
-
-  original_folder = Dir.pwd
-
-  Decidim::Generators::AppGenerator.start(options)
-
-  Dir.chdir(original_folder)
-end
-
-def base_app_name
-  File.basename(Dir.pwd).underscore
-end
+# looks like there is some kind of bug related to the inclusion of parallel-tests in decidim/dev/common_rake
+require "decidim/action_delegator/common_rake"
 
 def install_module(path)
   Dir.chdir(path) do
@@ -35,6 +20,7 @@ desc "Generates a dummy app for testing"
 task test_app: "decidim:generate_external_test_app" do
   ENV["RAILS_ENV"] = "test"
   install_module("spec/decidim_dummy_app")
+  copy_helpers
 end
 
 desc "Generates a development app."
