@@ -255,6 +255,7 @@ en:
             ponderations: Ponderation types
             state: State
             title: Corporate Governance
+            name: Name
           new:
             save: Create
             title: New configuration

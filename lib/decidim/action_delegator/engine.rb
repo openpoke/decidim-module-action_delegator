@@ -43,19 +43,21 @@ module Decidim
         Decidim.register_assets_path File.expand_path("app/packs", root)
       end
 
-      initializer "decidim.user_menu" do
+      initializer "decidim_action_delegator.user_menu" do
         Decidim.menu :user_menu do |menu|
           menu.add_item :vote_delegations,
-                        t("vote_delegations", scope: "layouts.decidim.user_profile"),
-                        decidim_action_delegator.user_delegations_path,
-                        position: 5.0,
-                        active: :exact
+          t("vote_delegations", scope: "layouts.decidim.user_profile"),
+          decidim_action_delegator.user_delegations_path,
+          position: 5.0,
+          active: :exact
         end
       end
-
-      Decidim.icons.register(name: "layout-grid-line", icon: "layout-grid-line", category: "system", description: "", engine: :core)
-      Decidim.icons.register(name: "loop-right-line", icon: "loop-right-line", category: "system", description: "", engine: :core)
-      Decidim.icons.register(name: "arrow-go-forward-line", icon: "arrow-go-forward-line", category: "system", description: "", engine: :core)
+      
+      initializer "decidim_action_delegator.icons" do
+        Decidim.icons.register(name: "weight-line", icon: "weight-line", category: "system", description: "", engine: :action_delegator)
+        Decidim.icons.register(name: "user-shared-line", icon: "user-shared-line", category: "system", description: "", engine: :action_delegator)
+        Decidim.icons.register(name: "arrow-go-forward-line", icon: "arrow-go-forward-line", category: "system", description: "", engine: :action_delegator)
+      end
     end
   end
 end

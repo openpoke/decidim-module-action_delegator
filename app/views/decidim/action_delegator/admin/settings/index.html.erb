@@ -14,7 +14,7 @@
       <table class="table-list">
         <thead>
           <tr>
-            <th><%= t(".election") %></th>
+            <th><%= t(".name") %></th>
             <th><%= t(".max_grants") %></th>
             <th><%= t(".authorization_method") %></th>
             <th><%= t(".delegations") %></th>
@@ -28,7 +28,7 @@
         <tbody>
           <% settings.each do |setting| %>
             <tr data-setting-id="<%= setting.id %>">
-              <td><%= link_to translated_attribute(setting.title), Decidim::EngineRouter.main_proxy(setting.resource.component).election_path(setting.resource), target: :blank %></td>
+              <td><%= link_to translated_attribute(setting.title), edit_setting_path(setting) %></td>
               <td><%= setting.max_grants %></td>
               <td class="text-<%= setting.phone_required? ? (setting.verify_with_both? ? "success" : "secondary") : "warning" %>"><%= t setting.authorization_method, scope: "decidim.action_delegator.admin.settings.authorization_method" %></td>
               <td><%= setting.delegations.count %></td>
@@ -37,11 +37,11 @@
               <td><%= l setting.created_at, format: :short %></td>
               <td class="text-<%= setting.ongoing? ? "warning" : (setting.editable? ? "success" : "alert") %>"><%= t setting.state, scope: "decidim.action_delegator.admin.settings.state" %></td>
               <td class="table-list__actions">
-                <%= icon_link_to "pencil-line", decidim_admin_action_delegator.edit_setting_path(setting), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
-                <%= icon_link_to "layout-grid-line", decidim_admin_action_delegator.setting_ponderations_path(setting), t(".actions.ponderate"), class: "action-icon--edit" %>
-                <%= icon_link_to "group-line", decidim_admin_action_delegator.setting_participants_path(setting), t(".actions.census"), class: "action-icon--edit" %>
-                <%= icon_link_to "loop-right-line", decidim_admin_action_delegator.setting_delegations_path(setting), t(".actions.delegations"), class: "action-icon--edit" %>
-                <%= icon_link_to "delete-bin-line", decidim_admin_action_delegator.setting_path(setting), t("actions.destroy", scope: "decidim.admin"), class: "action-icon--remove", method: :delete, data: { confirm: t("actions.confirm_destroy", scope: "decidim.admin") } if setting.destroyable? %>
+                <%= icon_link_to "pencil-line", edit_setting_path(setting), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
+                <%= icon_link_to "scales-line", setting_ponderations_path(setting), t(".actions.ponderate"), class: "action-icon--edit" %>
+                <%= icon_link_to "group-line", setting_participants_path(setting), t(".actions.census"), class: "action-icon--edit" %>
+                <%= icon_link_to "user-shared-line", setting_delegations_path(setting), t(".actions.delegations"), class: "action-icon--edit" %>
+                <%= icon_link_to "delete-bin-line", setting_path(setting), t("actions.destroy", scope: "decidim.admin"), class: "action-icon--remove", method: :delete, data: { confirm: t("actions.confirm_destroy", scope: "decidim.admin") } if setting.destroyable? %>
               </td>
             </tr>
             <% if setting.editable? %>

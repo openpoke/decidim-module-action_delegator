@@ -87,14 +87,6 @@ module Decidim
         def collection
           @collection ||= current_setting.ponderations
         end
-
-        def current_setting
-          @current_setting ||= organization_settings.find_by(id: params[:setting_id])
-        end
-
-        def organization_settings
-          ActionDelegator::OrganizationSettings.new(current_organization).query
-        end
       end
     end
   end

@@ -7,6 +7,9 @@ module Decidim
     class Setting < ApplicationRecord
       self.table_name = "decidim_action_delegator_settings"
 
+      belongs_to :organization,
+                 foreign_key: "decidim_organization_id",
+                 class_name: "Decidim::Organization"
       has_many :delegations,
                inverse_of: :setting,
                foreign_key: "decidim_action_delegator_setting_id",
@@ -23,26 +26,14 @@ module Decidim
                class_name: "Decidim::ActionDelegator::Participant",
                dependent: :restrict_with_error
 
-      belongs_to :resource, polymorphic: true, optional: true
-
       validates :max_grants, presence: true
       validates :max_grants, numericality: { greater_than: 0 }
 
-      enum authorization_method: { phone: 0, email: 1, both: 2 }, _prefix: :verify_with
-
-      delegate :title, to: :resource
-      delegate :organization, to: :resource
-
+      enum authorization_method: [ :phone, :email, :both ], _prefix: :verify_with
       default_scope { order(created_at: :desc) }
 
       def state
-        @state ||= if resource.end_at < Time.zone.now
-                     :closed
-                   elsif resource.start_at <= Time.zone.now
-                     :ongoing
-                   else
-                     :pending
-                   end
+        :pending
       end
 
       def ongoing? = state == :ongoing

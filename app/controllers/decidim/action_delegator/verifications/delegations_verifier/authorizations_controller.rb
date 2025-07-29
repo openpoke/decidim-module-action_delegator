@@ -122,7 +122,7 @@ module Decidim
           end
 
           def all_settings
-            @all_settings ||= OrganizationSettings.new(current_user.organization).active
+            @all_settings ||= Setting.where(organization: current_user.organization).active
           end
         end
       end

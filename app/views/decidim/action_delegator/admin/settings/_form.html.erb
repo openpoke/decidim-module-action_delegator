@@ -2,8 +2,11 @@
   <div class="card pt-4">
     <div class="card-section">
       <div class="row column">
-        <%= form.select :resource_id, resources_for_select %>
-        <%= form.hidden_field :resource_type, value: "Decidim::Elections::Election" %>
+        <%= form.translated :text_field, :title, aria: { label: :title } %>
+      </div>
+
+      <div class="row column">
+        <%= form.translated :editor, :description, aria: { label: :description } %>
       </div>
 
       <div class="row column">

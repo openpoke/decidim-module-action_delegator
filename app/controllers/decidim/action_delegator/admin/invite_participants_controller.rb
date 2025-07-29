@@ -44,20 +44,12 @@ module Decidim
 
         private
 
-        def current_setting
-          @current_setting ||= organization_settings.find_by(id: params[:setting_id])
-        end
-
         def participants
           @participants ||= current_setting.participants
         end
 
         def participant
           @participant ||= participants.find_by(id: params[:id])
-        end
-
-        def organization_settings
-          ActionDelegator::OrganizationSettings.new(current_organization).query
         end
 
         def build_form(participant)

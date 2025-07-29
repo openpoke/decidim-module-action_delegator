@@ -12,16 +12,8 @@ module Decidim
           current_organization.users
         end
 
-        def resources_for_select
-          organization_elections.map { |election| [translated_attribute(election.title), election.id] }
-        end
-
         def ponderations_for_select(setting)
           setting.ponderations.map { |ponderation| [ponderation.title, ponderation.id] }
-        end
-
-        def organization_elections
-          Decidim::ActionDelegator::OrganizationElections.new(current_organization).query
         end
 
         def missing_verifications_for(resources, action)

@@ -34,12 +34,13 @@ module Decidim
           selected = @copy_from_setting || Setting.new(ponderations: [], participants: [])
 
           created_setting = Setting.new(
-            resource_type: form.resource_type,
-            resource_id: form.resource_id,
+            title: form.title,
+            description: form.description,
             max_grants: form.max_grants,
             authorization_method: form.authorization_method,
             ponderations: selected.ponderations.map(&:dup),
-            participants: selected.participants.map(&:dup)
+            participants: selected.participants.map(&:dup),
+            organization: form.context.current_organization
           )
 
           @setting = created_setting.save!

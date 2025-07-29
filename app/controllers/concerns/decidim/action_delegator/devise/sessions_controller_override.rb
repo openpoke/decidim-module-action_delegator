@@ -18,7 +18,7 @@ module Decidim
           private
 
           def authorize_user_with_delegations_verifier(user)
-            setting = Decidim::ActionDelegator::OrganizationSettings.new(current_user.organization).active.first
+            setting = Decidim::ActionDelegator::Setting.where(organization: current_user.organization).active.first
             delegations_verifier_authorization = Decidim::Authorization.find_or_initialize_by(
               user: user,
               name: "delegations_verifier"

@@ -44,16 +44,6 @@ module Decidim
           flash[:notice] = I18n.t("participants.remove_census.success", scope: "decidim.action_delegator.admin", participants_count: participants_to_remove.count)
           redirect_to setting_participants_path(current_setting)
         end
-
-        private
-
-        def current_setting
-          @current_setting ||= organization_settings.find_by(id: params[:setting_id])
-        end
-
-        def organization_settings
-          Decidim::ActionDelegator::OrganizationSettings.new(current_organization).query
-        end
       end
     end
   end

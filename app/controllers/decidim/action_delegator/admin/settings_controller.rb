@@ -94,15 +94,15 @@ module Decidim
         end
 
         def collection
-          @collection ||= ActionDelegator::OrganizationSettings.new(current_organization).query
+          organization_settings
         end
 
         def settings_select_options
-          collection.to_h { |setting| [setting.resource.id, translated_attribute(setting.title)] }
+          collection.to_h { |setting| [setting.id, translated_attribute(setting.title)] }
         end
 
         def copy_from_setting
-          @copy_from_setting ||= Setting.find_by(resource_id: params[:setting][:copy_from_setting_id], resource_type: params[:setting][:resource_type])
+          @copy_from_setting ||= Setting.find_by(id: params[:setting][:copy_from_setting_id])
         end
       end
     end

@@ -33,16 +33,6 @@ module Decidim
             render :new
           end
         end
-
-        private
-
-        def current_setting
-          @current_setting ||= organization_settings.find_by(id: params[:setting_id])
-        end
-
-        def organization_settings
-          Decidim::ActionDelegator::OrganizationSettings.new(current_organization).query
-        end
       end
     end
   end
