@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe Delegation, type: :model do
+    describe Delegation do
       subject { build(:delegation) }
 
       it { is_expected.to belong_to(:setting) }

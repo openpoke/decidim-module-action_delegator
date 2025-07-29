@@ -67,7 +67,7 @@ end
 # manage their delegations
 Decidim.register_global_engine(
   :decidim_action_delegator, # this is the name of the global method to access engine routes
-  ::Decidim::ActionDelegator::Engine,
+  Decidim::ActionDelegator::Engine,
   at: "/action_delegator"
 )
 
@@ -75,6 +75,6 @@ Decidim.register_global_engine(
 # create their own
 Decidim.register_global_engine(
   :decidim_admin_action_delegator,
-  ::Decidim::ActionDelegator::AdminEngine,
+  Decidim::ActionDelegator::AdminEngine,
   at: "/admin/action_delegator"
 )

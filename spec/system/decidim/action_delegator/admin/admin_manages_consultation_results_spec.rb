@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages consultation results", type: :system do
+describe "Admin manages consultation results" do
   let(:organization) { create(:organization) }
   let(:user) { create(:user, :admin, :confirmed, organization: organization) }
 
@@ -227,7 +227,7 @@ describe "Admin manages consultation results", type: :system do
       visit decidim_admin_action_delegator.results_consultation_path(consultation)
 
       within "#export-consultation-results" do
-        expect(page).not_to have_css(".disabled")
+        expect(page).to have_no_css(".disabled")
         expect(page).to have_link(I18n.t("decidim.admin.consultations.results.export"))
       end
     end
@@ -253,7 +253,7 @@ describe "Admin manages consultation results", type: :system do
       visit decidim_admin_action_delegator.results_consultation_path(consultation)
 
       within "#export-consultation-results" do
-        expect(page).not_to have_css(".disabled")
+        expect(page).to have_no_css(".disabled")
         expect(page).to have_link(I18n.t("decidim.admin.consultations.results.export"))
       end
     end

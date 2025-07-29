@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Corporate Governance Verifier request", type: :system do
+describe "Corporate Governance Verifier request" do
   let!(:organization) do
     create(:organization, available_authorizations: ["delegations_verifier"])
   end
@@ -41,7 +41,7 @@ describe "Corporate Governance Verifier request", type: :system do
       click_button "Log in"
 
       expect(page).to have_content(user.name)
-      expect(page).not_to have_content("Congratulations. You've been successfully verified")
+      expect(page).to have_no_content("Congratulations. You've been successfully verified")
       expect(page).to have_current_path(decidim.root_path, ignore_query: true)
       expect(Decidim::Authorization.last).to be_nil
     end

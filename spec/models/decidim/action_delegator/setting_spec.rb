@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe Setting, type: :model do
+    describe Setting do
       subject { build(:setting, consultation: consultation, authorization_method: authorization_method) }
 
       let(:authorization_method) { :email }

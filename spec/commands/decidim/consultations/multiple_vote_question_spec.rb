@@ -7,13 +7,13 @@ module Decidim
     describe MultipleVoteQuestion do
       subject { described_class.new(form, user) }
 
-      let(:organization) { create :organization }
-      let(:consultation) { create :consultation, organization: organization }
-      let(:question) { create :question, :multiple, consultation: consultation }
-      let(:user) { create :user, organization: organization }
-      let(:response1) { create :response, question: question }
-      let(:response2) { create :response, question: question }
-      let(:response3) { create :response, question: question }
+      let(:organization) { create(:organization) }
+      let(:consultation) { create(:consultation, organization: organization) }
+      let(:question) { create(:question, :multiple, consultation: consultation) }
+      let(:user) { create(:user, organization: organization) }
+      let(:response1) { create(:response, question: question) }
+      let(:response2) { create(:response, question: question) }
+      let(:response3) { create(:response, question: question) }
       let(:responses) do
         [response1.id, response2.id]
       end
@@ -103,7 +103,7 @@ module Decidim
       end
 
       context "when user tries to vote twice" do
-        let!(:vote) { create :vote, author: user, question: question, response: response1 }
+        let!(:vote) { create(:vote, author: user, question: question, response: response1) }
 
         it "repeated voting do not increment number of responses" do
           expect(question.responses_count).to eq(1)

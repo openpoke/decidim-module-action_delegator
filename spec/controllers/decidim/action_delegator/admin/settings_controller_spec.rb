@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe Admin::SettingsController, type: :controller do
+    describe Admin::SettingsController do
       routes { Decidim::ActionDelegator::AdminEngine.routes }
 
       let(:organization) { create(:organization) }

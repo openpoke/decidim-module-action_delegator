@@ -2,18 +2,18 @@
 
 require "spec_helper"
 
-describe "Census vote", type: :system do
+describe "Census vote" do
   let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier dummy_authorization_workflow)) }
 
   let(:consultation) { create(:consultation, :active, organization: organization) }
-  let!(:response) { create :response, question: question }
-  let(:question) { create :question, :published, consultation: consultation }
+  let!(:response) { create(:response, question: question) }
+  let(:question) { create(:question, :published, consultation: consultation) }
   let(:setting) { create(:setting, consultation: consultation, authorization_method: :email) }
   let!(:participant) { create(:participant, setting: setting, decidim_user: decidim_user, email: email) }
   let(:email) { decidim_user.email }
   let(:decidim_user) { create(:user, organization: organization) }
   let(:permissions) { { "vote" => { "authorization_handlers" => { "delegations_verifier" => {} } } } }
-  let!(:authorization) { create :authorization, :granted, name: name, user: user }
+  let!(:authorization) { create(:authorization, :granted, name: name, user: user) }
   let(:name) { "dummy_authorization_workflow" }
   let(:user) { create(:user, :confirmed, organization: organization) }
 

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages ponderations", type: :system do
+describe "Admin manages ponderations" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization) }
   let(:user) { create(:user, :admin, :confirmed, organization: organization) }
@@ -17,7 +17,7 @@ describe "Admin manages ponderations", type: :system do
     let(:setting) { create(:setting, consultation: consultation) }
     let!(:ponderation) { create(:ponderation, setting: setting) }
 
-    let!(:collection) { create_list :ponderation, collection_size, setting: setting }
+    let!(:collection) { create_list(:ponderation, collection_size, setting: setting) }
     let!(:resource_selector) { "[data-ponderation-id]" }
     let(:collection_size) { 30 }
 
@@ -74,8 +74,8 @@ describe "Admin manages ponderations", type: :system do
         accept_confirm { click_link "Delete" }
       end
 
-      expect(page).not_to have_content(ponderation.name)
-      expect(page).not_to have_content(ponderation.weight)
+      expect(page).to have_no_content(ponderation.name)
+      expect(page).to have_no_content(ponderation.weight)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting.id))
       expect(page).to have_admin_callout("successfully")
     end
@@ -87,7 +87,7 @@ describe "Admin manages ponderations", type: :system do
         expect(page).to have_content(ponderation.name)
         expect(page).to have_content(ponderation.weight)
         within "tr[data-ponderation-id=\"#{ponderation.id}\"]" do
-          expect(page).not_to have_link("Delete")
+          expect(page).to have_no_link("Delete")
         end
       end
     end

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages delegations", type: :system do
+describe "Admin manages delegations" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization) }
   let(:user) { create(:user, :admin, :confirmed, organization: organization) }
@@ -17,7 +17,7 @@ describe "Admin manages delegations", type: :system do
     let(:setting) { create(:setting, consultation: consultation) }
     let!(:delegation) { create(:delegation, setting: setting) }
 
-    let!(:collection) { create_list :delegation, collection_size, setting: setting }
+    let!(:collection) { create_list(:delegation, collection_size, setting: setting) }
     let!(:resource_selector) { "[data-delegation-id]" }
     let(:collection_size) { 30 }
 
@@ -62,12 +62,12 @@ describe "Admin manages delegations", type: :system do
     it "destroys the delegation" do
       # has no votes
       expect(page).to have_content("No")
-      expect(page).not_to have_content("Yes")
+      expect(page).to have_no_content("Yes")
       within "tr[data-delegation-id=\"#{delegation.id}\"]" do
         accept_confirm { click_link "Delete" }
       end
 
-      expect(page).not_to have_content(delegation.grantee.name)
+      expect(page).to have_no_content(delegation.grantee.name)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_delegations_path(setting.id))
       expect(page).to have_admin_callout("successfully")
     end
@@ -76,10 +76,10 @@ describe "Admin manages delegations", type: :system do
   shared_examples "do not destroy a delegation" do
     it "does not destroy the delegation" do
       # has votes
-      expect(page).not_to have_content("No")
+      expect(page).to have_no_content("No")
       expect(page).to have_content("Yes")
       within "tr[data-delegation-id=\"#{delegation.id}\"]" do
-        expect(page).not_to have_link("Delete")
+        expect(page).to have_no_link("Delete")
       end
     end
   end

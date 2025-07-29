@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/forms/decidim/action_delegator/admin/delegation_import_form.rb
 module Decidim
   module ActionDelegator

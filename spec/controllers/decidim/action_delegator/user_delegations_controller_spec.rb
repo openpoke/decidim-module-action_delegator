@@ -4,10 +4,10 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe UserDelegationsController, type: :controller do
+    describe UserDelegationsController do
       routes { Decidim::ActionDelegator::Engine.routes }
 
-      let(:organization) { create :organization }
+      let(:organization) { create(:organization) }
       let(:user) { create(:user, :confirmed, organization: organization) }
       let(:granter) { create(:user, :confirmed, organization: organization) }
       let(:consultation) { create(:consultation, organization: organization) }

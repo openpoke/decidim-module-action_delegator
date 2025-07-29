@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages settings", type: :system do
+describe "Admin manages settings" do
   include Decidim::TranslationsHelper
 
   let(:i18n_scope) { "decidim.action_delegator.admin" }
@@ -140,8 +140,7 @@ describe "Admin manages settings", type: :system do
     end
 
     it "links to the consultation" do
-      expect(page).to have_selector(
-        :xpath,
+      expect(page).to have_xpath(
         "//a[@href='#{decidim_consultations.consultation_path(consultation)}'][@target='blank']"
       )
     end
@@ -231,16 +230,16 @@ describe "Admin manages settings", type: :system do
 
           perform_enqueued_jobs { click_link "Click here to automatically fix this" }
 
-          expect(page).not_to have_css(".callout.alert")
-          expect(page).not_to have_content("The participants list needs to be synchronized")
+          expect(page).to have_no_css(".callout.alert")
+          expect(page).to have_no_content("The participants list needs to be synchronized")
         end
 
         context "and participants are not registered" do
           let(:email) { "foo@example.org" }
 
           it "has no alert" do
-            expect(page).not_to have_css(".callout.alert")
-            expect(page).not_to have_content("The participants list needs to be synchronized")
+            expect(page).to have_no_css(".callout.alert")
+            expect(page).to have_no_content("The participants list needs to be synchronized")
           end
         end
       end
@@ -258,9 +257,9 @@ describe "Admin manages settings", type: :system do
       let(:permissions) { {} }
 
       it "has a link to fix it" do
-        expect(page).not_to have_content('"Delegation Verifier" authorization method is not installed')
+        expect(page).to have_no_content('"Delegation Verifier" authorization method is not installed')
         expect(page).to have_content("There are 2 questions that are not restricted by the Corporate Governance Verifier.")
-        expect(page).not_to have_content("All questions are restricted by the Corporate Governance Verifier")
+        expect(page).to have_no_content("All questions are restricted by the Corporate Governance Verifier")
         expect(page).to have_css(".callout.success")
 
         click_link "Click here to automatically fix this"
@@ -275,9 +274,9 @@ describe "Admin manages settings", type: :system do
       end
 
       it "has a link to fix it" do
-        expect(page).not_to have_content('"Corporate Governance Verifier" authorization method is not installed')
+        expect(page).to have_no_content('"Corporate Governance Verifier" authorization method is not installed')
         expect(page).to have_content("There are 1 questions that are not restricted by the Corporate Governance Verifier.")
-        expect(page).not_to have_content("All questions are restricted by the Corporate Governance Verifier")
+        expect(page).to have_no_content("All questions are restricted by the Corporate Governance Verifier")
         expect(page).to have_css(".callout.warning")
 
         click_link "Click here to automatically fix this"
@@ -295,9 +294,9 @@ describe "Admin manages settings", type: :system do
       end
 
       it "has a link to fix it" do
-        expect(page).not_to have_content('"Corporate Governance Verifier" authorization method is not installed')
+        expect(page).to have_no_content('"Corporate Governance Verifier" authorization method is not installed')
         expect(page).to have_content("There are 1 questions that are not restricted by the Corporate Governance Verifier.")
-        expect(page).not_to have_content("All questions are restricted by the Corporate Governance Verifier")
+        expect(page).to have_no_content("All questions are restricted by the Corporate Governance Verifier")
         expect(page).to have_css(".callout.warning")
 
         click_link "Click here to automatically fix this"

@@ -31,10 +31,10 @@
     "extends": "@decidim/stylelint-config"
   },
   "devDependencies": {
-    "@decidim/dev": "0.31.0.dev",
-    "@decidim/eslint-config": "0.31.0.dev",
-    "@decidim/stylelint-config": "0.31.0.dev"
-  },
-  "dependencies": {
+    "@decidim/dev": "0.30",
+    "@decidim/eslint-config": "0.30",
+    "@decidim/prettier-config": "0.30",
+    "@decidim/stylelint-config": "0.30",
+    "postcss-scss": "^4.0.9"
   }
 }

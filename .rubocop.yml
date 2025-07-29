@@ -1,2 +1,12 @@
 inherit_gem:
   decidim-dev: rubocop-decidim.yml
+
+AllCops:
+  Exclude:
+    - "spec/decidim_dummy_app*/**/*"
+    - "development_app/**/*"
+
+RSpec/DescribeClass:
+  Exclude:
+    - spec/i18n_spec.rb
+    - "spec/system/**/*"

@@ -14,12 +14,12 @@ module Decidim
       end
 
       private
-      
+
       def allowed_delegation_action?
-        return unless delegation
+        return false unless delegation
         # Check that the required question verifications are fulfilled
-        return unless authorized?(:vote, delegation.grantee)
-      
+        return false unless authorized?(:vote, delegation.grantee)
+
         case permission_action.action
         when :vote_delegation
           toggle_allow(question.can_be_voted_by?(delegation.granter) && delegation.grantee == user)
@@ -29,8 +29,8 @@ module Decidim
       end
 
       def authorized?(permission_action, user, resource: nil)
-        return unless resource || question
-      
+        return false unless resource || question
+
         ActionAuthorizer.new(user, permission_action, question, resource).authorize.ok?
       end
 

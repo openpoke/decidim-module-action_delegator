@@ -24,7 +24,7 @@ Shoulda::Matchers.configure do |config|
   end
 end
 
-require_relative "./support/custom_autocomplete_select"
+require_relative "support/custom_autocomplete_select"
 
 RSpec.configure do |config|
   config.include CustomAutoCompleteSelect, type: :system

@@ -29,7 +29,7 @@ module Decidim
       validates :max_grants, presence: true
       validates :max_grants, numericality: { greater_than: 0 }
 
-      enum authorization_method: [ :phone, :email, :both ], _prefix: :verify_with
+      enum :authorization_method, [:phone, :email, :both], prefix: :verify_with
       default_scope { order(created_at: :desc) }
 
       def state

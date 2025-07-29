@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages sum of weight consultation results", type: :system do
+describe "Admin manages sum of weight consultation results" do
   let(:organization) { create(:organization) }
   let(:user) { create(:user, :admin, :confirmed, organization: organization) }
 
@@ -56,14 +56,14 @@ describe "Admin manages sum of weight consultation results", type: :system do
       visit decidim_admin_action_delegator.weighted_results_consultation_path(consultation)
 
       within "#export-consultation-results" do
-        expect(page).not_to have_css(".disabled")
+        expect(page).to have_no_css(".disabled")
         expect(page).to have_link(I18n.t("decidim.admin.consultations.results.export"))
       end
     end
 
     it "shows responses" do
       visit decidim_admin_action_delegator.weighted_results_consultation_path(consultation)
-      expect(page).not_to have_content(I18n.t("decidim.admin.consultations.results.not_visible"))
+      expect(page).to have_no_content(I18n.t("decidim.admin.consultations.results.not_visible"))
     end
 
     context "when mod is disabled" do
@@ -85,7 +85,7 @@ describe "Admin manages sum of weight consultation results", type: :system do
       visit decidim_admin_action_delegator.weighted_results_consultation_path(consultation)
 
       within "#export-consultation-results" do
-        expect(page).not_to have_css(".disabled")
+        expect(page).to have_no_css(".disabled")
         expect(page).to have_link(I18n.t("decidim.admin.consultations.results.export"))
       end
     end

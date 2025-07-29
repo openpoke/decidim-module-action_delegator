@@ -6,7 +6,7 @@ module Decidim
   module ActionDelegator
     module Verifications
       module DelegationsVerifier
-        describe AuthorizationsController, type: :controller do
+        describe AuthorizationsController do
           routes { Decidim::ActionDelegator::Verifications::DelegationsVerifier::Engine.routes }
 
           let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier)) }

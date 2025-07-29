@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Decidim::ActionDelegator::Admin::InviteParticipantsJob, type: :job do
+RSpec.describe Decidim::ActionDelegator::Admin::InviteParticipantsJob do
   let(:organization) { create(:organization) }
   let(:current_setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
   let(:authorization_method) { "both" }

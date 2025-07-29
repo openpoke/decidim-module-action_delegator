@@ -4,10 +4,10 @@ require "spec_helper"
 
 module Decidim
   module Consultations
-    describe QuestionVotesController, type: :controller do
+    describe QuestionVotesController do
       routes { Decidim::Consultations::Engine.routes }
 
-      let(:organization) { create :organization }
+      let(:organization) { create(:organization) }
       let(:user) { create(:user, :confirmed, organization: organization) }
 
       before do

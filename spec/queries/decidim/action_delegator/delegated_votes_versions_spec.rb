@@ -6,7 +6,7 @@ module Decidim::ActionDelegator
   describe DelegatedVotesVersions do
     subject { described_class.new(consultation) }
 
-    let(:organization) { create :organization }
+    let(:organization) { create(:organization) }
     let(:user) { create(:user, :confirmed, organization: organization) }
     let(:another_user) { create(:user, :confirmed, organization: organization) }
 

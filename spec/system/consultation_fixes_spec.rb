@@ -2,12 +2,12 @@
 
 require "spec_helper"
 
-describe "Visit a consultation", type: :system do
-  let(:organization) { create :organization, available_locales: [:en] }
-  let!(:consultation) { create :consultation, :published, organization: organization }
-  let!(:question) { create :question, consultation: consultation }
-  let!(:hihglighted_question) { create :question, consultation: consultation, decidim_scope_id: consultation.decidim_highlighted_scope_id }
-  let(:user) { create :user, :confirmed, :admin, organization: organization }
+describe "Visit a consultation" do
+  let(:organization) { create(:organization, available_locales: [:en]) }
+  let!(:consultation) { create(:consultation, :published, organization: organization) }
+  let!(:question) { create(:question, consultation: consultation) }
+  let!(:hihglighted_question) { create(:question, consultation: consultation, decidim_scope_id: consultation.decidim_highlighted_scope_id) }
+  let(:user) { create(:user, :confirmed, :admin, organization: organization) }
   let(:enabled) { true }
 
   before do
@@ -40,7 +40,7 @@ describe "Visit a consultation", type: :system do
         expect(page).to have_content(translated(question.title), count: 1)
         expect(page).to have_content(translated(hihglighted_question.title), count: 1)
         expect(page).to have_content("QUESTIONS FROM #{translated(consultation.highlighted_scope.name).upcase}")
-        expect(page).not_to have_content("QUESTIONS FOR THIS CONSULTATION")
+        expect(page).to have_no_content("QUESTIONS FOR THIS CONSULTATION")
       end
     end
 
@@ -57,7 +57,7 @@ describe "Visit a consultation", type: :system do
       it "appear once only" do
         expect(page).to have_content(translated(question.title), count: 1)
         expect(page).to have_content(translated(hihglighted_question.title), count: 1)
-        expect(page).not_to have_content("QUESTIONS FROM #{translated(consultation.highlighted_scope.name).upcase}")
+        expect(page).to have_no_content("QUESTIONS FROM #{translated(consultation.highlighted_scope.name).upcase}")
         expect(page).to have_content("QUESTIONS FOR THIS CONSULTATION")
       end
     end
@@ -69,19 +69,19 @@ describe "Visit a consultation", type: :system do
     it_behaves_like "renders questions in two sets"
 
     context "when question has no scopes" do
-      let(:question) { create :question, consultation: consultation, decidim_scope_id: nil }
+      let(:question) { create(:question, consultation: consultation, decidim_scope_id: nil) }
 
       it_behaves_like "renders questions in two sets"
     end
 
     context "when all questions have the highlighted scope" do
-      let(:question) { create :question, consultation: consultation, decidim_scope_id: consultation.decidim_highlighted_scope_id }
+      let(:question) { create(:question, consultation: consultation, decidim_scope_id: consultation.decidim_highlighted_scope_id) }
 
       it_behaves_like "renders questions in hihglighted section only"
     end
 
     context "when all questions have a regular scope" do
-      let(:hihglighted_question) { create :question, consultation: consultation }
+      let(:hihglighted_question) { create(:question, consultation: consultation) }
 
       it_behaves_like "renders questions in regular section only"
     end
@@ -100,7 +100,7 @@ describe "Visit a consultation", type: :system do
     end
 
     it "does not show the deprecation warning" do
-      expect(page).not_to have_content("Consultations module will be deprecated in the near future.")
+      expect(page).to have_no_content("Consultations module will be deprecated in the near future.")
     end
   end
 end

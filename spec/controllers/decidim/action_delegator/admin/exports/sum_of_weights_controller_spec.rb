@@ -6,7 +6,7 @@ require "support/shared_examples/export_controller"
 module Decidim
   module ActionDelegator
     module Admin
-      describe Exports::SumOfWeightsController, type: :controller do
+      describe Exports::SumOfWeightsController do
         routes { Decidim::ActionDelegator::AdminEngine.routes }
 
         let(:organization) { create(:organization) }

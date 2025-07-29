@@ -2,9 +2,9 @@
 
 require "spec_helper"
 
-describe "Delegation vote", type: :system do
+describe "Delegation vote" do
   let(:organization) { create(:organization, available_authorizations: ["dummy_authorization_workflow"]) }
-  let(:question) { create :question, :published, consultation: consultation }
+  let(:question) { create(:question, :published, consultation: consultation) }
 
   context "when active consultation" do
     let(:consultation) { create(:consultation, :active, organization: organization) }
@@ -22,7 +22,7 @@ describe "Delegation vote", type: :system do
     end
 
     context "and authenticated user" do
-      let!(:response) { create :response, question: question }
+      let!(:response) { create(:response, question: question) }
       let(:setting) { create(:setting, consultation: consultation) }
       let(:granter) { create(:user, :confirmed, organization: organization) }
       let!(:delegation) { create(:delegation, setting: setting, granter: granter, grantee: user) }

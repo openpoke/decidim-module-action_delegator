@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe Participant, type: :model do
+    describe Participant do
       subject { build(:participant, ponderation: ponderation, email: email, phone: phone, setting: setting, decidim_user: decidim_user) }
 
       let(:setting) { create(:setting, authorization_method: authorization_method) }
@@ -85,7 +85,7 @@ module Decidim
       end
 
       context "when same email exists in another organization" do
-        let!(:existing_user) { create :user }
+        let!(:existing_user) { create(:user) }
         let(:email) { existing_user.email }
 
         it "does not set the decidim_user on save" do
@@ -198,7 +198,7 @@ module Decidim
           end
 
           context "when same authorization exists in another organization" do
-            let(:user) { create :user }
+            let(:user) { create(:user) }
 
             it "does not set the decidim_user on save" do
               subject.save

@@ -70,7 +70,7 @@ module Decidim
       let!(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
       let(:explanations) { %w(not_in_census email) }
       let!(:participants) { [create(:participant, email: email, phone: phone, setting: setting, decidim_user: decidim_user)] }
-      let(:decidim_user) { create :user, organization: organization }
+      let(:decidim_user) { create(:user, organization: organization) }
       let!(:ponderations) { create_list(:ponderation, 2, setting: setting) }
 
       it_behaves_like "authorized"

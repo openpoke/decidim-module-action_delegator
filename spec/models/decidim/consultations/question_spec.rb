@@ -7,12 +7,12 @@ module Decidim
     describe Question do
       subject { question }
 
-      let(:consultation) { create :consultation, :published, :active }
-      let(:question) { create :question, consultation: consultation }
-      let(:responses) { create_list :response, 3, question: question }
+      let(:consultation) { create(:consultation, :published, :active) }
+      let(:question) { create(:question, consultation: consultation) }
+      let(:responses) { create_list(:response, 3, question: question) }
       let!(:votes) do
         responses.map.with_index do |response, index|
-          create_list :vote, index + 1, question: question, response: response
+          create_list(:vote, index + 1, question: question, response: response)
         end.flatten
       end
 
@@ -28,7 +28,7 @@ module Decidim
 
       describe "#weighted_responses" do
         it "groups responses by question and calculates their weight" do
-          expect(question.weighted_responses[question.id].map(&:votes_count)).to match_array([1, 2, 3])
+          expect(question.weighted_responses[question.id].map(&:votes_count)).to contain_exactly(1, 2, 3)
         end
       end
 

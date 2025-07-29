@@ -83,7 +83,7 @@ module Decidim
       end
 
       def check_exists?(field, form)
-        @participant = Decidim::ActionDelegator::Participant.find_by(field => form.send(field), setting: @current_setting) if form.send(field).present?
+        @participant = Decidim::ActionDelegator::Participant.find_by(field => form.send(field), :setting => @current_setting) if form.send(field).present?
         @participant.present?
       end
 

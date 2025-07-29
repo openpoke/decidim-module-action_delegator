@@ -17,7 +17,7 @@ describe Decidim::ActionDelegator::ConsultationDelegations do
 
   describe "#query" do
     it "returns delegations of the specified consultation only" do
-      expect(subject.query).to match_array([delegation, other_user_delegation])
+      expect(subject.query).to contain_exactly(delegation, other_user_delegation)
     end
   end
 end

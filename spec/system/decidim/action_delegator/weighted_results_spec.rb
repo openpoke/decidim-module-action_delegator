@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-describe "Weighted results", type: :system do
-  let(:organization) { create :organization, available_locales: [:en] }
+describe "Weighted results" do
+  let(:organization) { create(:organization, available_locales: [:en]) }
   let(:user) { create(:user, :admin, :confirmed, organization: organization) }
 
   let(:consultation) { create(:consultation, :finished, :published_results, organization: organization) }

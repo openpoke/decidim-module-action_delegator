@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Decidim::ActionDelegator::Admin::ImportCsvJob, type: :job do
+RSpec.describe Decidim::ActionDelegator::Admin::ImportCsvJob do
   let(:current_user) { create(:user) }
   let(:current_setting) { create(:setting, consultation: consultation) }
   let(:consultation) { create(:consultation) }

@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe Ponderation, type: :model do
+    describe Ponderation do
       subject { build(:ponderation) }
 
       it { is_expected.to be_valid }

@@ -2,15 +2,15 @@
 
 require "spec_helper"
 
-describe "Visit a consultation", type: :system do
-  let(:organization) { create :organization, available_locales: [:en] }
-  let!(:consultation) { create :consultation, :published, organization: organization }
-  let!(:question) { create :question, consultation: consultation }
-  let!(:question2) { create :question, :unpublished, consultation: consultation }
-  let!(:hihglighted_question) { create :question, consultation: consultation, decidim_scope_id: consultation.decidim_highlighted_scope_id }
-  let!(:response1) { create :response, question: question }
-  let!(:response2) { create :response, question: question }
-  let(:user) { create :user, :confirmed, :admin, organization: organization }
+describe "Visit a consultation" do
+  let(:organization) { create(:organization, available_locales: [:en]) }
+  let!(:consultation) { create(:consultation, :published, organization: organization) }
+  let!(:question) { create(:question, consultation: consultation) }
+  let!(:question2) { create(:question, :unpublished, consultation: consultation) }
+  let!(:hihglighted_question) { create(:question, consultation: consultation, decidim_scope_id: consultation.decidim_highlighted_scope_id) }
+  let!(:response1) { create(:response, question: question) }
+  let!(:response2) { create(:response, question: question) }
+  let(:user) { create(:user, :confirmed, :admin, organization: organization) }
   let(:enabled) { true }
 
   before do
@@ -28,7 +28,7 @@ describe "Visit a consultation", type: :system do
         expect(page).to have_content("Your votes in \"#{consultation.title["en"]}\"")
         expect(page).to have_link("Vote pending", href: decidim_consultations.question_path(question))
         expect(page).to have_link("Vote pending", href: decidim_consultations.question_path(hihglighted_question))
-        expect(page).not_to have_link(href: decidim_consultations.question_path(question2))
+        expect(page).to have_no_link(href: decidim_consultations.question_path(question2))
       end
     end
 
@@ -36,7 +36,7 @@ describe "Visit a consultation", type: :system do
       expect(page).to have_content("You have answered 0 from a total of 2 questions")
       click_link("Review the summary of your vote here")
       within "#consultations-questions-summary-modal" do
-        expect(page).not_to have_content("Already voted")
+        expect(page).to have_no_content("Already voted")
         click_link("Vote pending", href: decidim_consultations.question_path(question))
       end
       click_link("Vote")
@@ -85,8 +85,8 @@ describe "Visit a consultation", type: :system do
 
     context "when visiting a consultation" do
       it "can visit the consultation" do
-        expect(page).not_to have_content("Review the summary of your vote here")
-        expect(page).not_to have_content("You have answered 0 from a total of 2 questions")
+        expect(page).to have_no_content("Review the summary of your vote here")
+        expect(page).to have_no_content("You have answered 0 from a total of 2 questions")
       end
     end
 
@@ -96,11 +96,11 @@ describe "Visit a consultation", type: :system do
       end
 
       it "can visit the consultation" do
-        expect(page).not_to have_content("Review the summary of your vote here")
+        expect(page).to have_no_content("Review the summary of your vote here")
         within "#vote_button" do
           expect(page).to have_content("Vote")
         end
-        expect(page).not_to have_content("You have answered 0 from a total of 2 questions")
+        expect(page).to have_no_content("You have answered 0 from a total of 2 questions")
       end
     end
   end

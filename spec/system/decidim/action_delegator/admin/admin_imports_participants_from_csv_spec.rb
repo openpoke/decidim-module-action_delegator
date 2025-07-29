@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin imports participants from csv", type: :system do
+describe "Admin imports participants from csv" do
   include Decidim::TranslationsHelper
 
   let(:i18n_scope) { "decidim.action_delegator.admin" }
@@ -50,7 +50,7 @@ describe "Admin imports participants from csv", type: :system do
       it "imports the participants" do
         import_csv(valid_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 4)
+        expect(page).to have_css("tr[data-participant-id]", count: 4)
       end
     end
 
@@ -58,7 +58,7 @@ describe "Admin imports participants from csv", type: :system do
       it "the empty row is skipped and the import continues" do
         import_csv(empty_row_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 4)
+        expect(page).to have_css("tr[data-participant-id]", count: 4)
       end
     end
 
@@ -66,7 +66,7 @@ describe "Admin imports participants from csv", type: :system do
       it "does not import the participants" do
         import_csv(invalid_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 2)
+        expect(page).to have_css("tr[data-participant-id]", count: 2)
       end
     end
 
@@ -76,7 +76,7 @@ describe "Admin imports participants from csv", type: :system do
       it "does not import the participants" do
         import_csv(valid_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 4)
+        expect(page).to have_css("tr[data-participant-id]", count: 4)
         expect(page).to have_content("foo@example.org", count: 1)
       end
     end
@@ -93,7 +93,7 @@ describe "Admin imports participants from csv", type: :system do
 
       it "shows user names" do
         import_csv(valid_csv_file)
-        expect(page).to have_selector("tr[data-participant-id]", count: 4)
+        expect(page).to have_css("tr[data-participant-id]", count: 4)
         expect(page).to have_content(users[0].name, count: 1)
         expect(page).to have_content(users[1].name, count: 1)
         expect(page).to have_content(users[2].name, count: 1)
@@ -104,7 +104,7 @@ describe "Admin imports participants from csv", type: :system do
       it "does not import the repeated participants" do
         import_csv(repeated_data_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 4)
+        expect(page).to have_css("tr[data-participant-id]", count: 4)
       end
     end
 
@@ -114,7 +114,7 @@ describe "Admin imports participants from csv", type: :system do
         click_link I18n.t("participants.index.actions.csv_import", scope: i18n_scope)
         import_csv(repeated_data_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 4)
+        expect(page).to have_css("tr[data-participant-id]", count: 4)
         expect(page).to have_content("9660000", count: 0)
       end
     end
@@ -125,7 +125,7 @@ describe "Admin imports participants from csv", type: :system do
       it "does not import the participants" do
         import_csv(valid_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 4)
+        expect(page).to have_css("tr[data-participant-id]", count: 4)
         expect(page).to have_content("6660000", count: 1)
       end
     end
@@ -142,7 +142,7 @@ describe "Admin imports participants from csv", type: :system do
       it "does not imports row" do
         import_csv(ponderation_type_csv_file)
 
-        expect(page).to have_selector("tr[data-participant-id]", count: 3)
+        expect(page).to have_css("tr[data-participant-id]", count: 3)
         expect(page).to have_content("member", count: 0)
       end
     end

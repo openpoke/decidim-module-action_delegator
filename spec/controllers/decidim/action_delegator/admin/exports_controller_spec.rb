@@ -5,7 +5,7 @@ require "support/shared_examples/export_controller"
 
 module Decidim
   module ActionDelegator
-    describe Admin::Consultations::ExportsController, type: :controller do
+    describe Admin::Consultations::ExportsController do
       routes { Decidim::ActionDelegator::AdminEngine.routes }
 
       let(:organization) { create(:organization) }

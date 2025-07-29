@@ -30,11 +30,11 @@ module Decidim
       end
 
       def sender
-        ENV["SMS_SENDER"]
+        ENV.fetch("SMS_SENDER", nil)
       end
 
       def sms_gateway_provider
-        ENV["SMS_GATEWAY_PROVIDER"]
+        ENV.fetch("SMS_GATEWAY_PROVIDER", nil)
       end
 
       def sms_gateway_provider_valid?

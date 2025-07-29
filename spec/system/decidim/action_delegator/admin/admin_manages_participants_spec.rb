@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages participants", type: :system do
+describe "Admin manages participants" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization) }
   let(:user) { create(:user, :admin, :confirmed, organization: organization) }
@@ -17,7 +17,7 @@ describe "Admin manages participants", type: :system do
     let(:setting) { create(:setting, consultation: consultation) }
     let!(:participant) { create(:participant, setting: setting) }
 
-    let!(:collection) { create_list :participant, collection_size, setting: setting }
+    let!(:collection) { create_list(:participant, collection_size, setting: setting) }
     let!(:resource_selector) { "[data-participant-id]" }
     let(:collection_size) { 30 }
 
@@ -80,8 +80,8 @@ describe "Admin manages participants", type: :system do
         accept_confirm { click_link "Delete" }
       end
 
-      expect(page).not_to have_content(participant.email)
-      expect(page).not_to have_content(participant.phone)
+      expect(page).to have_no_content(participant.email)
+      expect(page).to have_no_content(participant.phone)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_participants_path(setting.id))
       expect(page).to have_admin_callout("successfully")
     end
@@ -95,7 +95,7 @@ describe "Admin manages participants", type: :system do
         # has voted
         expect(page).to have_content("Yes")
         within "tr[data-participant-id=\"#{participant.id}\"]" do
-          expect(page).not_to have_link("Delete")
+          expect(page).to have_no_link("Delete")
         end
       end
     end
@@ -107,7 +107,7 @@ describe "Admin manages participants", type: :system do
     let(:response) { create(:response, question: question) }
     let!(:vote) { create(:vote, question: question, response: response) }
     let(:setting) { create(:setting, consultation: consultation) }
-    let!(:collection) { create_list :participant, 3, setting: setting }
+    let!(:collection) { create_list(:participant, 3, setting: setting) }
 
     before do
       visit decidim_admin_action_delegator.setting_participants_path(setting)
@@ -123,7 +123,7 @@ describe "Admin manages participants", type: :system do
       expect(page).to have_content("successfully")
 
       collection.each do |participant|
-        expect(page).not_to have_content(participant.email)
+        expect(page).to have_no_content(participant.email)
       end
     end
 
@@ -141,7 +141,7 @@ describe "Admin manages participants", type: :system do
         accept_confirm { click_link "Remove census" }
 
         collection.each do |participant|
-          expect(page).not_to have_content(participant.email)
+          expect(page).to have_no_content(participant.email)
         end
 
         expect(page).to have_content(user.email)
@@ -201,7 +201,7 @@ describe "Admin manages participants", type: :system do
       context "when resend invitation" do
         it "resends invitation" do
           within "tr[data-participant-id=\"#{participant_with_invitation.id}\"]" do
-            expect(page).not_to have_content(I18n.t("actions.invite", scope: "decidim.admin"))
+            expect(page).to have_no_content(I18n.t("actions.invite", scope: "decidim.admin"))
             click_link I18n.t("actions.resend", scope: "decidim.admin")
           end
 
@@ -215,11 +215,11 @@ describe "Admin manages participants", type: :system do
       let(:email) { "" }
 
       it "does not have invite link for all non-exist user" do
-        expect(page).not_to have_link(I18n.t("participants.index.send_invitation_link", scope: i18n_scope))
+        expect(page).to have_no_link(I18n.t("participants.index.send_invitation_link", scope: i18n_scope))
       end
 
       it "does not have invite link for each participant" do
-        expect(page).not_to have_link(I18n.t("actions.invite", scope: "decidim.admin"))
+        expect(page).to have_no_link(I18n.t("actions.invite", scope: "decidim.admin"))
       end
 
       it "has info about authorization method" do
@@ -250,11 +250,11 @@ describe "Admin manages participants", type: :system do
       end
 
       it "does not have invite link for all non-exist user" do
-        expect(page).not_to have_link(I18n.t("participants.index.send_invitation_link", scope: i18n_scope))
+        expect(page).to have_no_link(I18n.t("participants.index.send_invitation_link", scope: i18n_scope))
       end
 
       it "does not have invite link for each participant" do
-        expect(page).not_to have_link(I18n.t("actions.invite", scope: "decidim.admin"))
+        expect(page).to have_no_link(I18n.t("actions.invite", scope: "decidim.admin"))
       end
     end
   end

@@ -14,7 +14,7 @@ describe Decidim::ActionDelegator::OrganizationDelegations do
 
   describe "#query" do
     it "returns delegations of the specified organization only" do
-      expect(subject.query).to match_array([delegation])
+      expect(subject.query).to contain_exactly(delegation)
     end
   end
 end

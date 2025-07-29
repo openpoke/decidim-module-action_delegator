@@ -51,7 +51,7 @@ module Decidim::ActionDelegator
           let!(:question) { create(:question, :published, consultation: consultation) }
 
           it "returns the responses to its questions" do
-            expect(subject.query).to match_array([response])
+            expect(subject.query).to contain_exactly(response)
           end
         end
 

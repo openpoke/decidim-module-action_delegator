@@ -4,7 +4,7 @@ module Decidim
   module ActionDelegator
     # TODO: Disabled due to removal of Decidim::Consultations::Vote
     class WhodunnitVote
-      def initialize(vote, user)
+      def initialize(_vote, user)
         @user = user
         # vote intentionally ignored
       end

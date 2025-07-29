@@ -46,13 +46,13 @@ module Decidim
       initializer "decidim_action_delegator.user_menu" do
         Decidim.menu :user_menu do |menu|
           menu.add_item :vote_delegations,
-          t("vote_delegations", scope: "layouts.decidim.user_profile"),
-          decidim_action_delegator.user_delegations_path,
-          position: 5.0,
-          active: :exact
+                        t("vote_delegations", scope: "layouts.decidim.user_profile"),
+                        decidim_action_delegator.user_delegations_path,
+                        position: 5.0,
+                        active: :exact
         end
       end
-      
+
       initializer "decidim_action_delegator.icons" do
         Decidim.icons.register(name: "weight-line", icon: "weight-line", category: "system", description: "", engine: :action_delegator)
         Decidim.icons.register(name: "user-shared-line", icon: "user-shared-line", category: "system", description: "", engine: :action_delegator)
