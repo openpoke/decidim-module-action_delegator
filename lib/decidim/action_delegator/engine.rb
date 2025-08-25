@@ -37,11 +37,11 @@ module Decidim
           workflow.expires_in = Decidim::ActionDelegator.authorization_expiration_time
           workflow.time_between_renewals = 1.minute
           workflow.options do |options|
-            options.attribute :setting, type: :select, raw_choices: true, choices: ->(context) do
+            options.attribute :setting, type: :select, raw_choices: true, choices: lambda { |context|
               Decidim::ActionDelegator::Setting.where(organization: context[:component]&.organization).map do |setting|
                 [translated_attribute(setting.title), setting.id]
               end
-            end
+            }
           end
         end
       end

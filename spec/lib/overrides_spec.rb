@@ -6,8 +6,7 @@ require "spec_helper"
 # as the expected. If this test fails, it means that the overriden
 # file should be updated to match any change/bug fix introduced in the core
 module Decidim::ActionDelegator
-  checksums = [
-  ]
+  checksums = []
 
   describe "Overriden files", type: :view do
     checksums.each do |item|
