@@ -10,7 +10,7 @@ module Decidim
         attribute :email, String
         attribute :phone, String
 
-        validates :verification_code, :sms_gateway, presence: true
+        validates :verification_code, :sms_gateway, presence: true, if: ->(form) { form.setting&.phone_required? }
         validates :phone, presence: true, if: ->(form) { form.setting&.phone_required? }
         validates :email, presence: true, if: ->(form) { form.setting&.email_required? }
         validate :setting_exists
@@ -41,7 +41,8 @@ module Decidim
 
         def metadata
           {
-            phone: phone
+            phone: phone,
+            setting_id: setting.id
           }
         end
 

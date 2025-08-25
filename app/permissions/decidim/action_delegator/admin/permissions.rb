@@ -17,6 +17,12 @@ module Decidim
 
           permission_action
         end
+
+        private
+
+        def resource
+          @resource ||= context.fetch(:resource, nil)
+        end
       end
     end
   end

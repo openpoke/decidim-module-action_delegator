@@ -40,6 +40,10 @@ module Decidim
       def phone_required? = verify_with_phone? || verify_with_both?
 
       def email_required? = verify_with_email? || verify_with_both?
+
+      def presenter
+        Decidim::ActionDelegator::SettingPresenter.new(self)
+      end
     end
   end
 end

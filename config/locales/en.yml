@@ -337,13 +337,15 @@ en:
               send: Confirm
               title: Introduce the verification code you received
             new:
+              no_resources_found: No resources found, If you think this is a mistake,
+                please contact the administrator (it is possible that there is nothing active right now).
               authorize: Authorize my account
               missing_phone_error: Missing membership phone
               not_in_census: We're sorry but you can't be authorized because your
                 email is not in the census. Please contact the admin if you feel this
                 is a mistake.
               participate_in: 'This authorization allows you to participate in the
-                following elections: %{resources}'
+                following resources:'
               phone_warning: This phone number has been imported by the admin. Please,
                 reach out if it's not correct.
               send_code: Send verification code
