@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/decidim/decidim.git
-  revision: cae7214fc4dfc7a0c44ff515cd388e5521cf099f
+  revision: 0804f5c3779f67b758f4bf58555d8765f1e46068
   branch: feature/add-election-voting-booth
   specs:
     decidim (0.31.0.dev)
@@ -773,7 +773,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.4.1)
+    rexml (3.4.2)
     rqrcode (2.2.0)
       chunky_png (~> 1.0)
       rqrcode_core (~> 1.0)
@@ -864,21 +864,21 @@ GEM
       nokogiri (>= 1.10.8)
       rubyzip (>= 1.3.0)
     rubyzip (2.3.2)
-    sass-embedded (1.90.0-aarch64-linux-gnu)
+    sass-embedded (1.91.0-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.90.0-aarch64-linux-musl)
+    sass-embedded (1.91.0-aarch64-linux-musl)
       google-protobuf (~> 4.31)
-    sass-embedded (1.90.0-arm-linux-gnueabihf)
+    sass-embedded (1.91.0-arm-linux-gnueabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.90.0-arm-linux-musleabihf)
+    sass-embedded (1.91.0-arm-linux-musleabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.90.0-arm64-darwin)
+    sass-embedded (1.91.0-arm64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.90.0-x86_64-darwin)
+    sass-embedded (1.91.0-x86_64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.90.0-x86_64-linux-gnu)
+    sass-embedded (1.91.0-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.90.0-x86_64-linux-musl)
+    sass-embedded (1.91.0-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     savon (2.15.1)
       akami (~> 1.2)
