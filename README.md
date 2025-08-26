@@ -97,13 +97,12 @@ Depending on your Decidim version, you can choose the corresponding version to e
 | 0.2     | 0.23.x                      |
 | 0.1     | 0.22.0                      |
 
-*Heads up!*  [Consultations module will be deprecated in the near future.](https://github.com/decidim/decidim/issues/7097)
 
 ## Usage
 
 ActionDelegator does not provides new Components or Participatory Spaces but enhances some functionalities in them.
 
-Currently it is designed to work with the Consultations module.
+Currently it is designed to work with the Elections module.
 
 - On one side, provides a custom verification method that allows admins to ensure only those in specific census (that can be uploaded via CSV) are able to vote. This census can be different for each election. This is optional and doesn't affect weighted voting or delegations.
 
