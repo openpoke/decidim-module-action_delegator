@@ -49,7 +49,9 @@ module Decidim
       end
 
       def granter_is_same_organization_as_context
-        true # TODO: Implement proper check when new context is introduced
+        return unless setting && granter.organization != setting.organization
+
+        errors.add(:granter, :invalid)
       end
     end
   end

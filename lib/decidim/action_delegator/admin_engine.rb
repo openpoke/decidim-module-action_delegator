@@ -47,6 +47,7 @@ module Decidim
           menu.add_item :action_delegator,
                         I18n.t("menu.delegations", scope: "decidim.action_delegator.admin"), decidim_admin_action_delegator.settings_path,
                         active: is_active_link?(decidim_admin_action_delegator.settings_path),
+                        icon_name: "government-line",
                         if: allowed_to?(:index, :impersonatable_user)
         end
       end

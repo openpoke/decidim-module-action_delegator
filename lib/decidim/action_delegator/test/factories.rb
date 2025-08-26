@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :delegation, class: "Decidim::ActionDelegator::Delegation" do
     setting
-    granter { association :user, organization: setting.consultation.organization }
-    grantee { association :user, organization: setting.consultation.organization }
+    granter { association :user, organization: setting.organization }
+    grantee { association :user, organization: setting.organization }
   end
 
   factory :ponderation, class: "Decidim::ActionDelegator::Ponderation" do
@@ -21,12 +21,13 @@ FactoryBot.define do
   end
 
   factory :setting, class: "Decidim::ActionDelegator::Setting" do
-    organization { association :organization }
+    organization { create(:organization) }
     transient do
       skip_injection { false }
     end
 
     title { generate_localized_title(:title, skip_injection:) }
+    description { generate_localized_description(:description, skip_injection:) }
     max_grants { 3 }
 
     trait :with_ponderations do

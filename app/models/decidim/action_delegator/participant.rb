@@ -96,8 +96,11 @@ module Decidim
       end
 
       def user_belongs_to_organization
-        # TODO: Enable validation when context is restored
-        true
+        return if decidim_user.blank? || setting.blank?
+
+        return if decidim_user.organization == setting.organization
+
+        errors.add(:decidim_user, :invalid)
       end
     end
   end

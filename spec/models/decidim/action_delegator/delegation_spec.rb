@@ -28,16 +28,15 @@ module Decidim
         it { is_expected.not_to be_valid }
       end
 
-      # context "when users are from a different organization than the consultation" do
-      #   let(:consultation) { create(:consultation) }
-      #   let(:setting) { create(:setting, consultation: consultation) }
-      #   let(:grantee) { create(:user) }
-      #   let(:granter) { create(:user, organization: grantee.organization) }
+      context "when users are from a different organization than the setting" do
+        let(:setting) { create(:setting) }
+        let(:grantee) { create(:user) }
+        let(:granter) { create(:user, organization: grantee.organization) }
 
-      #   subject { build(:delegation, grantee: grantee, granter: granter, setting: setting) }
+        subject { build(:delegation, grantee: grantee, granter: granter, setting: setting) }
 
-      #   it { is_expected.not_to be_valid }
-      # end
+        it { is_expected.not_to be_valid }
+      end
 
       # describe ".granted_to?" do
       #   subject { delegation }
@@ -76,36 +75,36 @@ module Decidim
       #     it_behaves_like "can be destroyed"
       #   end
 
-        # context "when there are delegations granted to user for the given consultation" do
-        #   let!(:delegation) { create(:delegation, setting: setting, grantee: user) }
+      # context "when there are delegations granted to user for the given consultation" do
+      #   let!(:delegation) { create(:delegation, setting: setting, grantee: user) }
 
-        #   it "returns true" do
-        #     expect(described_class.granted_to?(user, consultation)).to be(true)
-        #   end
+      #   it "returns true" do
+      #     expect(described_class.granted_to?(user, consultation)).to be(true)
+      #   end
 
-        #   it_behaves_like "can be destroyed"
+      #   it_behaves_like "can be destroyed"
 
-        #   context "and granter has voted", versioning: true do
-        #     let!(:vote) { create(:vote, question: question, response: response, author: delegation.granter) }
+      #   context "and granter has voted", versioning: true do
+      #     let!(:vote) { create(:vote, question: question, response: response, author: delegation.granter) }
 
-        #     it_behaves_like "can be destroyed"
+      #     it_behaves_like "can be destroyed"
 
-        #     context "and grantee has voted in behalf of the granter" do
-        #       before do
-        #         PaperTrail::Version.create!(
-        #           item_type: "Decidim::Consultations::Vote",
-        #           item_id: vote.id,
-        #           event: "create",
-        #           whodunnit: delegation.grantee.id,
-        #           decidim_action_delegator_delegation_id: delegation.id
-        #         )
-        #       end
+      #     context "and grantee has voted in behalf of the granter" do
+      #       before do
+      #         PaperTrail::Version.create!(
+      #           item_type: "Decidim::Consultations::Vote",
+      #           item_id: vote.id,
+      #           event: "create",
+      #           whodunnit: delegation.grantee.id,
+      #           decidim_action_delegator_delegation_id: delegation.id
+      #         )
+      #       end
 
-        #       it_behaves_like "cannot be destroyed"
-        #     end
-        #   end
-        # end
-      end
+      #       it_behaves_like "cannot be destroyed"
+      #     end
+      #   end
+      # end
+      # end
     end
   end
 end
