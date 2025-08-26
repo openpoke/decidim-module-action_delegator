@@ -5,8 +5,18 @@
 <%= render "decidim/action_delegator/admin/settings/participants_sync_check", setting: setting %>
 
 <div class="callout <%= status_err ? "warning" : "success" %> text-left">
-
+  <p class="font-bold"><%= t(".applies_to") %></p>
   <ul class="happy-faces">
+    <% if setting.presenter.translated_resources_list.any? %>
+      <% setting.presenter.translated_resources_list.each do |resource| %>
+        <li><%= link_to resource.title, setting.presenter.path_for(resource), target: "_blank", data: { "external-link": false } %></li>
+      <% end %>
+    <% else %>
+      <li class="unhappy text-alert"><%= t(".no_resources_found") %></li>
+    <% end %>
+  </ul>
+
+  <ul class="happy-faces mt-4">
     <% if setting.participants.any? %>
       <% if missing_registered.present? %>
         <li class="warning"><%= t(".missing_registered_users_html", count: missing_registered.count) %></li>

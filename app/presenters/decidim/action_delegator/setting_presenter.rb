@@ -14,6 +14,12 @@ module Decidim
       def translated_resources_list
         Decidim::ActionDelegator::AuthorizedResources.new(setting: self).query.map(&:presenter)
       end
+
+      def path_for(resource)
+        return nil unless resource
+
+        Decidim::ResourceLocatorPresenter.new(resource).path
+      end
     end
   end
 end

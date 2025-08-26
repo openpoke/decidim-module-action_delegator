@@ -18,7 +18,7 @@ module Decidim
 
       validate :grantee_is_not_granter
       validate :granter_and_grantee_belongs_to_same_organization
-      validate :granter_is_same_organization_as_context # TODO: implement when context is available
+      validate :granter_is_same_organization_as_context
 
       delegate :resource, to: :setting
 

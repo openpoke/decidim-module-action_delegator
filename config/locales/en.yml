@@ -244,6 +244,7 @@ en:
             all_users_authorized_html: All participants are verified by the <i>Corporate
               Governance Verifier</i>.
             all_users_registered_html: All participants are registered into the platform.
+            applies_to: Applies to the following voting spaces
             click_to_fix: Click here to automatically fix this
             missing_authorizations_html: There are %{count} participants that are
               not verified by the <i>Corporate Governance Verifier</i>. <em>This is
@@ -260,6 +261,7 @@ en:
               is allowed to vote.</em>
             no_ponderations_html: There are no vote ponderations. <b>All users will
               have the same weight on their votes</b>
+            no_resources_found: No voting spaces are using this configuration!
             participant: participant
             user: user
             users_need_sync_html: The participants list needs to be synchronized.
@@ -337,10 +339,11 @@ en:
               send: Confirm
               title: Introduce the verification code you received
             new:
-              no_resources_found: No resources found, If you think this is a mistake,
-                please contact the administrator (it is possible that there is nothing active right now).
               authorize: Authorize my account
               missing_phone_error: Missing membership phone
+              no_resources_found: No resources found, If you think this is a mistake,
+                please contact the administrator (it is possible that there is nothing
+                active right now).
               not_in_census: We're sorry but you can't be authorized because your
                 email is not in the census. Please contact the admin if you feel this
                 is a mistake.
