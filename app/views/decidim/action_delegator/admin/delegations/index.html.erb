@@ -22,8 +22,8 @@
         <tbody>
           <% delegations.each do |delegation| %>
             <tr data-delegation-id="<%= delegation.id %>">
-              <td><%= delegation.granter.name %></td>
-              <td><%= delegation.grantee.name %></td>
+              <td><%= delegation.granter.name %> (<%= delegation.granter.email %>)</td>
+              <td><%= delegation.grantee.name %> (<%= delegation.grantee.email %>)</td>
               <td><%= t("booleans.#{delegation.grantee_voted?}") %></td>
               <td><%= l delegation.created_at, format: :short %></td>
 
