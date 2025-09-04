@@ -33,6 +33,8 @@ en:
   decidim:
     action_delegator:
       elections:
+        votes:
+          delegated_voting: You are voting on behalf of %{name}
         delegation_buttons:
           vote_for: Vote on behalf of %{name}
           delegations_active: "You have delegated votes:"

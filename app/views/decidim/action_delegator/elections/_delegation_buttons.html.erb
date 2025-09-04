@@ -5,8 +5,8 @@
 
     <% delegations.each do |delegation| %>
       <%= link_to new_election_vote_path(election, delegation: delegation.id), class: "button button__primary button__lg" do %>
-        👉
-        <%= t("decidim.action_delegator.elections.delegation_buttons.vote_for", name: delegation.grantee.name) %>
+        <%= participant_voted?(election, delegation.granter) ? "✔️" : "👉" %>
+        <%= t("decidim.action_delegator.elections.delegation_buttons.vote_for", name: delegation.granter.name) %>
       <% end %>
     <% end %>
   </div>

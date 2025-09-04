@@ -23,6 +23,15 @@ module Decidim
           Decidim::ActionDelegator::Delegation.none
         end
       end
+
+      def participant_voted?(resource, participant)
+        case resource
+        when Decidim::Elections::Election
+          resource.votes.where(voter_uid: participant.to_global_id.to_s).exists?
+        else
+          false
+        end
+      end
     end
   end
 end

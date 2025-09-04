@@ -34,6 +34,12 @@ module Decidim
         false
       end
 
+      # a safe way to get the user that represents the granter in this setting
+      # it might not exist if the granter is not in the census
+      def user
+        @user ||= setting.participants.find_by(decidim_user: granter).decidim_user
+      end
+
       private
 
       def grantee_is_not_granter
