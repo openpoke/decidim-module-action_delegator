@@ -25,6 +25,7 @@ module Decidim
       initializer "decidim_action_delegator.overrides", after: "decidim.action_controller" do
         config.to_prepare do
           Decidim::Devise::SessionsController.include(Decidim::ActionDelegator::Devise::SessionsControllerOverride)
+          Decidim::Elections::ElectionsController.helper(Decidim::ActionDelegator::DelegationHelper) if Decidim.module_installed?(:elections)
         end
       end
 

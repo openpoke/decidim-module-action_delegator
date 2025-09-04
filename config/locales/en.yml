@@ -32,6 +32,10 @@ en:
                 contact us if you think this is a mistake.
   decidim:
     action_delegator:
+      elections:
+        delegation_buttons:
+          vote_for: Vote on behalf of %{name}
+          delegations_active: "You have delegated votes:"
       admin:
         delegations:
           create:
