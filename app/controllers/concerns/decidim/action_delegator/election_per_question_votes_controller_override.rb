@@ -7,7 +7,8 @@ module Decidim
 
       included do
         include Decidim::ActionDelegator::VotesControllerMethods
-        helper Decidim::ActionDelegator::DelegationHelper
+
+        helper_method :pending_questions_for
 
         alias_method :original_next_vote_step_action, :next_vote_step_action
 
@@ -27,12 +28,17 @@ module Decidim
         def next_vote_step_action
           result = original_next_vote_step_action
           # if delegation active, add the param
-          result[:delegation] = delegation_id if delegation_id.present?
+          result[:delegation] = delegation_id if delegation_id.present? && result[:action] == :show
           result
         end
       end
 
       private
+
+      def pending_questions_for(user)
+        id = user.to_global_id.to_s
+        election.questions.enabled.unpublished_results.where.not(id: session[:votes_buffer]&.dig(id)&.keys)
+      end
 
       # buffer per-person
       def votes_buffer
@@ -46,9 +52,7 @@ module Decidim
       end
 
       def set_delegation_messages
-        console
         return unless user_signed_in?
-        return unless @delegator
 
         if @delegator
           flash.now[:warning] = t("decidim.action_delegator.elections.votes.delegated_voting", name: @delegator.name)
