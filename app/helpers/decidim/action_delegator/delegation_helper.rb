@@ -24,10 +24,10 @@ module Decidim
         end
       end
 
-      def participant_voted?(resource, participant)
+      def participant_voted?(resource, user)
         case resource
         when Decidim::Elections::Election
-          resource.votes.where(voter_uid: participant.to_global_id.to_s).exists?
+          resource.votes.exists?(voter_uid: user.to_global_id.to_s)
         else
           false
         end

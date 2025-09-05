@@ -6,41 +6,32 @@ module Decidim
       extend ActiveSupport::Concern
 
       included do
-        include Decidim::ActionDelegator::DelegationHelper
+        include Decidim::ActionDelegator::VotesControllerMethods
 
+        # rubocop:disable Rails/LexicallyScopedActionFilter
         prepend_before_action :load_delegations
-        prepend_before_action :clear_delegations, only: :new # rubocop:disable Rails/LexicallyScopedActionFilter
-      end
+        prepend_before_action :clear_delegations, only: :new
 
-      # If there is a delegation, we vote as the granter, we don't use the census voter_uid default logic
-      # as the granter might not be verified (this might be changed in the future, or put as an option)
-      def voter_uid
-        @voter_uid ||= if @delegator
-                         @delegator.to_global_id.to_s
-                       else
-                         election.census.voter_uid(election, session_attributes, current_user:)
-                       end
+        before_action :set_delegation_messages
+
+        # ensure PaperTrail context is set correctly to the current_user
+        # This is only for auditing purposes
+        before_action :set_paper_trail_whodunnit, if: :user_signed_in?
+        before_action :set_paper_trail_controller_info, if: :user_signed_in?
+        # rubocop:enable Rails/LexicallyScopedActionFilter
       end
 
       private
 
-      def load_delegations
+      def set_delegation_messages
         return unless user_signed_in?
-
-        @delegation = delegations_for(election, current_user).find_by(id: delegation_id)
-        @delegator = @delegation&.user
         return unless @delegator
 
-        session[:delegation_id] = @delegation.id
         flash.now[:warning] = t("decidim.action_delegator.elections.votes.delegated_voting", name: @delegator.name)
       end
 
       def delegation_id
         params[:delegation].presence || session[:delegation_id]
-      end
-
-      def clear_delegations
-        session.delete(:delegation_id)
       end
     end
   end

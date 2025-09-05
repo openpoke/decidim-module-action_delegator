@@ -1,0 +1,3 @@
+<!-- replace "erb[loud]:contains('link_to url_for(action: :show, id: question.previous_question)')" -->
+
+<%= link_to url_for(action: :show, id: question.previous_question, delegation: @delegation&.id), class: "button button__lg button__transparent-secondary" do %>

@@ -1,13 +1,10 @@
 <% delegations = delegations_for(election, current_user) %>
 <% if delegations.any? %>
   <div class="election__aside-voted mt-6 hidden lg:block">
-    <h4 class="h6 mb-4"><%= t("decidim.action_delegator.elections.delegation_buttons.delegations_active") %></h4>
-
-    <% delegations.each do |delegation| %>
-      <%= link_to new_election_vote_path(election, delegation: delegation.id), class: "button button__primary button__lg" do %>
-        <%= participant_voted?(election, delegation.granter) ? "✔️" : "👉" %>
-        <%= t("decidim.action_delegator.elections.delegation_buttons.vote_for", name: delegation.granter.name) %>
-      <% end %>
+    <% if election.per_question? %>
+      <%= render "decidim/action_delegator/elections/per_question_buttons", delegations: %>
+    <% else %>
+      <%= render "decidim/action_delegator/elections/normal_election_buttons", delegations: %>
     <% end %>
   </div>
 <% end %>

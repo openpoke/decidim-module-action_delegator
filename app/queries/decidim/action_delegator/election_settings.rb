@@ -10,7 +10,7 @@ module Decidim
 
       def query
         setting_ids = @election.census_settings.dig("authorization_handlers", "delegations_verifier", "options", "setting")
-        return Decidim::ActionDelegator::Setting.none unless setting_ids.present?
+        return Decidim::ActionDelegator::Setting.none if setting_ids.blank?
 
         Decidim::ActionDelegator::Setting.where(id: setting_ids)
       end

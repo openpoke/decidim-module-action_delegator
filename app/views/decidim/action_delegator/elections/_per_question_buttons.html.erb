@@ -1,0 +1,9 @@
+<h4 class="h6 mb-4"><%= t("decidim.action_delegator.elections.delegation_buttons.delegations_active") %></h4>
+<p><%= t("decidim.action_delegator.elections.delegation_buttons.per_question_delegations") %></p>
+<ul class="mt-4 space-y-2">
+  <% delegations.each do |delegation| %>
+    <li class="flex items-center space-x-2">
+      <%= participant_voted?(election, delegation.granter) ? "✔" : "👉" %> <%= delegation.granter.name %>
+    </li>
+  <% end %>
+</ul>

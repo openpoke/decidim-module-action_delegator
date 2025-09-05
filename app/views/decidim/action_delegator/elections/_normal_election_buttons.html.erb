@@ -1,0 +1,13 @@
+<h4 class="h6 mb-4"><%= t("decidim.action_delegator.elections.delegation_buttons.delegations_active") %></h4>
+
+<% delegations.each do |delegation| %>
+  <% if participant_voted?(election, delegation.granter) %>
+    <%= link_to new_election_vote_path(election, delegation: delegation.id), class: "button button__secondary button__lg" do %>
+      ✔ <%= t("decidim.action_delegator.elections.delegation_buttons.vote_for", name: delegation.granter.name) %>
+    <% end %>
+  <% else %>
+    <%= link_to new_election_vote_path(election, delegation: delegation.id), class: "button button__primary button__lg" do %>
+      👉 <%= t("decidim.action_delegator.elections.delegation_buttons.vote_for", name: delegation.granter.name) %>
+    <% end %>
+  <% end %>
+<% end %>
