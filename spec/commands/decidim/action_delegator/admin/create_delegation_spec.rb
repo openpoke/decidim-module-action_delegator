@@ -6,9 +6,8 @@ describe Decidim::ActionDelegator::Admin::CreateDelegation do
   subject { described_class.new(form, current_user, current_setting) }
 
   let(:current_user) { create(:user, organization: organization) }
-  let(:consultation) { create(:consultation, organization: organization) }
-  let(:current_setting) { create(:setting, max_grants: 1, consultation: consultation) }
-  let(:organization) { create(:organization) }
+  let(:current_setting) { create(:setting, max_grants: 1) }
+  let(:organization) { current_setting.organization }
   let(:granter) { create(:user, organization: organization) }
   let(:grantee) { create(:user, organization: organization) }
   let(:other_grantee) { create(:user, organization: organization) }
@@ -38,6 +37,18 @@ describe Decidim::ActionDelegator::Admin::CreateDelegation do
       it "broadcasts :ok" do
         expect { subject.call }.to broadcast(:ok)
       end
+
+      it "creates a delegation" do
+        expect { subject.call }.to change(Decidim::ActionDelegator::Delegation, :count).by(1)
+      end
+
+      it "creates delegation with correct attributes" do
+        subject.call
+        delegation = Decidim::ActionDelegator::Delegation.last
+        expect(delegation.granter).to eq(granter)
+        expect(delegation.grantee).to eq(grantee)
+        expect(delegation.setting).to eq(current_setting)
+      end
     end
 
     context "when max_grant is 1" do
@@ -48,6 +59,10 @@ describe Decidim::ActionDelegator::Admin::CreateDelegation do
 
         it "broadcasts :error" do
           expect { subject.call }.to broadcast(:error)
+        end
+
+        it "doesn't create a delegation" do
+          expect { subject.call }.not_to change(Decidim::ActionDelegator::Delegation, :count)
         end
       end
 
@@ -69,6 +84,10 @@ describe Decidim::ActionDelegator::Admin::CreateDelegation do
     it "broadcasts :error" do
       expect { subject.call }.to broadcast(:error)
     end
+
+    it "doesn't create a delegation" do
+      expect { subject.call }.not_to change(Decidim::ActionDelegator::Delegation, :count)
+    end
   end
 
   context "when granter is not in the same organization" do
@@ -76,6 +95,10 @@ describe Decidim::ActionDelegator::Admin::CreateDelegation do
 
     it "broadcasts :error" do
       expect { subject.call }.to broadcast(:error)
+    end
+
+    it "doesn't create a delegation" do
+      expect { subject.call }.not_to change(Decidim::ActionDelegator::Delegation, :count)
     end
   end
 end

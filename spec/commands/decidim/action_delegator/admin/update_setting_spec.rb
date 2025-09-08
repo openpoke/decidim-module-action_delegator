@@ -5,11 +5,13 @@ require "spec_helper"
 describe Decidim::ActionDelegator::Admin::UpdateSetting do
   subject { described_class.new(form, setting, copy_from_setting) }
 
-  let(:setting) { create(:setting, max_grants: 10) }
+  let(:setting) { create(:setting, max_grants: 10, title: { en: "Old Title" }, description: { en: "Old Description" }, active: false) }
   let(:copy_from_setting) { nil }
   let(:max_grants) { 9 }
   let(:authorization_method) { :both }
-  let(:decidim_consultation_id) { create(:consultation).id }
+  let(:title) { { ca: "Nou Títol", es: "Nuevo Título", en: "New Title" } }
+  let(:description) { { ca: "Nova Descripció", es: "Nueva Descripción", en: "New Description" } }
+  let(:active) { true }
   let(:invalid) { false }
 
   let(:form) do
@@ -17,7 +19,9 @@ describe Decidim::ActionDelegator::Admin::UpdateSetting do
       invalid?: invalid,
       max_grants: max_grants,
       authorization_method: authorization_method,
-      decidim_consultation_id: decidim_consultation_id
+      title: title,
+      description: description,
+      active: active
     )
   end
 
@@ -27,6 +31,15 @@ describe Decidim::ActionDelegator::Admin::UpdateSetting do
 
   it "updates the setting" do
     expect { subject.call }.to(change { setting.reload.max_grants }.from(10).to(9))
+  end
+
+  it "updates all setting attributes" do
+    subject.call
+    setting.reload
+    expect(setting.title).to eq(title.stringify_keys)
+    expect(setting.description).to eq(description.stringify_keys)
+    expect(setting.active).to be true
+    expect(setting.authorization_method).to eq(authorization_method.to_s)
   end
 
   context "when the form is invalid" do
@@ -42,14 +55,15 @@ describe Decidim::ActionDelegator::Admin::UpdateSetting do
   end
 
   context "when copy setting" do
-    let(:copy_from_setting) { create(:setting, :with_participants, :with_ponderations, consultation: other_consultation) }
-    let(:other_consultation) { create(:consultation) }
+    let(:copy_from_setting) { create(:setting, :with_participants, :with_ponderations) }
     let(:form) do
       double(
         invalid?: invalid,
         max_grants: max_grants,
         authorization_method: authorization_method,
-        decidim_consultation_id: decidim_consultation_id,
+        title: title,
+        description: description,
+        active: active,
         copy_from_setting: copy_from_setting.id
       )
     end
