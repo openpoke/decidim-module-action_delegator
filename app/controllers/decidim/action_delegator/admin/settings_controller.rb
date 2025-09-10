@@ -66,7 +66,7 @@ module Decidim
         def destroy
           enforce_permission_to :destroy, :setting, resource: current_setting
 
-          if setting.destroy
+          if current_setting.destroy
             flash[:notice] = I18n.t("settings.destroy.success", scope: "decidim.action_delegator.admin")
           else
             flash[:error] = I18n.t("settings.destroy.error", scope: "decidim.action_delegator.admin")

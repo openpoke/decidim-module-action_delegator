@@ -6,8 +6,8 @@ describe Decidim::ActionDelegator::Admin::DelegationForm do
   subject { described_class.from_params(attributes).with_context(current_organization: organization) }
 
   let(:organization) { create(:organization) }
-  let(:granter) { create(:user, organization: organization) }
-  let(:grantee) { create(:user, organization: organization) }
+  let(:granter) { create(:user, organization:) }
+  let(:grantee) { create(:user, organization:) }
   let(:granter_email) { nil }
   let(:grantee_email) { nil }
   let(:attributes) do
@@ -18,8 +18,8 @@ describe Decidim::ActionDelegator::Admin::DelegationForm do
       grantee_email: grantee_email
     }
   end
-  let!(:granter_user) { create(:user, organization: organization) }
-  let!(:grantee_user) { create(:user, organization: organization) }
+  let!(:granter_user) { create(:user, organization:) }
+  let!(:grantee_user) { create(:user, organization:) }
 
   context "when there's granter and grantee" do
     it { is_expected.to be_valid }

@@ -10,7 +10,7 @@ describe Decidim::ActionDelegator::Admin::ParticipantForm do
       setting: setting
     }
   end
-  let(:setting) { create(:setting, :with_ponderations, authorization_method: authorization_method) }
+  let(:setting) { create(:setting, :with_ponderations, authorization_method:) }
   let(:authorization_method) { :both }
   let(:attributes) do
     {

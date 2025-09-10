@@ -6,7 +6,7 @@ describe Decidim::ActionDelegator::Admin::CsvImportForm do
   subject { described_class.from_params(attributes).with_context(context) }
 
   let(:organization) { create(:organization) }
-  let(:setting) { create(:setting, organization: organization) }
+  let(:setting) { create(:setting, organization:) }
   let(:context) { { current_organization: organization } }
   let(:csv_file) { fixture_file_upload("spec/fixtures/valid_participants.csv", "text/csv") }
   let(:setting_id) { setting.id }

@@ -39,7 +39,7 @@ describe Decidim::ActionDelegator::Admin::PonderationForm do
   end
 
   context "when name is not unique" do
-    let!(:existing_ponderation) { create(:ponderation, name: name, setting: setting) }
+    let!(:existing_ponderation) { create(:ponderation, name:, setting:) }
 
     it { is_expected.not_to be_valid }
 
@@ -49,13 +49,13 @@ describe Decidim::ActionDelegator::Admin::PonderationForm do
     end
 
     context "and the setting is different" do
-      let!(:existing_ponderation) { create(:ponderation, name: name) }
+      let!(:existing_ponderation) { create(:ponderation, name:) }
 
       it { is_expected.to be_valid }
     end
 
     context "and the existing ponderation is being updated (same id)" do
-      let!(:existing_ponderation) { create(:ponderation, name: name, setting: setting) }
+      let!(:existing_ponderation) { create(:ponderation, name:, setting:) }
       let(:attributes) { super().merge(id: existing_ponderation.id) }
 
       it { is_expected.to be_valid }
@@ -141,14 +141,14 @@ describe Decidim::ActionDelegator::Admin::PonderationForm do
   describe "name_uniqueness validation edge cases" do
     context "when setting is nil" do
       let(:context) { {} }
-      let!(:existing_ponderation) { create(:ponderation, name: name) }
+      let!(:existing_ponderation) { create(:ponderation, name:) }
 
       it { is_expected.to be_valid }
     end
 
     context "when name has different case" do
       let(:name) { "Test Name" }
-      let!(:existing_ponderation) { create(:ponderation, name: "test name", setting: setting) }
+      let!(:existing_ponderation) { create(:ponderation, name: "test name", setting:) }
 
       it "allows same name with different case" do
         # Name uniqueness is case-sensitive
