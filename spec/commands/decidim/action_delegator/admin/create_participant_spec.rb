@@ -29,6 +29,15 @@ describe Decidim::ActionDelegator::Admin::CreateParticipant do
     expect { subject.call }.to(change(Decidim::ActionDelegator::Participant, :count).by(1))
   end
 
+  it "creates participant with correct attributes" do
+    subject.call
+    participant = Decidim::ActionDelegator::Participant.last
+    expect(participant.email).to eq(email)
+    expect(participant.phone).to eq(phone)
+    expect(participant.decidim_action_delegator_ponderation_id).to eq(ponderation.id)
+    expect(participant.setting).to eq(setting)
+  end
+
   context "when the form is invalid" do
     let(:invalid) { true }
 

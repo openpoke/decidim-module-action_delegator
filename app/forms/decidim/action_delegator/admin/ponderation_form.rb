@@ -9,7 +9,8 @@ module Decidim
         attribute :weight, Decimal, default: 1.0
         attribute :name, String
 
-        validates :weight, :name, presence: true
+        validates :name, presence: true
+        validates :weight, presence: true, numericality: { greater_than: 0 }
         validate :name_uniqueness
 
         def name_uniqueness
