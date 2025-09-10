@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/decidim/decidim.git
-  revision: 468fb2e3c0d6ca21d07eba8c5ccb4fcc5d3d85e2
-  branch: feature/add-election-voting-booth
+  revision: 7256769aa5cea1958d741e03c39ec94f3a77d153
+  branch: develop
   specs:
     decidim (0.31.0.dev)
       decidim-accountability (= 0.31.0.dev)
@@ -99,7 +99,7 @@ GIT
       rqrcode (~> 2.2.0)
       rubyXL (~> 3.4)
       rubyzip (~> 2.0)
-      shakapacker (~> 7.1.0)
+      shakapacker (~> 8.3.0)
       valid_email2 (~> 7.0)
       web-push (~> 3.0)
       wisper (~> 3.0)
@@ -425,6 +425,7 @@ GEM
       logger
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
+    ffi (1.17.2)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -491,7 +492,7 @@ GEM
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
-    hashdiff (1.2.0)
+    hashdiff (1.2.1)
     hashie (5.0.0)
     hexapdf (1.1.1)
       cmdparse (~> 3.0, >= 3.0.3)
@@ -583,9 +584,10 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0902)
+    mime-types-data (3.2025.0909)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (5.25.5)
     msgpack (1.8.0)
     multi_xml (0.7.2)
@@ -604,6 +606,9 @@ GEM
       net-protocol
     nio4r (2.7.4)
     nkf (0.2.0)
+    nokogiri (1.18.9)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.18.9-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.9-aarch64-linux-musl)
@@ -628,7 +633,7 @@ GEM
       version_gem (~> 1.1)
     oauth-tty (1.0.5)
       version_gem (~> 1.1, >= 1.1.1)
-    oauth2 (2.0.14)
+    oauth2 (2.0.15)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
       logger (~> 1.2)
@@ -663,6 +668,7 @@ GEM
     openssl (3.3.0)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
+    package_json (0.1.0)
     paper_trail (16.0.0)
       activerecord (>= 6.1)
       request_store (~> 1.4)
@@ -864,21 +870,24 @@ GEM
       nokogiri (>= 1.10.8)
       rubyzip (>= 1.3.0)
     rubyzip (2.3.2)
-    sass-embedded (1.92.0-aarch64-linux-gnu)
+    sass-embedded (1.92.1)
       google-protobuf (~> 4.31)
-    sass-embedded (1.92.0-aarch64-linux-musl)
+      rake (>= 13)
+    sass-embedded (1.92.1-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.92.0-arm-linux-gnueabihf)
+    sass-embedded (1.92.1-aarch64-linux-musl)
       google-protobuf (~> 4.31)
-    sass-embedded (1.92.0-arm-linux-musleabihf)
+    sass-embedded (1.92.1-arm-linux-gnueabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.92.0-arm64-darwin)
+    sass-embedded (1.92.1-arm-linux-musleabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.92.0-x86_64-darwin)
+    sass-embedded (1.92.1-arm64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.92.0-x86_64-linux-gnu)
+    sass-embedded (1.92.1-x86_64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.92.0-x86_64-linux-musl)
+    sass-embedded (1.92.1-x86_64-linux-gnu)
+      google-protobuf (~> 4.31)
+    sass-embedded (1.92.1-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     savon (2.15.1)
       akami (~> 1.2)
@@ -897,8 +906,9 @@ GEM
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     semantic_range (3.1.0)
-    shakapacker (7.1.0)
+    shakapacker (8.3.0)
       activesupport (>= 5.2)
+      package_json
       rack-proxy (>= 0.6.1)
       railties (>= 5.2)
       semantic_range (>= 2.3.0)
@@ -998,6 +1008,7 @@ PLATFORMS
   arm-linux-musl
   arm-linux-musleabihf
   arm64-darwin
+  ruby
   x86_64-darwin
   x86_64-linux-gnu
   x86_64-linux-musl

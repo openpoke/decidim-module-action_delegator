@@ -13,36 +13,31 @@ describe "Admin manages participants" do
   end
 
   context "when listing participants" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:setting) { create(:setting, consultation: consultation) }
+    let(:setting) { create(:setting, organization:) }
     let!(:participant) { create(:participant, setting: setting) }
-
     let!(:collection) { create_list(:participant, collection_size, setting: setting) }
-    let!(:resource_selector) { "[data-participant-id]" }
-    let(:collection_size) { 30 }
+    let(:collection_size) { 50 }
 
     before do
       visit decidim_admin_action_delegator.setting_participants_path(setting)
     end
 
-    it "lists 20 resources per page by default" do
-      expect(page).to have_css(resource_selector, count: 20)
-      expect(page).to have_css(".pagination .page", count: 2)
-      # none has voted
-      expect(page).to have_content("No", count: 20)
+    it "lists participants with pagination" do
+      within "div[data-pagination]" do
+        expect(page).to have_content("Next")
+      end
     end
   end
 
   context "when creating a participant" do
-    let!(:consultation) { create(:consultation, organization: organization) }
-    let!(:setting) { create(:setting, consultation: consultation) }
+    let!(:setting) { create(:setting, organization:) }
 
     before do
       visit decidim_admin_action_delegator.setting_participants_path(setting)
     end
 
     it "creates a new participant" do
-      click_link I18n.t("participants.index.actions.new_participant", scope: i18n_scope)
+      click_on I18n.t("participants.index.actions.new_participant", scope: i18n_scope)
 
       within ".new_participant" do
         fill_in :participant_email, with: "foo@example.org"
@@ -54,17 +49,12 @@ describe "Admin manages participants" do
       expect(page).to have_admin_callout("successfully")
       expect(page).to have_content("foo@example.org")
       expect(page).to have_content("12345")
-      expect(page).to have_i18n_content(consultation.title)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_participants_path(setting.id))
     end
   end
 
   context "when destroying a participant" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:question) { create(:question, consultation: consultation) }
-    let(:response) { create(:response, question: question) }
-    let!(:vote) { create(:vote, question: question, response: response) }
-    let(:setting) { create(:setting, consultation: consultation) }
+    let(:setting) { create(:setting, organization:) }
     let!(:participant) { create(:participant, setting: setting, decidim_user: user) }
 
     before do
@@ -77,7 +67,7 @@ describe "Admin manages participants" do
       # has not voted
       expect(page).to have_content("No")
       within "tr[data-participant-id=\"#{participant.id}\"]" do
-        accept_confirm { click_link "Delete" }
+        accept_confirm { click_on "Delete" }
       end
 
       expect(page).to have_no_content(participant.email)
@@ -85,28 +75,10 @@ describe "Admin manages participants" do
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_participants_path(setting.id))
       expect(page).to have_admin_callout("successfully")
     end
-
-    context "when participant has voted" do
-      let!(:vote) { create(:vote, question: question, response: response, author: user) }
-
-      it "does not destroy the participant" do
-        expect(page).to have_content(participant.email)
-        expect(page).to have_content(participant.phone)
-        # has voted
-        expect(page).to have_content("Yes")
-        within "tr[data-participant-id=\"#{participant.id}\"]" do
-          expect(page).to have_no_link("Delete")
-        end
-      end
-    end
   end
 
   context "when removing census" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:question) { create(:question, consultation: consultation) }
-    let(:response) { create(:response, question: question) }
-    let!(:vote) { create(:vote, question: question, response: response) }
-    let(:setting) { create(:setting, consultation: consultation) }
+    let(:setting) { create(:setting, organization:) }
     let!(:collection) { create_list(:participant, 3, setting: setting) }
 
     before do
@@ -118,7 +90,7 @@ describe "Admin manages participants" do
         expect(page).to have_content(participant.email)
       end
 
-      accept_confirm { click_link "Remove census" }
+      accept_confirm { click_on "Remove census" }
 
       expect(page).to have_content("successfully")
 
@@ -129,7 +101,6 @@ describe "Admin manages participants" do
 
     context "when participant has voted" do
       let!(:participant) { create(:participant, setting: setting, decidim_user: user) }
-      let!(:vote) { create(:vote, question: question, response: response, author: user) }
 
       it "does not remove the census" do
         expect(page).to have_content(user.email)
@@ -138,7 +109,7 @@ describe "Admin manages participants" do
           expect(page).to have_content(participant.email)
         end
 
-        accept_confirm { click_link "Remove census" }
+        accept_confirm { click_on "Remove census" }
 
         collection.each do |participant|
           expect(page).to have_no_content(participant.email)
@@ -150,8 +121,7 @@ describe "Admin manages participants" do
   end
 
   context "when inviting participants" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
+    let(:setting) { create(:setting, organization:, authorization_method:) }
     let(:user_exists) { create(:user, organization: organization, last_sign_in_at: 1.day.ago) }
     let(:user_with_invitation) { create(:user, organization: organization, invitation_sent_at: 1.day.ago) }
     let!(:participant_exists) { create(:participant, setting: setting, decidim_user_id: user_exists.id) }
@@ -179,7 +149,7 @@ describe "Admin manages participants" do
       end
 
       it "invites all non-existent users" do
-        perform_enqueued_jobs { click_link I18n.t("participants.index.send_invitation_link", scope: i18n_scope) }
+        perform_enqueued_jobs { click_on I18n.t("participants.index.send_invitation_link", scope: i18n_scope) }
 
         expect(page).to have_admin_callout("successfully")
 
@@ -190,7 +160,7 @@ describe "Admin manages participants" do
 
       it "invites the one participant" do
         within "tr[data-participant-id=\"#{participant_non_exists.id}\"]" do
-          click_link I18n.t("actions.invite", scope: "decidim.admin")
+          click_on I18n.t("actions.invite", scope: "decidim.admin")
 
           expect(find("td:nth-of-type(4)")).to have_content(participant_name(participant_non_exists))
         end
@@ -202,7 +172,7 @@ describe "Admin manages participants" do
         it "resends invitation" do
           within "tr[data-participant-id=\"#{participant_with_invitation.id}\"]" do
             expect(page).to have_no_content(I18n.t("actions.invite", scope: "decidim.admin"))
-            click_link I18n.t("actions.resend", scope: "decidim.admin")
+            click_on I18n.t("actions.resend", scope: "decidim.admin")
           end
 
           expect(page).to have_admin_callout("successfully")

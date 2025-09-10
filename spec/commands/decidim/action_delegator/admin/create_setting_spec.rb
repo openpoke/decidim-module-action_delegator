@@ -5,10 +5,13 @@ require "spec_helper"
 describe Decidim::ActionDelegator::Admin::CreateSetting do
   subject { described_class.new(form, copy_from_setting) }
 
+  let(:organization) { create(:organization) }
   let(:max_grants) { 10 }
   let(:copy_from_setting) { nil }
   let(:authorization_method) { :both }
-  let(:decidim_consultation_id) { create(:consultation).id }
+  let(:title) { { ca: "Títol", es: "Título", en: "Title" } }
+  let(:description) { { ca: "Descripció", es: "Descripción", en: "Description" } }
+  let(:active) { true }
   let(:invalid) { false }
 
   let(:form) do
@@ -16,7 +19,10 @@ describe Decidim::ActionDelegator::Admin::CreateSetting do
       invalid?: invalid,
       max_grants: max_grants,
       authorization_method: authorization_method,
-      decidim_consultation_id: decidim_consultation_id
+      title: title,
+      description: description,
+      active: active,
+      context: double(current_organization: organization)
     )
   end
 
@@ -26,6 +32,17 @@ describe Decidim::ActionDelegator::Admin::CreateSetting do
 
   it "creates a setting" do
     expect { subject.call }.to(change(Decidim::ActionDelegator::Setting, :count).by(1))
+  end
+
+  it "creates setting with correct attributes" do
+    subject.call
+    setting = Decidim::ActionDelegator::Setting.last
+    expect(setting.title).to eq(title.stringify_keys)
+    expect(setting.description).to eq(description.stringify_keys)
+    expect(setting.max_grants).to eq(max_grants)
+    expect(setting.authorization_method).to eq(authorization_method.to_s)
+    expect(setting.active).to eq(active)
+    expect(setting.organization).to eq(organization)
   end
 
   context "when the form is invalid" do
@@ -41,14 +58,16 @@ describe Decidim::ActionDelegator::Admin::CreateSetting do
   end
 
   context "when copy setting" do
-    let!(:copy_from_setting) { create(:setting, :with_participants, :with_ponderations, consultation: other_consultation) }
-    let(:other_consultation) { create(:consultation) }
+    let!(:copy_from_setting) { create(:setting, :with_participants, :with_ponderations, title: { en: "Copy Title" }, description: { en: "Copy Description" }, organization:) }
     let(:form) do
       double(
         invalid?: invalid,
         max_grants: max_grants,
         authorization_method: authorization_method,
-        decidim_consultation_id: decidim_consultation_id,
+        title: title,
+        description: description,
+        active: active,
+        context: double(current_organization: organization),
         copy_from_setting: copy_from_setting.id
       )
     end

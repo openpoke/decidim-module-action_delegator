@@ -3,17 +3,17 @@
 require "spec_helper"
 
 RSpec.describe Decidim::ActionDelegator::Admin::ImportCsvJob do
-  let(:current_user) { create(:user) }
-  let(:current_setting) { create(:setting, consultation: consultation) }
-  let(:consultation) { create(:consultation) }
+  let(:organization) { create(:organization) }
+  let(:current_user) { create(:user, organization:) }
+  let(:current_setting) { create(:setting, organization:) }
 
   describe "import delegations" do
     let(:valid_csv_file) { File.open("spec/fixtures/valid_delegations.csv") }
 
     let!(:granter_email) { "granter@example.org" }
     let!(:grantee_email) { "grantee@example.org" }
-    let!(:granter) { create(:user, email: granter_email) }
-    let!(:grantee) { create(:user, email: grantee_email) }
+    let!(:granter) { create(:user, email: granter_email, organization:) }
+    let!(:grantee) { create(:user, email: grantee_email, organization:) }
 
     let(:params) do
       {

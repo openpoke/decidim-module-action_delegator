@@ -15,16 +15,15 @@ describe "Admin imports participants from csv" do
   end
 
   def import_csv(file)
-    attach_file "csv_file", file.path
-    click_button "Import"
+    dynamically_attach_file("csv_import_csv_file", file.path)
+    click_on "Import"
     perform_enqueued_jobs
     visit current_url
   end
 
   describe "import participants from csv" do
-    let(:consultation) { create(:consultation, organization: organization) }
     let(:authorization_method) { "both" }
-    let(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
+    let(:setting) { create(:setting, organization:, authorization_method:, active: true) }
     let!(:ponderation) { create(:ponderation, setting: setting, name: "consumer", weight: 1) }
     let(:valid_csv_file) { File.open("spec/fixtures/valid_participants.csv") }
     let(:invalid_csv_file) { File.open("spec/fixtures/invalid_participants.csv") }
@@ -34,13 +33,13 @@ describe "Admin imports participants from csv" do
 
     before do
       visit decidim_admin_action_delegator.setting_participants_path(setting)
-      click_link I18n.t("participants.index.actions.csv_import", scope: i18n_scope)
+      click_on "Import CSV"
     end
 
     context "when CSV file was imported" do
       it "shows the flash" do
-        attach_file "csv_file", valid_csv_file.path
-        click_button "Import"
+        dynamically_attach_file("csv_import_csv_file", valid_csv_file.path)
+        click_on "Import"
 
         expect(page).to have_content("The import process has started")
       end
@@ -109,9 +108,9 @@ describe "Admin imports participants from csv" do
     end
 
     context "when imported existing participants" do
-      it "does not update tha data of existing users in the table" do
+      it "does not update the data of existing users in the table" do
         import_csv(valid_csv_file)
-        click_link I18n.t("participants.index.actions.csv_import", scope: i18n_scope)
+        click_on "Import CSV"
         import_csv(repeated_data_csv_file)
 
         expect(page).to have_css("tr[data-participant-id]", count: 4)
@@ -139,7 +138,7 @@ describe "Admin imports participants from csv" do
     end
 
     context "when the ponderation is a string and does not exist" do
-      it "does not imports row" do
+      it "does not import row" do
         import_csv(ponderation_type_csv_file)
 
         expect(page).to have_css("tr[data-participant-id]", count: 3)
