@@ -16,7 +16,6 @@ ignore_unused:
   - "devise.mailer.*"
   - "decidim.verifications.authorizations.first_login.*"
   - "decidim.authorization_handlers.*"
-  - "decidim.admin.menu.action_delegator_menu.*"
   - "decidim.admin.actions.invite_all"
   - "activemodel.attributes.*"
   - "activemodel.errors.*"

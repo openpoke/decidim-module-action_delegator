@@ -1,0 +1,3 @@
+<!-- insert_top ".row.column" -->
+
+<%= render "decidim/action_delegator/admin/dashboard/results_tabs" if settings_for(election).present? %>

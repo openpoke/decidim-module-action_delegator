@@ -7,7 +7,7 @@ module Decidim
         include NeedsPermission
         include Paginable
 
-        helper ::Decidim::ActionDelegator::Admin::DelegationHelper
+        helper ::Decidim::ActionDelegator::Admin::SettingsHelper
         helper_method :current_setting, :delegations
 
         layout "decidim/admin/users"

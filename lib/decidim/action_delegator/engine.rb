@@ -28,7 +28,8 @@ module Decidim
           if Decidim.module_installed?(:elections)
             Decidim::Elections::VotesController.include(Decidim::ActionDelegator::ElectionVotesControllerOverride)
             Decidim::Elections::PerQuestionVotesController.include(Decidim::ActionDelegator::ElectionPerQuestionVotesControllerOverride)
-            Decidim::Elections::ElectionsController.helper(Decidim::ActionDelegator::DelegationHelper)
+            Decidim::Elections::ElectionsController.helper(SettingsHelper)
+            Decidim::Elections::Admin::ElectionsController.helper(SettingsHelper)
           end
         end
       end
