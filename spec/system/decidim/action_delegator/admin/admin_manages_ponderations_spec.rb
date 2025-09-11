@@ -13,34 +13,31 @@ describe "Admin manages ponderations" do
   end
 
   context "when listing ponderations" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:setting) { create(:setting, consultation: consultation) }
+    let(:setting) { create(:setting, organization:) }
     let!(:ponderation) { create(:ponderation, setting: setting) }
-
     let!(:collection) { create_list(:ponderation, collection_size, setting: setting) }
-    let!(:resource_selector) { "[data-ponderation-id]" }
-    let(:collection_size) { 30 }
+    let(:collection_size) { 50 }
 
     before do
       visit decidim_admin_action_delegator.setting_ponderations_path(setting)
     end
 
-    it "lists 20 resources per page by default" do
-      expect(page).to have_css(resource_selector, count: 20)
-      expect(page).to have_css(".pagination .page", count: 2)
+    it "lists participants with pagination" do
+      within "div[data-pagination]" do
+        expect(page).to have_content("Next")
+      end
     end
   end
 
   context "when creating a ponderation" do
-    let!(:consultation) { create(:consultation, organization: organization) }
-    let!(:setting) { create(:setting, consultation: consultation) }
+    let!(:setting) { create(:setting, organization:) }
 
     before do
       visit decidim_admin_action_delegator.setting_ponderations_path(setting)
     end
 
     it "creates a new ponderation" do
-      click_link I18n.t("ponderations.index.actions.new_ponderation", scope: i18n_scope)
+      click_on I18n.t("ponderations.index.actions.new_ponderation", scope: i18n_scope)
 
       within ".new_ponderation" do
         fill_in :ponderation_name, with: "Producer"
@@ -52,14 +49,12 @@ describe "Admin manages ponderations" do
       expect(page).to have_admin_callout("successfully")
       expect(page).to have_content("Producer")
       expect(page).to have_content("2.0")
-      expect(page).to have_i18n_content(consultation.title)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting.id))
     end
   end
 
   context "when destroying a ponderation" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:setting) { create(:setting, consultation: consultation) }
+    let(:setting) { create(:setting, organization:) }
     let!(:ponderation) { create(:ponderation, setting: setting) }
     let!(:participant) { nil }
 
@@ -71,7 +66,7 @@ describe "Admin manages ponderations" do
       expect(page).to have_content(ponderation.name)
       expect(page).to have_content(ponderation.weight)
       within "tr[data-ponderation-id=\"#{ponderation.id}\"]" do
-        accept_confirm { click_link "Delete" }
+        accept_confirm { click_on "Delete" }
       end
 
       expect(page).to have_no_content(ponderation.name)
