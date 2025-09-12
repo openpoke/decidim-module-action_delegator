@@ -49,11 +49,45 @@ module Decidim
           {
             id: option.id,
             body: option.body,
-            votes_count: option.votes_count,
-            votes_percent: question.votes.count.positive? ? (option.votes_count.to_f / question.votes.count.to_f) * 100 : 0,
+            votes_total: option.votes_total,
+            votes_percent: question.votes.count.positive? ? (option.votes_total.to_f / question.votes.count.to_f) * 100 : 0,
             ponderation_title: ponderation&.title || "-"
           }
         end
+      end
+
+      def elections_question_weighted_responses(question)
+        question_totals = {}
+        responses = ElectionsQuestionWeightedResponses.new(question, current_resource_settings).query.map do |option|
+          question_totals[question.id] ||= 0.0
+          question_totals[question.id] += option.weighted_votes_total.to_f
+          option
+        end
+
+        responses.map do |option|
+          {
+            id: option.id,
+            body: option.body,
+            weighted_votes_total: option.weighted_votes_total.round,
+            votes_percent: question.votes.count.positive? ? (option.weighted_votes_total.to_f / question_totals[question.id].to_f) * 100 : 0
+          }
+        end
+      end
+
+      def elections_question_stats(question)
+        question_totals = {}
+        ElectionsQuestionWeightedResponses.new(question, current_resource_settings).query.each do |option|
+          question_totals[question.id] ||= 0.0
+          question_totals[question.id] += option.weighted_votes_total.to_f
+        end
+        {
+          participants: question.votes.select(:voter_uid).distinct.count,
+          unweighted_votes: question.votes.count,
+          weighted_votes: question_totals[question.id].to_f.round,
+          # Note that this works because votes cannot be edited, only created or destroyed. So only one version will exist per vote (the creation event).
+          delegated_votes: question.votes.joins(:versions).where.not(versions: { decidim_action_delegator_delegation_id: nil }).count
+
+        }
       end
     end
   end

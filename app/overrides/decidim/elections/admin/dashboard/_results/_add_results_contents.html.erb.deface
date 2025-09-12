@@ -1,7 +1,9 @@
 <!-- replace "erb[loud]:contains('decidim/elections/admin/dashboard/questions_with_results')" -->
 
-<% if settings_for(election).present? && lookup_context.exists?("decidim/action_delegator/admin/dashboard/#{params[:results]}", [], true) %>
-  <%= render "decidim/action_delegator/admin/dashboard/#{params[:results]}" %>
+<%= render "decidim/action_delegator/elections/admin/dashboard/results_type_info" %>
+
+<% if settings_for(election).present? && lookup_context.exists?("decidim/action_delegator/elections/admin/dashboard/#{params[:results]}", [], true) %>
+  <%= render "decidim/action_delegator/elections/admin/dashboard/#{params[:results]}" %>
 <% else %>
   <%= render "decidim/elections/admin/dashboard/questions_with_results" %>
 <% end %>
