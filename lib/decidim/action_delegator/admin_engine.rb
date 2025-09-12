@@ -113,25 +113,21 @@ module Decidim
           menu.add_item :by_answer,
                         I18n.t("by_answer", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
                         @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election) : "#",
-                        active: @election.present? ? is_active_link?(current_component_admin_proxy&.dashboard_election_path(@election)) : false,
                         icon_name: "list-check",
                         active: :exact
           menu.add_item :by_type_and_weight,
                         I18n.t("by_type_and_weight", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
                         @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election, results: :by_type_and_weight) : "#",
-                        active: @election.present? ? is_active_link?(current_component_admin_proxy&.dashboard_election_path(@election, results: :by_type_and_weight)) : false,
                         icon_name: "list-check-2",
                         active: :exact
           menu.add_item :sum_of_weights,
                         I18n.t("sum_of_weights", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
                         @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election, results: :sum_of_weights) : "#",
-                        active: @election.present? ? is_active_link?(current_component_admin_proxy&.dashboard_election_path(@election, results: :sum_of_weights)) : false,
                         icon_name: "bar-chart-2-line",
                         active: :exact
           menu.add_item :totals,
                         I18n.t("totals", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
                         @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election, results: :totals) : "#",
-                        active: @election.present? ? is_active_link?(current_component_admin_proxy&.dashboard_election_path(@election, results: :totals)) : false,
                         icon_name: "scales-line",
                         active: :exact
         end

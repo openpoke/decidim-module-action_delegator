@@ -1,0 +1,3 @@
+<% elections_question_weighted_responses(question).each do |option| %>
+  <%= render "decidim/elections/elections/vote_results_option", option: OpenStruct.new(**option) %>
+<% end %>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # # frozen_string_literal: true
 #
 # require "spec_helper"
@@ -53,7 +55,7 @@
 #
 #   context "when save fails" do
 #     before do
-#       allow_any_instance_of(Decidim::ResourcePermission).to receive(:save).and_return(false) # rubocop:disable RSpec/AnyInstance
+#       allow_any_instance_of(Decidim::ResourcePermission).to receive(:save).and_return(false)
 #     end
 #
 #     it "broadcasts :invalid" do

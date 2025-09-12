@@ -1,3 +1,7 @@
-<!-- replace_contents "div.flex.items-center.justify-between" -->
+<!-- surround_contents "div.flex.items-center.justify-between" -->
 
-<%= render "decidim/action_delegator/elections/option_results" %>
+<% if settings_for(election).present? %>
+  <%= render "decidim/action_delegator/elections/option_results", option: %>
+<% else %>
+  <%= render_original %>
+<% end %>

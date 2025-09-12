@@ -50,7 +50,7 @@ module Decidim
             id: option.id,
             body: option.body,
             votes_total: option.votes_total,
-            votes_percent: question.votes.count.positive? ? (option.votes_total.to_f / question.votes.count.to_f) * 100 : 0,
+            votes_percent: question.votes.count.positive? ? (option.votes_total.to_f / question.votes.count) * 100 : 0,
             ponderation_title: ponderation&.title || "-"
           }
         end
@@ -69,7 +69,7 @@ module Decidim
             id: option.id,
             body: option.body,
             weighted_votes_total: option.weighted_votes_total.round,
-            votes_percent: question.votes.count.positive? ? (option.weighted_votes_total.to_f / question_totals[question.id].to_f) * 100 : 0
+            votes_percent: question.votes.count.positive? ? (option.weighted_votes_total.to_f / question_totals[question.id]) * 100 : 0
           }
         end
       end
