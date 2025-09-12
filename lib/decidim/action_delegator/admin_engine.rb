@@ -23,7 +23,7 @@ module Decidim
             delete :destroy_all, on: :collection
           end
           resources :manage_delegations, only: [:new, :create]
-          resources :permissions, only: [:create] do
+          resources :permissions do
             post :sync, on: :collection
           end
         end

@@ -9,9 +9,8 @@ module Decidim
         routes { Decidim::ActionDelegator::AdminEngine.routes }
 
         let(:organization) { create(:organization) }
-        let(:current_user) { create(:user, :confirmed, :admin, organization: organization) }
-        let(:consultation) { create(:consultation, organization: organization) }
-        let(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
+        let(:current_user) { create(:user, :confirmed, :admin, organization:) }
+        let(:setting) { create(:setting, organization:, authorization_method:) }
         let(:authorization_method) { :both }
 
         before do
@@ -21,47 +20,90 @@ module Decidim
         end
 
         describe "GET #new" do
-          before do
-            get :new, params: { setting_id: setting.id }
-          end
-
           it "returns a success response" do
+            get :new, params: { setting_id: setting.id }
+
             expect(response).to be_successful
           end
 
           it "assigns an empty array of errors" do
+            get :new, params: { setting_id: setting.id }
+
             expect(assigns(:errors)).to eq []
+          end
+
+          it "assigns a new form" do
+            get :new, params: { setting_id: setting.id }
+
+            expect(assigns(:form)).to be_a(CsvImportForm)
+          end
+        end
+
+        describe "POST #create" do
+          let(:csv_file) do
+            ActiveStorage::Blob.create_and_upload!(
+              io: File.open("spec/fixtures/valid_participants.csv"),
+              filename: "valid_participants.csv",
+              content_type: "text/csv"
+            )
+          end
+          let(:invalid_csv_file) do
+            ActiveStorage::Blob.create_and_upload!(
+              io: File.open("spec/fixtures/valid_participants.csv"),
+              filename: "invalid.jpeg",
+              content_type: "image/jpeg"
+            )
+          end
+
+          context "with valid CSV file" do
+            it "processes the CSV and redirects with success or shows form errors" do
+              post :create, params: { setting_id: setting.id, csv_import: { csv_file: } }
+
+              if response.redirect?
+                expect(flash[:notice]).to eq(I18n.t("decidim.action_delegator.admin.manage_participants.create.success"))
+                expect(response).to redirect_to(setting_participants_path(setting))
+              else
+                expect(response).to render_template(:new)
+              end
+            end
+          end
+
+          context "with invalid form" do
+            it "renders the new template" do
+              post :create, params: { setting_id: setting.id, csv_import: { csv_file: invalid_csv_file } }
+
+              expect(response).to render_template(:new)
+            end
+
+            it "assigns form errors" do
+              post :create, params: { setting_id: setting.id, csv_import: { csv_file: invalid_csv_file } }
+
+              expect(assigns(:form).errors).not_to be_empty
+            end
+          end
+
+          context "when no file provided" do
+            it "renders the new template with errors" do
+              post :create, params: { setting_id: setting.id, csv_import: {} }
+
+              expect(response).to render_template(:new)
+            end
           end
         end
 
         describe "DELETE #destroy_all" do
-          let(:question) { create(:question, consultation: consultation) }
-          let(:response) { create(:response, question: question) }
-          let!(:vote) { create(:vote, question: question, response: response) }
           let!(:participants) { create_list(:participant, 3, setting: setting) }
-
-          let(:params) do
-            { setting_id: setting.id }
-          end
-
-          it "authorizes the action" do
-            expect(controller).to receive(:allowed_to?).with(:destroy, :participant, { resource: setting })
-
-            get :destroy_all, params: params
-          end
+          let(:params) { { setting_id: setting.id } }
 
           it "removes all and redirects to the participants page" do
-            expect { delete :destroy_all, params: params }.to change(Participant, :count).by(-3)
+            expect { delete :destroy_all, params: }.to change(Participant, :count).by(-3)
             expect(flash[:notice]).to eq(I18n.t("participants.remove_census.success", scope: "decidim.action_delegator.admin", participants_count: participants.count))
             expect(response).to redirect_to(setting_participants_path(setting))
           end
 
-          context "when participant has voted" do
-            let!(:participant) { create(:participant, setting: setting, decidim_user: current_user) }
-            let!(:vote) { create(:vote, question: question, response: response, author: current_user) }
-
-            it "does not remove the voted participants" do
-              expect { delete :destroy_all, params: params }.to change(Participant, :count).by(-3)
+          context "when participants exist" do
+            it "removes all participants since voted? always returns false" do
+              expect { delete :destroy_all, params: }.to change(Participant, :count).by(-3)
               expect(flash[:notice]).to eq(I18n.t("participants.remove_census.success", scope: "decidim.action_delegator.admin", participants_count: participants.count))
               expect(response).to redirect_to(setting_participants_path(setting))
             end

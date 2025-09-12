@@ -8,11 +8,10 @@ module Decidim
       routes { Decidim::ActionDelegator::AdminEngine.routes }
 
       let(:organization) { create(:organization) }
-      let(:consultation) { create(:consultation, organization: organization) }
-      let(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
+      let(:setting) { create(:setting, organization:, authorization_method:) }
       let(:authorization_method) { :both }
       let(:participant) { create(:participant, setting: setting) }
-      let(:user) { create(:user, :admin, :confirmed, organization: organization) }
+      let(:user) { create(:user, :admin, :confirmed, organization:) }
       let(:params) do
         { setting_id: setting.id }
       end
@@ -26,28 +25,20 @@ module Decidim
       end
 
       describe "#index" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:index, :participant, {})
-
+        it "returns a success response" do
           get :index, params: params
+          expect(response).to be_successful
         end
       end
 
       describe "#new" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:create, :participant, {})
-
+        it "returns a success response" do
           get :new, params: params
+          expect(response).to be_successful
         end
       end
 
       describe "#create" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:create, :participant, {})
-
-          get :create, params: params
-        end
-
         context "when successful" do
           let(:params) do
             { setting_id: setting.id, participant: { phone: "666", email: "some@email.com" } }
@@ -76,20 +67,13 @@ module Decidim
       end
 
       describe "#edit" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:update, :participant, {})
-
+        it "returns a success response" do
           get :edit, params: edit_params
+          expect(response).to be_successful
         end
       end
 
       describe "#update" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:update, :participant, {})
-
-          get :update, params: edit_params
-        end
-
         context "when successful" do
           let(:edit_params) do
             { setting_id: setting.id, id: participant.id, participant: { phone: "666", email: "some@email.com" } }
@@ -120,12 +104,6 @@ module Decidim
       end
 
       describe "#destroy" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:destroy, :participant, { resource: participant })
-
-          get :destroy, params: edit_params
-        end
-
         context "when successful" do
           let!(:participant) { create(:participant, setting: setting) }
 

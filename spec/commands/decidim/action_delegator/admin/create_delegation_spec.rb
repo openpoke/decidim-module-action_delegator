@@ -5,13 +5,13 @@ require "spec_helper"
 describe Decidim::ActionDelegator::Admin::CreateDelegation do
   subject { described_class.new(form, current_user, current_setting) }
 
-  let(:current_user) { create(:user, organization: organization) }
+  let(:current_user) { create(:user, organization:) }
   let(:current_setting) { create(:setting, max_grants: 1) }
   let(:organization) { current_setting.organization }
-  let(:granter) { create(:user, organization: organization) }
-  let(:grantee) { create(:user, organization: organization) }
-  let(:other_grantee) { create(:user, organization: organization) }
-  let(:other_granter) { create(:user, organization: organization) }
+  let(:granter) { create(:user, organization:) }
+  let(:grantee) { create(:user, organization:) }
+  let(:other_grantee) { create(:user, organization:) }
+  let(:other_granter) { create(:user, organization:) }
 
   let(:form) do
     double(

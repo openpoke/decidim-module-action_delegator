@@ -8,11 +8,10 @@ module Decidim
       routes { Decidim::ActionDelegator::AdminEngine.routes }
 
       let(:organization) { create(:organization) }
-      let(:consultation) { create(:consultation, organization: organization) }
-      let(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
+      let(:setting) { create(:setting, organization:, authorization_method:) }
       let(:authorization_method) { :both }
       let(:ponderation) { create(:ponderation, setting: setting) }
-      let(:user) { create(:user, :admin, :confirmed, organization: organization) }
+      let(:user) { create(:user, :admin, :confirmed, organization:) }
       let(:params) do
         { setting_id: setting.id }
       end

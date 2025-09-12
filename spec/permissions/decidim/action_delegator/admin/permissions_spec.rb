@@ -134,6 +134,78 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
         it_behaves_like "permission is not set"
       end
+
+      context "when resource is not present" do
+        let(:context) { {} }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context "when working with ponderations" do
+      let(:action) do
+        { scope: scope, action: :index, subject: :ponderation }
+      end
+
+      context "when the user is admin" do
+        it { is_expected.to be(true) }
+      end
+
+      context "when the user is not admin" do
+        let(:user) { build(:user) }
+
+        it_behaves_like "permission is not set"
+      end
+    end
+
+    context "when destroying a ponderation" do
+      let(:action) do
+        { scope: scope, action: :destroy, subject: :ponderation }
+      end
+      let(:context) { { resource: create(:ponderation) } }
+
+      context "when the user is admin" do
+        it { is_expected.to be(true) }
+      end
+
+      context "when resource is not present" do
+        let(:context) { {} }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context "when working with participants" do
+      let(:action) do
+        { scope: scope, action: :create, subject: :participant }
+      end
+
+      context "when the user is admin" do
+        it { is_expected.to be(true) }
+      end
+
+      context "when the user is not admin" do
+        let(:user) { build(:user) }
+
+        it_behaves_like "permission is not set"
+      end
+    end
+
+    context "when destroying a participant" do
+      let(:action) do
+        { scope: scope, action: :destroy, subject: :participant }
+      end
+      let(:context) { { resource: create(:participant) } }
+
+      context "when the user is admin" do
+        it { is_expected.to be(true) }
+      end
+
+      context "when resource is not present" do
+        let(:context) { {} }
+
+        it { is_expected.to be(false) }
+      end
     end
   end
 end

@@ -58,7 +58,7 @@ describe Decidim::ActionDelegator::Admin::CreateSetting do
   end
 
   context "when copy setting" do
-    let!(:copy_from_setting) { create(:setting, :with_participants, :with_ponderations, title: { en: "Copy Title" }, description: { en: "Copy Description" }, organization: organization) }
+    let!(:copy_from_setting) { create(:setting, :with_participants, :with_ponderations, title: { en: "Copy Title" }, description: { en: "Copy Description" }, organization:) }
     let(:form) do
       double(
         invalid?: invalid,
