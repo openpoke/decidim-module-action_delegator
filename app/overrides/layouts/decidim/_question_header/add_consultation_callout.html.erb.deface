@@ -1,9 +1,0 @@
-<!-- insert_before 'h2' -->
-
-<% if user_signed_in? && defined?(current_question) && current_question&.consultation %>
-  <div id="user-answers-summary" data-summary-path="<%= decidim_action_delegator.questions_summary_path(current_question.consultation) %>">
-    <%= render "decidim/consultations/question_votes/callout", consultation: current_question.consultation %>
-
-    <%= javascript_pack_tag "decidim_action_delegator_questions_summary" %>
-  </div>
-<% end %>

@@ -9,7 +9,7 @@ module Decidim
         include Paginable
 
         layout "decidim/admin/users"
-        helper_method :settings, :settings_select_options, :copy_from_setting
+        helper_method :settings_select_options, :copy_from_setting, :settings
 
         def index
           enforce_permission_to :index, :setting
@@ -42,7 +42,7 @@ module Decidim
         def edit
           enforce_permission_to :update, :setting
 
-          @form = form(SettingForm).from_model(setting)
+          @form = form(SettingForm).from_model(current_setting)
         end
 
         def update
@@ -50,7 +50,7 @@ module Decidim
 
           @form = form(SettingForm).from_params(params)
 
-          UpdateSetting.call(@form, setting, copy_from_setting) do
+          UpdateSetting.call(@form, current_setting, copy_from_setting) do
             on(:ok) do
               notice = I18n.t("settings.update.success", scope: "decidim.action_delegator.admin")
               redirect_to decidim_admin_action_delegator.settings_path, notice: notice
@@ -64,9 +64,9 @@ module Decidim
         end
 
         def destroy
-          enforce_permission_to :destroy, :setting, resource: setting
+          enforce_permission_to :destroy, :setting, resource: current_setting
 
-          if setting.destroy
+          if current_setting.destroy
             flash[:notice] = I18n.t("settings.destroy.success", scope: "decidim.action_delegator.admin")
           else
             flash[:error] = I18n.t("settings.destroy.error", scope: "decidim.action_delegator.admin")
@@ -78,15 +78,15 @@ module Decidim
         private
 
         def setting_params
-          params.require(:setting).permit(:max_grants, :decidim_consultation_id)
+          params.require(:setting).permit(:max_grants)
         end
 
         def build_setting
           Setting.new(setting_params)
         end
 
-        def setting
-          @setting ||= collection.find_by(id: params[:id])
+        def current_setting
+          @current_setting ||= collection.find_by(id: params[:id])
         end
 
         def settings
@@ -94,15 +94,15 @@ module Decidim
         end
 
         def collection
-          @collection ||= ActionDelegator::OrganizationSettings.new(current_organization).query
+          organization_settings
         end
 
         def settings_select_options
-          collection.to_h { |setting| [setting.consultation.id, translated_attribute(setting.title)] }
+          collection.to_h { |setting| [setting.id, translated_attribute(setting.title)] }
         end
 
         def copy_from_setting
-          @copy_from_setting ||= Setting.find_by(decidim_consultation_id: params[:setting][:copy_from_setting_id])
+          @copy_from_setting ||= Setting.find_by(id: params[:setting][:copy_from_setting_id])
         end
       end
     end

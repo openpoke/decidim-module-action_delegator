@@ -12,31 +12,18 @@ module Decidim
           current_organization.users
         end
 
-        def consultations_for_select
-          organization_consultations.map { |consultation| [translated_attribute(consultation.title), consultation.id] }
-        end
-
         def ponderations_for_select(setting)
           setting.ponderations.map { |ponderation| [ponderation.title, ponderation.id] }
-        end
-
-        def organization_consultations
-          Decidim::Consultations::OrganizationConsultations.new(current_organization).query
-        end
-
-        def missing_verifications_for(resources, action)
-          resources.where.not(id: Decidim::ResourcePermission.select(:resource_id)
-            .where(resource: resources)
-            .where(Arel.sql("permissions->'#{action}'->'authorization_handlers'->>'delegations_verifier' IS NOT NULL")))
         end
 
         def missing_decidim_users(participants)
           participants.where(decidim_user: nil).or(participants.where.not(decidim_user: current_organization.users)).where.not(id: missing_registered_users(participants))
         end
 
+        # TODO: need to check
         def missing_registered_users(participants)
           participants.where.not(email: current_organization.users.select(:email))
-                      .where.not("MD5(CONCAT(phone,'-',?,'-',?)) IN (?)",
+                      .where.not("MD5(CONCAT(phone, '-', CAST(? AS text), '-', CAST(? AS text))) IN (?)",
                                  current_organization.id,
                                  Digest::MD5.hexdigest(Rails.application.secret_key_base),
                                  Authorization.select(:unique_id).where.not(unique_id: nil))

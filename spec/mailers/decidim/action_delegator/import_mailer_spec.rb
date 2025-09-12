@@ -4,9 +4,9 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe ImportMailer, type: :mailer do
-      let(:organization) { create :organization }
-      let(:current_user) { create :user, organization: organization }
+    describe ImportMailer do
+      let(:organization) { create(:organization) }
+      let(:current_user) { create(:user, organization: organization) }
       let(:current_setting) { create(:setting, consultation: consultation) }
       let(:consultation) { create(:consultation, organization: organization) }
 

@@ -10,7 +10,7 @@ module Decidim
         attribute :email, String
         attribute :phone, String
 
-        validates :verification_code, :sms_gateway, presence: true
+        validates :verification_code, :sms_gateway, presence: true, if: ->(form) { form.setting&.phone_required? }
         validates :phone, presence: true, if: ->(form) { form.setting&.phone_required? }
         validates :email, presence: true, if: ->(form) { form.setting&.email_required? }
         validate :setting_exists
@@ -24,7 +24,7 @@ module Decidim
 
         def unique_id
           Digest::MD5.hexdigest(
-            "#{setting&.phone_required? ? phone : email}-#{setting&.organization&.id}-#{Digest::MD5.hexdigest(Rails.application.secrets.secret_key_base)}"
+            "#{setting&.phone_required? ? phone : email}-#{setting&.organization&.id}-#{Digest::MD5.hexdigest(Rails.application.secret_key_base)}"
           )
         end
 
@@ -41,7 +41,8 @@ module Decidim
 
         def metadata
           {
-            phone: phone
+            phone: phone,
+            setting_id: setting.id
           }
         end
 

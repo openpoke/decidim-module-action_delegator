@@ -1,9 +1,0 @@
-<!-- insert_after '.consultations-home-banner' -->
-
-<% if user_signed_in? %>
-  <div id="user-answers-summary" class="row" style="padding:0 1rem;margint-top:-1rem" data-summary-path="<%= decidim_action_delegator.questions_summary_path(current_consultation) %>">
-    <%= render "decidim/consultations/question_votes/callout", consultation: current_consultation %>
-
-    <%= javascript_pack_tag "decidim_action_delegator_questions_summary" %>
-  </div>
-<% end %>

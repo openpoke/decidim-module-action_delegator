@@ -24,7 +24,7 @@ module Decidim
             @form = form(DelegationsVerifierForm).instance(setting: setting)
             participant = @form&.participant
 
-            return unless ActionDelegator.authorize_on_login && setting&.verify_with_email?
+            nil unless ActionDelegator.authorize_on_login && setting&.verify_with_email?
 
             Decidim::Verifications::PerformAuthorizationStep.call(authorization, @form) do
               on(:ok) do
@@ -122,7 +122,7 @@ module Decidim
           end
 
           def all_settings
-            @all_settings ||= OrganizationSettings.new(current_user.organization).active
+            @all_settings ||= Setting.where(organization: current_user.organization).active
           end
         end
       end

@@ -1,18 +1,16 @@
-<div class="card">
-  <div class="card-divider">
-    <h2 class="card-title">
-      <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
-      <%= link_to t("title", scope: "decidim.action_delegator.admin.participants.index"), decidim_admin_action_delegator.setting_participants_path(current_setting) %> &gt;
-      <%= t ".title" %>
-    </h2>
-  </div>
+<%= render "decidim/action_delegator/admin/shared/tabs_menu" do %>
+  <%= button_tag t("decidim.action_delegator.admin.participants.edit.save"), class: "main-tabs-menu__cta-button", form: "participant-form-edit" %>
+<% end %>
 
-  <div class="card-section">
-    <%= decidim_form_for @form, url: { action: "update" }, html: { class: "form edit_ponderation" } do |f| %>
-      <%= render partial: "form", object: f %>
+<div class="item__edit item__edit-1col">
+  <div class="item__edit-form">
+    <%= decidim_form_for @form, url: { action: "update" }, html: { id: "participant-form-edit", class: "form-defaults form edit_ponderation" } do |form| %>
+      <%= render partial: "form", object: form %>
 
-      <div class="button--double form-general-submit">
-        <%= f.submit t(".save") %>
+      <div class="item__edit-sticky">
+        <div class="item__edit-sticky-container">
+          <%= form.submit t(".save"), class: "button button__sm button__secondary" %>
+        </div>
       </div>
     <% end %>
   </div>

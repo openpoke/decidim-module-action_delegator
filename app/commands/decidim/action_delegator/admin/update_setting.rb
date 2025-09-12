@@ -33,9 +33,11 @@ module Decidim
 
         def update_setting
           setting.assign_attributes(
+            title: form.title,
+            description: form.description,
             max_grants: form.max_grants,
-            decidim_consultation_id: form.decidim_consultation_id,
-            authorization_method: form.authorization_method
+            authorization_method: form.authorization_method,
+            active: form.active
           )
 
           if copy_from_setting.present?

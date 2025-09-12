@@ -1,19 +1,18 @@
-<div class="row column voluntary-work-list">
-  <section class="section">
-    <div class="card card--list">
+<%= render layout: "layouts/decidim/shared/layout_user_profile" do %>
+  <div class="row column voluntary-work-list">
+    <div class="card__list-list">
       <% delegations.each do |delegation| %>
-        <div class="card--list__item">
-          <div class="card--list__text">
-            <div>
-              <h5 class="card--list__heading">
-              <%= link_to translated_attribute(delegation.consultation.title), decidim_consultations.consultation_path(delegation.consultation) %>
-              </h5>
-              <span class="text-small">
-                <%= t(".vote_delegated", name: "<strong>#{delegation.granter.name}</strong>").html_safe %>
-              </span>
+        <div class="card__list">
+          <div class="card__list-content">
+            <h5 class="card__list-title">
+              <%= link_to translated_attribute(delegation.resource.title), Decidim::EngineRouter.main_proxy(delegation.resource.component).election_path(delegation.resource) %>
+            </h5>
+            <div class="card__list-text">
+              <%= t("vote_delegated", scope: "decidim.action_delegator.user_delegations.index", name: "<strong>#{delegation.granter.name}</strong>").html_safe %>
             </div>
           </div>
         </div>
       <% end %>
-  </section>
-</div>
+    </div>
+  </div>
+<% end %>

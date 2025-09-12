@@ -9,8 +9,8 @@ module Decidim
       end
 
       def call
-        PaperTrail.request.controller_info = { decidim_action_delegator_delegation_id: context.delegation.id }
-        WhodunnitVote.new(build_vote, context.current_user)
+        # TODO: Temporarily disabled (consultation removed)
+        nil
       end
 
       private

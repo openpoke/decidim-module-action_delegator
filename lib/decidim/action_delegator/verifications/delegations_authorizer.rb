@@ -6,25 +6,21 @@ module Decidim
       class DelegationsAuthorizer < Decidim::Verifications::DefaultActionAuthorizer
         def authorize
           status = super
-          return status unless status == [:ok, {}]
 
-          # if used outside a consultation, allow all
-          return [:ok, {}] if consultation.blank?
-          return [:ok, {}] if belongs_to_consultation? && user_in_census?
+          if component && component.manifest_name == "elections"
+            return [:ok, {}] if user_in_election_census?
 
-          [:unauthorized, { extra_explanation: extra_explanations }]
+            return [:unauthorized, { extra_explanation: extra_explanations }]
+          end
+
+          status
         end
 
         private
 
-        def belongs_to_consultation?
-          return unless setting&.consultation
-
-          setting.consultation == consultation
-        end
-
-        def user_in_census?
-          return unless setting&.participants
+        def user_in_election_census?
+          return false unless options["setting"] == setting&.id.to_s
+          return false unless setting&.participants
 
           setting.participants.exists?(decidim_user: authorization.user) || setting.participants.exists?(census_params)
         end
@@ -67,15 +63,7 @@ module Decidim
         end
 
         def setting
-          @setting ||= Decidim::ActionDelegator::Setting.find_by(consultation: consultation)
-        end
-
-        def consultation
-          @consultation ||= (component.participatory_space if component&.participatory_space.is_a?(Decidim::Consultation))
-        end
-
-        def manifest
-          @manifest ||= Decidim::Verifications.find_workflow_manifest(authorization&.name)
+          @setting ||= Decidim::ActionDelegator::Setting.find_by(id: authorization.metadata["setting_id"])
         end
       end
     end

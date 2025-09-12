@@ -2,339 +2,266 @@
 
 require "spec_helper"
 
-describe "Admin manages settings", type: :system do
-  include Decidim::TranslationsHelper
-
+describe "Admin manages settings" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization, available_authorizations: available_authorizations) }
   let(:available_authorizations) { ["delegations_verifier"] }
-  let!(:consultation) { create(:consultation, organization: organization) }
-  let!(:questions) { create_list(:question, 2, consultation: consultation) }
-  let!(:authorization) { create(:authorization, user: another_user, name: "delegations_verifier", granted_at: Time.current) }
-  let!(:user) { create(:user, :admin, :confirmed, organization: organization, email: "bar@example.org") }
-  let!(:another_user) { create(:user, :confirmed, organization: organization) }
-  let(:permissions) do
-    questions.index_with { |_question| { "vote" => { "authorization_handlers" => { "delegations_verifier" => {} } } } }.to_h
+  let(:user) { create(:user, :admin, :confirmed, organization:) }
+
+  before do
+    switch_to_host(organization.host)
+    login_as user, scope: :user
+  end
+
+  context "when listing settings" do
+    let!(:setting) { create(:setting, organization:, active: true) }
+
+    before do
+      visit decidim_admin_action_delegator.settings_path
+    end
+
+    it "renders the list of settings in a table" do
+      expect(page).to have_content(I18n.t("decidim.action_delegator.admin.settings.index.title"))
+      expect(page).to have_content("Name")
+      expect(page).to have_content("Max delegations/user")
+      expect(page).to have_content("Created at")
+    end
+
+    it "shows setting information" do
+      expect(page).to have_content(setting.title["en"])
+      expect(page).to have_content(setting.max_grants)
+      expect(page).to have_content(I18n.l(setting.created_at, format: :short))
+    end
+
+    it "has navigation links" do
+      expect(page).to have_link("New configuration")
+      expect(page).to have_link("Edit")
+      expect(page).to have_link("Delete")
+    end
+
+    it "links to edit the setting" do
+      click_on "Edit"
+      expect(page).to have_current_path(decidim_admin_action_delegator.edit_setting_path(setting))
+    end
+
+    it "links to the setting's delegations" do
+      click_on "Edit the delegations"
+      expect(page).to have_current_path(decidim_admin_action_delegator.setting_delegations_path(setting))
+    end
+
+    it "links to the setting's participants" do
+      click_on "Edit the census"
+      expect(page).to have_current_path(decidim_admin_action_delegator.setting_participants_path(setting))
+    end
+
+    it "links to the setting's ponderations" do
+      click_on "Set weights for vote ponderation"
+      expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting))
+    end
   end
 
   context "when creating settings" do
     before do
-      switch_to_host(organization.host)
-      login_as user, scope: :user
-      visit decidim_admin.users_path
-      click_link I18n.t("decidim.action_delegator.admin.menu.delegations")
+      visit decidim_admin_action_delegator.settings_path
+      click_on "New configuration"
+    end
 
-      click_link I18n.t("decidim.action_delegator.admin.settings.index.actions.new_setting")
+    it "shows new setting form" do
+      expect(page).to have_css(".new_setting")
+      expect(page).to have_content("Title")
+      expect(page).to have_content("Maximum vote delegations a participant can receive")
+      expect(page).to have_content("Authorization method")
+      expect(page).to have_button("Create")
     end
 
     it "creates a new setting" do
       within ".new_setting" do
+        fill_in "setting_title_en", with: "Test Setting"
         fill_in :setting_max_grants, with: 5
-        select translated_attribute(consultation.title), from: :setting_decidim_consultation_id
+        select "Email", from: :setting_authorization_method
+        check :setting_active
 
         find("*[type=submit]").click
       end
 
       expect(page).to have_admin_callout("successfully")
-      expect(page).to have_content(translated_attribute(consultation.title))
+      expect(page).to have_content("Test Setting")
       expect(page).to have_current_path(decidim_admin_action_delegator.settings_path)
+    end
+
+    it "validates form inputs" do
+      within ".new_setting" do
+        find("*[type=submit]").click
+      end
+
+      expect(page).to have_content("There is an error in this field")
     end
   end
 
   context "when creating with copy from other setting" do
-    let!(:first_consultation) { create(:consultation, organization: organization) }
-    let!(:setting) { create(:setting, :with_participants, :with_ponderations, authorization_method: :both, consultation: first_consultation) }
+    let!(:source_setting) { create(:setting, :with_participants, :with_ponderations, organization:, authorization_method: :both) }
 
     before do
-      switch_to_host(organization.host)
-      login_as user, scope: :user
-      visit decidim_admin.users_path
-      click_link I18n.t("decidim.action_delegator.admin.menu.delegations")
-
-      click_link I18n.t("decidim.action_delegator.admin.settings.index.actions.new_setting")
+      visit decidim_admin_action_delegator.settings_path
+      click_on "New configuration"
     end
 
-    it "creates a new setting with participants and ponderations from an other setting" do
-      fill_in :setting_max_grants, with: 5
-      select translated_attribute(consultation.title), from: :setting_decidim_consultation_id
-      select translated_attribute(first_consultation.title), from: :setting_copy_from_setting_id
+    it "creates a new setting with participants and ponderations from another setting" do
+      fill_in "setting_title_en", with: "Copied Setting"
+      fill_in :setting_max_grants, with: 3
+      select "Email and phone number", from: :setting_authorization_method
+      select source_setting.title["en"], from: :setting_copy_from_setting_id
+      check :setting_active
 
-      find("*[type=submit]").click
+      within ".new_setting" do
+        click_on "Create"
+      end
 
       expect(page).to have_admin_callout("successfully")
-      expect(page).to have_content(translated_attribute(first_consultation.title))
-      expect(page).to have_css("tr[data-setting-id='#{setting.id}'] td:nth-of-type(5)", text: "3")
-      expect(page).to have_css("tr[data-setting-id='#{setting.id}'] td:nth-of-type(6)", text: "3")
+      expect(page).to have_content("Copied Setting")
 
-      row_with_new_setting = find(:xpath, "//table/tbody/tr[1]")
-      row_with_new_setting.find(:link, I18n.t("decidim.action_delegator.admin.settings.index.actions.census")).click
+      new_setting = Decidim::ActionDelegator::Setting.where("title ->> 'en' = ?", "Copied Setting").first
+      expect(new_setting).to be_present
+      expect(new_setting.participants.count).to eq(source_setting.participants.count)
+      expect(new_setting.ponderations.count).to eq(source_setting.ponderations.count)
+    end
+  end
 
-      # Check that the participants from the copied setting are present
-      setting.participants.each do |participant|
-        expect(page).to have_content(participant.email)
+  context "when editing settings" do
+    let!(:setting) { create(:setting, organization:, active: true) }
+
+    before do
+      visit decidim_admin_action_delegator.settings_path
+      click_on "Edit"
+    end
+
+    it "shows edit setting form" do
+      expect(page).to have_content("Title")
+      expect(page).to have_field("setting_title_en", with: setting.title["en"])
+      expect(page).to have_field("setting_max_grants", with: setting.max_grants.to_s)
+    end
+
+    it "updates the setting" do
+      fill_in "setting_title_en", with: "Updated Setting"
+      fill_in :setting_max_grants, with: 10
+
+      within ".edit_setting" do
+        find("*[type=submit]").click
       end
+
+      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_content("Updated Setting")
+      expect(page).to have_current_path(decidim_admin_action_delegator.settings_path)
+    end
+
+    it "validates form inputs" do
+      fill_in :setting_max_grants, with: ""
+
+      within ".edit_setting" do
+        find("*[type=submit]").click
+      end
+
+      expect(page).to have_content("There is an error in this field")
     end
   end
 
   context "when editing settings with copy from other setting" do
-    let!(:first_consultation) { create(:consultation, organization: organization) }
-    let!(:first_setting) { create(:setting, :with_participants, :with_ponderations, authorization_method: :both, consultation: first_consultation) }
-    let!(:second_setting) { create(:setting, :with_participants, :with_ponderations, authorization_method: :both, consultation: consultation) }
+    let!(:first_setting) { create(:setting, :with_participants, :with_ponderations, organization:, authorization_method: :both) }
+    let!(:second_setting) { create(:setting, :with_participants, :with_ponderations, organization:, authorization_method: :both) }
 
     before do
-      switch_to_host(organization.host)
-      login_as user, scope: :user
-      visit decidim_admin.users_path
-      click_link I18n.t("decidim.action_delegator.admin.menu.delegations")
-
-      find("tr[data-setting-id='#{first_setting.id}'] a.action-icon--edit[title='Edit']").click
+      visit decidim_admin_action_delegator.settings_path
+      within "tr[data-setting-id='#{first_setting.id}']" do
+        click_on "Edit"
+      end
     end
 
-    it "edits a setting" do
-      select translated_attribute(consultation.title), from: :setting_copy_from_setting_id
+    it "updates a setting with copy from another setting" do
+      second_setting_count = second_setting.participants.count
+      first_setting_count = first_setting.participants.count
 
-      find("*[type=submit]").click
+      select second_setting.title["en"], from: :setting_copy_from_setting_id
+
+      within ".edit_setting" do
+        click_on "Save"
+      end
 
       expect(page).to have_admin_callout("successfully")
-      expect(page).to have_content(translated_attribute(first_consultation.title))
-      expect(page).to have_css("tr[data-setting-id='#{first_setting.id}'] td:nth-of-type(5)", text: "6")
-      expect(page).to have_css("tr[data-setting-id='#{first_setting.id}'] td:nth-of-type(6)", text: "6")
 
-      edited_setting_row = find("tr[data-setting-id='#{first_setting.id}']")
-      edited_setting_row.find("a[title='#{I18n.t("decidim.action_delegator.admin.settings.index.actions.census")}']").click
-
-      # Check that the participants from the other setting are on the list
-      second_setting.participants.each do |participant|
-        expect(page).to have_content(participant.email)
-      end
-
-      # Check that the participants from the edited setting are on the list
-      first_setting.participants.each do |participant|
-        expect(page).to have_content(participant.email)
-      end
-    end
-  end
-
-  context "when listing settings" do
-    let(:participants) { [] }
-    let(:authorization_method) { :both }
-    let!(:setting) { create(:setting, consultation: consultation, participants: participants, authorization_method: authorization_method) }
-
-    before do
-      permissions.each { |question, permission| question.build_resource_permission.update!(permissions: permission) }
-      switch_to_host(organization.host)
-      login_as user, scope: :user
-      visit decidim_admin.users_path
-      click_link I18n.t("decidim.action_delegator.admin.menu.delegations")
-    end
-
-    it "renders the list of settings in a table" do
-      expect(page).to have_no_content('"Delegation Verifier" authorization method is not installed')
-      expect(page).to have_content(I18n.t("decidim.action_delegator.admin.settings.index.title"))
-
-      expect(page).to have_content(I18n.t("settings.index.consultation", scope: i18n_scope))
-      expect(page).to have_content(I18n.t("settings.index.created_at", scope: i18n_scope))
-
-      expect(page).to have_content(translated_attribute(consultation.title))
-      expect(page).to have_content(I18n.l(setting.created_at, format: :short))
-    end
-
-    it "links to the consultation" do
-      expect(page).to have_selector(
-        :xpath,
-        "//a[@href='#{decidim_consultations.consultation_path(consultation)}'][@target='blank']"
-      )
-    end
-
-    it "links to edit the setting" do
-      click_link "Edit"
-      expect(page).to have_current_path(decidim_admin_action_delegator.edit_setting_path(setting))
-    end
-
-    it "links to the setting's delegations" do
-      click_link "Edit the delegations"
-      expect(page).to have_current_path(decidim_admin_action_delegator.setting_delegations_path(setting))
-    end
-
-    it "links to the setting's participants" do
-      click_link "Edit the census"
-      expect(page).to have_current_path(decidim_admin_action_delegator.setting_participants_path(setting))
-    end
-
-    it "links to the setting's ponderations" do
-      click_link "Set weights for vote ponderation"
-      expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting))
-    end
-
-    it "shows a callout with information" do
-      expect(page).to have_content("All questions are restricted by the Corporate Governance Verifier")
-      expect(page).to have_content("There is no census! Add participants or nobody will be able to vote if Corporate Governance Verifier is active")
-    end
-
-    context "when there are participants" do
-      let(:email) { "foo@example.org" }
-      let(:phone) { "123456789" }
-      let(:participants) { [build(:participant, email: email, phone: phone)] }
-      let(:seed) { "something" }
-      let(:uniq_id) { Digest::MD5.hexdigest("#{seed}-#{organization.id}-#{Digest::MD5.hexdigest(Rails.application.secret_key_base)}") }
-
-      it "complains about registration" do
-        expect(page).to have_content("All questions are restricted by the Corporate Governance Verifier")
-        expect(page).to have_content("There are 1 participants that are not registered into the platform")
-        expect(page).to have_content("There are 1 participants that are not verified by the Corporate Governance Verifier")
-        expect(page).to have_css(".callout.warning")
-      end
-
-      context "when participants are registered" do
-        let(:email) { user.email }
-
-        it "complains about verification" do
-          expect(page).to have_content("All questions are restricted by the Corporate Governance Verifier")
-          expect(page).to have_content("All participants are registered into the platform")
-          expect(page).to have_content("There are 1 participants that are not verified by the Corporate Governance Verifier")
-          expect(page).to have_css(".callout.warning")
-        end
-
-        context "when participants are verified" do
-          let!(:authorization) { create(:authorization, user: user, name: "delegations_verifier", unique_id: uniq_id, granted_at: Time.current) }
-
-          it "is happy" do
-            expect(page).to have_content("All questions are restricted by the Corporate Governance Verifier")
-            expect(page).to have_content("All participants are registered into the platform")
-            expect(page).to have_content("All participants are verified by the Corporate Governance Verifier")
-            expect(page).to have_css(".callout.success")
-          end
-
-          context "and unque_id is by email" do
-            let(:seed) { phone }
-            let(:email) { "another@email" }
-
-            it "is happy" do
-              expect(page).to have_content("All participants are verified by the Corporate Governance Verifier")
-            end
-          end
-        end
-      end
-
-      context "when participants are not synced" do
-        let(:email) { user.email }
-
-        before do
-          participants.first.update_column(:decidim_user_id, nil) # rubocop:disable Rails/SkipsModelValidations:
-          click_link I18n.t("decidim.action_delegator.admin.menu.delegations")
-        end
-
-        it "is alert" do
-          expect(page).to have_content("The participants list needs to be synchronized")
-          expect(page).to have_link(href: decidim_admin_action_delegator.sync_setting_permissions_path(setting))
-          expect(page).to have_css(".callout.alert")
-
-          perform_enqueued_jobs { click_link "Click here to automatically fix this" }
-
-          expect(page).not_to have_css(".callout.alert")
-          expect(page).not_to have_content("The participants list needs to be synchronized")
-        end
-
-        context "and participants are not registered" do
-          let(:email) { "foo@example.org" }
-
-          it "has no alert" do
-            expect(page).not_to have_css(".callout.alert")
-            expect(page).not_to have_content("The participants list needs to be synchronized")
-          end
-        end
-      end
-    end
-
-    context "when verifier is not installed" do
-      let(:available_authorizations) { [] }
-
-      it "alerts with a message" do
-        expect(page).to have_content('"Corporate Governance Verifier" authorization method is not installed')
-      end
-    end
-
-    context "when all questions are unrestricted" do
-      let(:permissions) { {} }
-
-      it "has a link to fix it" do
-        expect(page).not_to have_content('"Delegation Verifier" authorization method is not installed')
-        expect(page).to have_content("There are 2 questions that are not restricted by the Corporate Governance Verifier.")
-        expect(page).not_to have_content("All questions are restricted by the Corporate Governance Verifier")
-        expect(page).to have_css(".callout.success")
-
-        click_link "Click here to automatically fix this"
-
-        expect(page).to have_content("All questions are restricted by the Corporate Governance Verifier")
-      end
-    end
-
-    context "when some questions are unrestricted" do
-      let(:permissions) do
-        { questions.first => { "vote" => { "authorization_handlers" => { "delegations_verifier" => {} } } } }
-      end
-
-      it "has a link to fix it" do
-        expect(page).not_to have_content('"Corporate Governance Verifier" authorization method is not installed')
-        expect(page).to have_content("There are 1 questions that are not restricted by the Corporate Governance Verifier.")
-        expect(page).not_to have_content("All questions are restricted by the Corporate Governance Verifier")
-        expect(page).to have_css(".callout.warning")
-
-        click_link "Click here to automatically fix this"
-
-        expect(page).to have_content("All questions are restricted by the Corporate Governance Verifier")
-      end
-    end
-
-    context "when some questions have other permissions" do
-      let(:permissions) do
-        {
-          questions.first => { "vote" => { "authorization_handlers" => { "delegations_verifier" => {} } } },
-          questions.second => { "vote" => { "authorization_handlers" => { "another_verifier" => {} } } }
-        }
-      end
-
-      it "has a link to fix it" do
-        expect(page).not_to have_content('"Corporate Governance Verifier" authorization method is not installed')
-        expect(page).to have_content("There are 1 questions that are not restricted by the Corporate Governance Verifier.")
-        expect(page).not_to have_content("All questions are restricted by the Corporate Governance Verifier")
-        expect(page).to have_css(".callout.warning")
-
-        click_link "Click here to automatically fix this"
-
-        expect(page).to have_content("All questions are restricted by the Corporate Governance Verifier")
-      end
+      first_setting.reload
+      expect(first_setting.participants.count).to eq(first_setting_count + second_setting_count)
     end
   end
 
   context "when removing settings" do
-    let!(:delegation) { nil }
-    let!(:setting) { create(:setting, consultation: consultation) }
+    let!(:setting) { create(:setting, organization:, active: true) }
 
     before do
-      switch_to_host(organization.host)
-      login_as user, scope: :user
-      visit decidim_admin.users_path
-      click_link I18n.t("decidim.action_delegator.admin.menu.delegations")
+      visit decidim_admin_action_delegator.settings_path
     end
 
     it "removes the setting" do
-      within "tr[data-setting-id=\"#{setting.id}\"]" do
-        accept_confirm { click_link "Delete" }
+      within "tr[data-setting-id='#{setting.id}']" do
+        accept_confirm { click_on "Delete" }
       end
 
       expect(page).to have_current_path(decidim_admin_action_delegator.settings_path)
-      expect(page).to have_no_content(translated_attribute(consultation.title))
+      expect(page).to have_no_content(setting.title["en"])
     end
 
     context "when setting is not destroyable" do
-      let!(:delegation) { create(:delegation, setting: setting) }
+      let!(:setting_with_data) { create(:setting, :with_participants, organization:) }
+
+      before do
+        visit decidim_admin_action_delegator.settings_path
+      end
 
       it "has no delete link" do
-        within "tr[data-setting-id=\"#{setting.id}\"]" do
+        within "tr[data-setting-id='#{setting_with_data.id}']" do
           expect(page).to have_no_link("Delete")
         end
       end
+    end
+  end
+
+  context "when authorization method is not installed" do
+    let(:available_authorizations) { [] }
+    let!(:setting) { create(:setting, organization:, active: true) }
+
+    before do
+      visit decidim_admin_action_delegator.settings_path
+    end
+
+    it "shows warning about missing authorization" do
+      expect(page).to have_content("authorization method is not installed")
+    end
+  end
+
+  context "when setting has participants" do
+    let!(:setting) { create(:setting, :with_participants, organization:, authorization_method: :email) }
+
+    before do
+      visit decidim_admin_action_delegator.settings_path
+    end
+
+    it "shows participant count" do
+      expect(page).to have_content(setting.participants.count.to_s)
+    end
+  end
+
+  context "when setting has different authorization methods" do
+    let!(:email_setting) { create(:setting, organization:, authorization_method: :email) }
+    let!(:phone_setting) { create(:setting, organization:, authorization_method: :phone) }
+    let!(:both_setting) { create(:setting, organization:, authorization_method: :both) }
+
+    before do
+      visit decidim_admin_action_delegator.settings_path
+    end
+
+    it "shows different authorization methods" do
+      expect(page).to have_content("Only email")
+      expect(page).to have_content("Only phone number")
+      expect(page).to have_content("Email and phone number")
     end
   end
 end

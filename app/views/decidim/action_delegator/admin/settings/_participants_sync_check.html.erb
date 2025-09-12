@@ -1,4 +1,4 @@
-<% missing_sync =  missing_decidim_users(setting&.participants) %>
+<% missing_sync = missing_decidim_users(setting&.participants) %>
 <% if setting.participants.any? && missing_sync.present? %>
 <div class="callout alert text-left">
   <ul class="happy-faces">

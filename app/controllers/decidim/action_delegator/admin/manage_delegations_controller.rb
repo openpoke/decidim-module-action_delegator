@@ -15,31 +15,23 @@ module Decidim
         def new
           enforce_permission_to :create, :delegation
 
+          @form = CsvImportForm.from_params(params)
           @errors = []
         end
 
         def create
           enforce_permission_to :create, :delegation
 
-          @csv_file = params[:csv_file]
-          redirect_to(new_setting_manage_delegation_path) && return if @csv_file.blank?
+          @form = CsvImportForm.from_params(params)
 
-          csv_file = @csv_file.read.force_encoding("utf-8").encode("utf-8")
-          @import_summary = Decidim::ActionDelegator::Admin::ImportCsvJob.perform_now("DelegationsCsvImporter", csv_file, current_user, current_setting)
-
-          flash[:notice] = t(".success")
-
-          redirect_to setting_delegations_path(current_setting)
-        end
-
-        private
-
-        def current_setting
-          @current_setting ||= organization_settings.find_by(id: params[:setting_id])
-        end
-
-        def organization_settings
-          Decidim::ActionDelegator::OrganizationSettings.new(current_organization).query
+          if @form.valid?
+            csv_file = @form.csv_file.download.force_encoding("utf-8").encode("utf-8")
+            @import_summary = ImportCsvJob.perform_now("DelegationsCsvImporter", csv_file, current_user, current_setting)
+            flash[:notice] = t(".success")
+            redirect_to setting_delegations_path(current_setting)
+          else
+            render :new
+          end
         end
       end
     end

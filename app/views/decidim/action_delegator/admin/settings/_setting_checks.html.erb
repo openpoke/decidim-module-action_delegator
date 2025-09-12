@@ -1,27 +1,22 @@
-<% missing_questions =  missing_verifications_for(setting&.consultation&.questions, "vote") %>
-<% missing_registered =  missing_registered_users(setting&.participants) %>
-<% total_missing_authorizations =  total_missing_authorizations(setting&.participants) %>
-<% status_err = (missing_questions.present? || missing_registered.present? || setting.participants.blank? || total_missing_authorizations.positive?)
-  if setting&.consultation&.questions&.count == missing_questions.count
-    status_err = false
-  end %>
+<% missing_registered = missing_registered_users(setting&.participants) %>
+<% total_missing_authorizations = total_missing_authorizations(setting&.participants) %>
+<% status_err = (missing_registered.present? || setting.participants.blank? || total_missing_authorizations.positive?) %>
 
 <%= render "decidim/action_delegator/admin/settings/participants_sync_check", setting: setting %>
 
 <div class="callout <%= status_err ? "warning" : "success" %> text-left">
-
+  <p class="font-bold"><%= t(".applies_to") %></p>
   <ul class="happy-faces">
-    <% if setting.consultation %>
-      <% if missing_questions.present? %>
-        <li class="<%= status_err ? "unhappy" : "warning" %>">
-          <%= t(".consultation_questions_missing_verifier_html", count: missing_questions.count) %><br>
-          <%= link_to t(".click_to_fix"), decidim_admin_action_delegator.setting_permissions_path(setting), method: :post %>
-        </li>
-      <% else %>
-        <li class="happy"><%= t(".consultation_questions_all_verified_html") %></li>
+    <% if setting.presenter.translated_resources_list.any? %>
+      <% setting.presenter.translated_resources_list.each do |resource| %>
+        <li><%= link_to resource.title, setting.presenter.path_for(resource), target: "_blank", data: { "external-link": false } %></li>
       <% end %>
+    <% else %>
+      <li class="unhappy text-alert"><%= t(".no_resources_found") %></li>
     <% end %>
+  </ul>
 
+  <ul class="happy-faces mt-4">
     <% if setting.participants.any? %>
       <% if missing_registered.present? %>
         <li class="warning"><%= t(".missing_registered_users_html", count: missing_registered.count) %></li>

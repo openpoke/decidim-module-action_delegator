@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require "decidim/core/test/factories"
-require "decidim/consultations/test/factories"
-
 FactoryBot.define do
   factory :delegation, class: "Decidim::ActionDelegator::Delegation" do
     setting
-    granter { association :user, organization: setting.consultation.organization }
-    grantee { association :user, organization: setting.consultation.organization }
+    granter { association :user, organization: setting.organization }
+    grantee { association :user, organization: setting.organization }
   end
 
   factory :ponderation, class: "Decidim::ActionDelegator::Ponderation" do
@@ -24,13 +21,21 @@ FactoryBot.define do
   end
 
   factory :setting, class: "Decidim::ActionDelegator::Setting" do
+    organization { create(:organization) }
+    transient do
+      skip_injection { false }
+    end
+
+    title { generate_localized_title(:title, skip_injection:) }
+    description { generate_localized_description(:description, skip_injection:) }
     max_grants { 3 }
-    consultation
+
     trait :with_ponderations do
       after(:create) do |setting|
         create_list(:ponderation, 3, setting: setting)
       end
     end
+
     trait :with_participants do
       after(:create) do |setting|
         create_list(:participant, 3, setting: setting)

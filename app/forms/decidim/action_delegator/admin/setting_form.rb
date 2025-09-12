@@ -3,25 +3,21 @@
 module Decidim
   module ActionDelegator
     module Admin
-      class SettingForm < Form
+      class SettingForm < Decidim::Form
+        include TranslatableAttributes
+
         mimic :setting
 
+        translatable_attribute :title, String
+        translatable_attribute :description, String
         attribute :max_grants, Integer
-        attribute :decidim_consultation_id, Integer
         attribute :authorization_method, String
         attribute :copy_from_setting_id, Integer
+        attribute :active, Boolean, default: false
 
-        validates :max_grants, :decidim_consultation_id, presence: true
-        validate :consultation_uniqueness
-
-        # TODO: validate consultation vote starting in the future
-        def consultation_uniqueness
-          errors.add(:decidim_consultation_id, :taken) if record.exists?(decidim_consultation_id: decidim_consultation_id)
-        end
-
-        def record
-          Setting.where.not(id: id)
-        end
+        validates :max_grants, presence: true
+        validates :max_grants, numericality: { greater_than: 0 }
+        validates :title, translatable_presence: true
       end
     end
   end

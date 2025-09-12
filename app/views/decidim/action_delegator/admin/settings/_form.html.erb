@@ -1,16 +1,30 @@
-<div class="row column">
-  <%= form.select :decidim_consultation_id, consultations_for_select %>
-</div>
+<div class="form__wrapper">
+  <div class="card pt-4">
+    <div class="card-section">
+      <div class="row column">
+        <%= form.translated :text_field, :title, aria: { label: :title } %>
+      </div>
 
-<div class="row column">
-  <%= form.number_field :max_grants, min: 1, autofocus: true %>
-</div>
+      <div class="row column">
+        <%= form.check_box :active %>
+      </div>
 
-<div class="row column">
-  <%= form.select :authorization_method, [:both, :phone, :email].map { |op| [t(op, scope: "decidim.action_delegator.admin.settings.authorization_method"), op] } %>
-  <div class="help-text"><%= t("authorization_method_help", scope: "decidim.action_delegator.admin.settings").html_safe %></div>
-</div>
+      <div class="row column">
+        <%= form.translated :editor, :description, aria: { label: :description } %>
+      </div>
 
-<div class="row column">
-  <%= form.collection_select :copy_from_setting_id, settings_select_options, :first, :last, { include_blank: true, label: t("copy_setting", scope: "decidim.action_delegator.admin.settings").html_safe } %>
+      <div class="row column">
+        <%= form.number_field :max_grants, min: 1, autofocus: true %>
+      </div>
+
+      <div class="row column">
+        <%= form.select(:authorization_method, [:both, :phone, :email].map { |op| [t(op, scope: "decidim.action_delegator.admin.settings.authorization_method"), op] }) %>
+        <span class="help-text mt-4"><%= t("authorization_method_help_html", scope: "decidim.action_delegator.admin.settings") %></span>
+      </div>
+
+      <div class="row column">
+        <%= form.collection_select :copy_from_setting_id, settings_select_options, :first, :last, { include_blank: true, label: t("copy_setting", scope: "decidim.action_delegator.admin.settings").html_safe } %>
+      </div>
+    </div>
+  </div>
 </div>

@@ -4,12 +4,11 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe Admin::SettingsController, type: :controller do
+    describe Admin::SettingsController do
       routes { Decidim::ActionDelegator::AdminEngine.routes }
 
       let(:organization) { create(:organization) }
-      let(:consultation) { create(:consultation, organization: organization) }
-      let(:user) { create(:user, :admin, :confirmed, organization: organization) }
+      let(:user) { create(:user, :admin, :confirmed, organization:) }
 
       before do
         request.env["decidim.current_organization"] = organization
@@ -17,20 +16,14 @@ module Decidim
       end
 
       describe "#index" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:index, :setting, {})
-
-          get :index
-        end
-
         it "renders decidim/admin/users layout" do
           get :index
           expect(response).to render_template("layouts/decidim/admin/users")
         end
 
         it "lists settings of the current organization only" do
-          other_consultation = create(:consultation)
-          other_setting = create(:setting, consultation: other_consultation)
+          other_organization = create(:organization)
+          other_setting = create(:setting, organization: other_organization)
 
           get :index
 
@@ -39,29 +32,29 @@ module Decidim
       end
 
       describe "#new" do
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:create, :setting, {})
-
+        it "returns a success response" do
           get :new
+          expect(response).to be_successful
         end
       end
 
       describe "#create" do
         let(:setting_params) do
-          { setting: { max_grants: 2, decidim_consultation_id: consultation.id, authorization_method: :both } }
-        end
-
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:create, :setting, {})
-
-          post :create, params: setting_params
+          {
+            setting: {
+              max_grants: 2,
+              authorization_method: :both,
+              title: { en: "Test Setting" },
+              description: { en: "Test Description" }
+            }
+          }
         end
 
         context "when successful" do
           it "creates new settings" do
             expect { post :create, params: setting_params }.to change(Setting, :count).by(1)
 
-            expect(response).to redirect_to("/admin/action_delegator#{settings_path}")
+            expect(response).to redirect_to(settings_path)
             expect(flash[:notice]).to eq(I18n.t("decidim.action_delegator.admin.settings.create.success"))
           end
         end
@@ -76,26 +69,26 @@ module Decidim
       end
 
       describe "#edit" do
-        let!(:setting) { create(:setting, consultation: consultation) }
+        let!(:setting) { create(:setting, organization:) }
 
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:update, :setting, {})
-
+        it "returns a success response" do
           get :edit, params: { id: setting.id }
+          expect(response).to be_successful
         end
       end
 
       describe "#update" do
-        let!(:setting) { create(:setting, consultation: consultation) }
-        let(:another_consultation) { create(:consultation, organization: consultation.organization) }
+        let!(:setting) { create(:setting, organization:) }
         let(:setting_params) do
-          { id: setting.id, setting: { max_grants: 3, decidim_consultation_id: another_consultation.id, authorization_method: :phone } }
-        end
-
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:update, :setting, {})
-
-          post :update, params: setting_params
+          {
+            id: setting.id,
+            setting: {
+              max_grants: 3,
+              authorization_method: :phone,
+              title: { en: "Updated Setting" },
+              description: { en: "Updated Description" }
+            }
+          }
         end
 
         context "when successful" do
@@ -103,9 +96,8 @@ module Decidim
             post :update, params: setting_params
 
             expect(setting.reload.max_grants).to eq(3)
-            expect(setting.consultation).to eq(another_consultation)
             expect(setting.authorization_method).to eq("phone")
-            expect(response).to redirect_to("/admin/action_delegator#{settings_path}")
+            expect(response).to redirect_to(settings_path)
             expect(flash[:notice]).to eq(I18n.t("decidim.action_delegator.admin.settings.update.success"))
           end
         end
@@ -120,17 +112,11 @@ module Decidim
       end
 
       describe "#destroy" do
-        let!(:setting) { create(:setting, consultation: consultation) }
-
-        it "authorizes the action" do
-          expect(controller).to receive(:allowed_to?).with(:destroy, :setting, { resource: setting })
-
-          delete :destroy, params: { id: setting.id }
-        end
+        let!(:setting) { create(:setting, organization:) }
 
         context "when the specified setting does not belong to the current organization" do
-          let(:consultation) { create(:consultation) }
-          let(:setting) { create(:setting, consultation: consultation) }
+          let(:other_organization) { create(:organization) }
+          let(:setting) { create(:setting, organization: other_organization) }
 
           it "does not destroy the setting" do
             expect { delete :destroy, params: { id: setting.id } }

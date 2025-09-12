@@ -4,14 +4,14 @@ require "spec_helper"
 
 module Decidim
   module ActionDelegator
-    describe Participant, type: :model do
+    describe Participant do
       subject { build(:participant, ponderation: ponderation, email: email, phone: phone, setting: setting, decidim_user: decidim_user) }
 
       let(:setting) { create(:setting, authorization_method: authorization_method) }
       let(:organization) { setting.organization }
       let(:authorization_method) { :email }
       let(:ponderation) { create(:ponderation) }
-      let(:user) { create(:user, organization: setting.organization, last_sign_in_at: Time.zone.parse("2023-01-01")) }
+      let(:user) { create(:user, organization: setting.organization, last_sign_in_at: Time.zone.parse("2025-01-01 12:00:00")) }
       let(:email) { user.email }
       let(:phone) { "34123456" }
       let(:decidim_user) { nil }
@@ -67,25 +67,25 @@ module Decidim
 
       it_behaves_like "hasn't voted"
 
-      context "when user has voted in the setting's consultation" do
-        let!(:vote) { create(:vote, response: response, question: question, author: user) }
-        let(:response) { create(:response, question: question) }
-        let(:question) { create(:question, consultation: setting.consultation) }
+      # context "when user has voted in the setting's consultation" do
+      #   let!(:vote) { create(:vote, response: response, question: question, author: user) }
+      #   let(:response) { create(:response, question: question) }
+      #   let(:question) { create(:question, consultation: setting.consultation) }
 
-        it_behaves_like "has voted"
+      #   it_behaves_like "has voted"
 
-        context "and voted in another consultation" do
-          let(:other_consultation) { create(:consultation, organization: setting.consultation.organization) }
-          let(:other_question) { create(:question, consultation: other_consultation) }
-          let(:other_response) { create(:response, question: other_question) }
-          let!(:vote) { create(:vote, response: other_response, question: other_question, author: user) }
+      #   context "and voted in another consultation" do
+      #     let(:other_consultation) { create(:consultation, organization: setting.consultation.organization) }
+      #     let(:other_question) { create(:question, consultation: other_consultation) }
+      #     let(:other_response) { create(:response, question: other_question) }
+      #     let!(:vote) { create(:vote, response: other_response, question: other_question, author: user) }
 
-          it_behaves_like "hasn't voted"
-        end
-      end
+      #     it_behaves_like "hasn't voted"
+      #   end
+      # end
 
       context "when same email exists in another organization" do
-        let!(:existing_user) { create :user }
+        let!(:existing_user) { create(:user) }
         let(:email) { existing_user.email }
 
         it "does not set the decidim_user on save" do
@@ -132,8 +132,7 @@ module Decidim
         it { is_expected.not_to be_valid }
 
         context "and setting is different" do
-          let(:consultation) { create(:consultation, organization: organization) }
-          let(:existing_setting) { create(:setting, consultation: consultation) }
+          let(:existing_setting) { create(:setting, organization: organization) }
 
           it { is_expected.to be_valid }
         end
@@ -147,8 +146,7 @@ module Decidim
         it { is_expected.not_to be_valid }
 
         context "and setting is different" do
-          let(:consultation) { create(:consultation, organization: organization) }
-          let(:existing_setting) { create(:setting, consultation: consultation) }
+          let(:existing_setting) { create(:setting, organization: organization) }
 
           it { is_expected.to be_valid }
         end
@@ -173,8 +171,7 @@ module Decidim
           it { is_expected.not_to be_valid }
 
           context "and setting is different" do
-            let(:consultation) { create(:consultation, organization: organization) }
-            let(:existing_setting) { create(:setting, consultation: consultation) }
+            let(:existing_setting) { create(:setting, organization: organization) }
 
             it { is_expected.to be_valid }
           end
@@ -183,7 +180,7 @@ module Decidim
         context "and an authorization exists" do
           let(:user_phone) { phone }
           let!(:authorization) { create(:authorization, user: user, name: "delegations_verifier", metadata: { phone: user_phone }, unique_id: uniq_id) }
-          let(:uniq_id) { Digest::MD5.hexdigest("#{user_phone}-#{user.organization.id}-#{Digest::MD5.hexdigest(Rails.application.secrets.secret_key_base)}") }
+          let(:uniq_id) { Digest::MD5.hexdigest("#{user_phone}-#{user.organization.id}-#{Digest::MD5.hexdigest(Rails.application.secret_key_base)}") }
 
           it "has a related user" do
             expect(subject.user).to eq(user)
@@ -198,7 +195,7 @@ module Decidim
           end
 
           context "when same authorization exists in another organization" do
-            let(:user) { create :user }
+            let(:user) { create(:user) }
 
             it "does not set the decidim_user on save" do
               subject.save

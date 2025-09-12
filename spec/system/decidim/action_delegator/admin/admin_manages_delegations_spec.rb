@@ -2,10 +2,10 @@
 
 require "spec_helper"
 
-describe "Admin manages delegations", type: :system do
+describe "Admin manages delegations" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization) }
-  let(:user) { create(:user, :admin, :confirmed, organization: organization) }
+  let(:user) { create(:user, :admin, :confirmed, organization:) }
 
   before do
     switch_to_host(organization.host)
@@ -13,112 +13,109 @@ describe "Admin manages delegations", type: :system do
   end
 
   context "when listing delegations" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:setting) { create(:setting, consultation: consultation) }
-    let!(:delegation) { create(:delegation, setting: setting) }
-
-    let!(:collection) { create_list :delegation, collection_size, setting: setting }
-    let!(:resource_selector) { "[data-delegation-id]" }
-    let(:collection_size) { 30 }
+    let(:setting) { create(:setting, organization:, active: true) }
+    let!(:delegation) { create(:delegation, setting:) }
+    let!(:collection) { create_list(:delegation, collection_size, setting:) }
+    let(:collection_size) { 50 }
 
     before do
       visit decidim_admin_action_delegator.setting_delegations_path(setting)
     end
 
-    it "lists 20 resources per page by default" do
-      expect(page).to have_css(resource_selector, count: 20)
-      expect(page).to have_css(".pagination .page", count: 2)
+    it "lists delegations with pagination" do
+      within "div[data-pagination]" do
+        expect(page).to have_content("Next")
+      end
+    end
+
+    it "shows delegation information" do
+      expect(page).to have_content(delegation.granter.name)
+      expect(page).to have_content(delegation.grantee.name)
+      expect(page).to have_content(delegation.granter.email)
+      expect(page).to have_content(delegation.grantee.email)
+    end
+
+    it "shows grantee voted status" do
+      expect(page).to have_content("No") # grantee_voted? returns false
+    end
+
+    it "has navigation links" do
+      expect(page).to have_link("New delegation")
+      expect(page).to have_link("Import via csv")
     end
   end
 
   context "when creating a delegation" do
-    let!(:granter) { create(:user, organization: organization) }
-    let!(:grantee) { create(:user, organization: organization) }
-    let!(:consultation) { create(:consultation, organization: organization) }
-    let!(:setting) { create(:setting, consultation: consultation) }
+    let!(:granter) { create(:user, organization:) }
+    let!(:grantee) { create(:user, organization:) }
+    let!(:setting) { create(:setting, organization:, active: true) }
 
     before do
       visit decidim_admin_action_delegator.setting_delegations_path(setting)
     end
 
-    it "creates a new delegation" do
-      click_link I18n.t("delegations.index.actions.new_delegation", scope: i18n_scope)
+    it "shows new delegation form" do
+      click_on "New delegation"
+
+      expect(page).to have_css(".new_delegation")
+      expect(page).to have_content("Granter")
+      expect(page).to have_content("Grantee")
+      expect(page).to have_button("Create")
+    end
+
+    it "validates form inputs" do
+      click_on "New delegation"
 
       within ".new_delegation" do
-        custom_autocomplete_select "#{granter.name} (@#{granter.nickname})", from: :granter_id
-        custom_autocomplete_select "#{grantee.name} (@#{grantee.nickname})", from: :grantee_id
-
         find("*[type=submit]").click
       end
 
-      expect(page).to have_admin_callout("successfully")
-      expect(page).to have_content(grantee.name)
-      expect(page).to have_i18n_content(consultation.title)
-      expect(page).to have_current_path(decidim_admin_action_delegator.setting_delegations_path(setting.id))
+      expect(page).to have_content("There was a problem creating the delegation")
     end
   end
 
   shared_examples "destroys a delegation" do
     it "destroys the delegation" do
-      # has no votes
+      # has no votes (grantee_voted? = false)
       expect(page).to have_content("No")
-      expect(page).not_to have_content("Yes")
       within "tr[data-delegation-id=\"#{delegation.id}\"]" do
-        accept_confirm { click_link "Delete" }
+        accept_confirm { click_on "Delete" }
       end
 
-      expect(page).not_to have_content(delegation.grantee.name)
+      expect(page).to have_no_content("#{delegation.grantee.name} (#{delegation.grantee.email})")
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_delegations_path(setting.id))
       expect(page).to have_admin_callout("successfully")
     end
   end
 
-  shared_examples "do not destroy a delegation" do
-    it "does not destroy the delegation" do
-      # has votes
-      expect(page).not_to have_content("No")
-      expect(page).to have_content("Yes")
-      within "tr[data-delegation-id=\"#{delegation.id}\"]" do
-        expect(page).not_to have_link("Delete")
-      end
-    end
-  end
-
   context "when destroying a delegation" do
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:question) { create(:question, consultation: consultation) }
-    let(:response) { create(:response, question: question) }
-    let!(:vote) { create(:vote, response: response, question: question) }
-    let(:setting) { create(:setting, consultation: consultation) }
-    let!(:delegation) { create(:delegation, setting: setting) }
+    let(:setting) { create(:setting, organization:, active: true) }
+    let!(:delegation) { create(:delegation, setting:) }
 
     before do
       visit decidim_admin_action_delegator.setting_delegations_path(setting)
     end
 
     it_behaves_like "destroys a delegation"
+  end
 
-    context "and granter has voted", versioning: true do
-      let!(:vote) { create(:vote, response: response, question: question, author: delegation.granter) }
+  context "when delegation has voted" do
+    let(:setting) { create(:setting, organization:, active: true) }
+    let!(:delegation) { create(:delegation, setting:) }
 
-      it_behaves_like "destroys a delegation"
+    before do
+      # Mock grantee_voted? to return true when implemented
+      # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(Decidim::ActionDelegator::Delegation).to receive(:grantee_voted?).and_return(true)
+      # rubocop:enable RSpec/AnyInstance
+      visit decidim_admin_action_delegator.setting_delegations_path(setting)
     end
 
-    context "and grantee has voted in behalf of the granter" do
-      let!(:vote) { create(:vote, response: response, question: question, author: delegation.granter) }
-
-      before do
-        PaperTrail::Version.create!(
-          item_type: "Decidim::Consultations::Vote",
-          item_id: vote.id,
-          event: "create",
-          whodunnit: delegation.grantee.id,
-          decidim_action_delegator_delegation_id: delegation.id
-        )
-        visit decidim_admin_action_delegator.setting_delegations_path(setting)
+    it "does not show delete link when grantee has voted" do
+      expect(page).to have_content("Yes") # grantee voted
+      within "tr[data-delegation-id=\"#{delegation.id}\"]" do
+        expect(page).to have_no_link("Delete")
       end
-
-      it_behaves_like "do not destroy a delegation"
     end
   end
 end

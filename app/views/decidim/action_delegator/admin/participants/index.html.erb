@@ -1,29 +1,24 @@
-<div class="card with-overflow" id='user-groups'>
-  <div class="card-divider">
-    <h2 class="card-title flex--sbc">
-      <div>
-        <%= link_to translated_attribute(current_setting.title), decidim_admin_action_delegator.settings_path %> &gt;
-        <%= t ".title" %>
-      </div>
-      <div>
-        <%= link_to t(".actions.new_participant"), decidim_admin_action_delegator.new_setting_participant_path(current_setting), class: "button tiny button--title" %>
-        <%= link_to t(".actions.csv_import"),
-                    decidim_admin_action_delegator.new_setting_manage_participant_path(setting_id: current_setting.id),
-                    class: "button tiny button--title" %>
-        <%= link_to t(".actions.remove_census"), decidim_admin_action_delegator.destroy_all_setting_manage_participants_path(current_setting),
-                    method: :delete,
-                    data: { confirm: t("participants.remove_census.confirm", scope: "decidim.action_delegator.admin") },
-                    class: "button tiny alert button--title" %>
-      </div>
-    </h2>
+<%= render "decidim/action_delegator/admin/shared/tabs_menu" do %>
+  <div>
+    <%= link_to t("decidim.action_delegator.admin.participants.index.actions.new_participant"), decidim_admin_action_delegator.new_setting_participant_path(current_setting), class: "main-tabs-menu__cta-button" %>
+    <%= link_to t("decidim.action_delegator.admin.participants.index.actions.csv_import"),
+                decidim_admin_action_delegator.new_setting_manage_participant_path(current_setting),
+                class: "main-tabs-menu__cta-button" %>
+    <%= link_to t("decidim.action_delegator.admin.participants.index.actions.remove_census"), decidim_admin_action_delegator.destroy_all_setting_manage_participants_path(current_setting),
+                method: :delete,
+                data: { confirm: t("participants.remove_census.confirm", scope: "decidim.action_delegator.admin") },
+                class: "main-tabs-menu__cta-button" %>
   </div>
+<% end %>
+
+<div class="card" id='user-groups'>
   <div class="card-section">
-    <%= render "decidim/action_delegator/admin/settings/participants_email_check", setting: current_setting if (current_setting.authorization_method == "phone") %>
+    <%= render "decidim/action_delegator/admin/settings/participants_email_check", setting: current_setting if current_setting.authorization_method == "phone" %>
     <%= render "decidim/action_delegator/admin/settings/participants_sync_check", setting: current_setting %>
     <% if Decidim::ActionDelegator.allow_to_invite_users %>
-      <%= render "decidim/action_delegator/admin/participants/missing_registered_check", setting: current_setting unless (current_setting.authorization_method == "phone") %>
+      <%= render "decidim/action_delegator/admin/participants/missing_registered_check", setting: current_setting unless current_setting.authorization_method == "phone" %>
     <% end %>
-    <div class="table-scroll">
+    <div class="table-stacked">
       <table class="table-list">
         <thead>
         <tr>
@@ -50,17 +45,17 @@
 
             <td class="table-list__actions">
               <% if Decidim::ActionDelegator.allow_to_invite_users %>
-                <%= icon_link_to "action-redo",
+                <%= icon_link_to "arrow-go-forward-line",
                                  decidim_admin_action_delegator.resend_invitation_setting_invite_participant_path(participant.setting, participant),
                                  t("actions.resend", scope: "decidim.admin"),
                                  method: :post if participant.last_login.nil? && participant.user.present? && !(current_setting.authorization_method == "phone") %>
-                <%= icon_link_to "envelope-closed",
+                <%= icon_link_to "mail-line",
                                  decidim_admin_action_delegator.invite_user_setting_invite_participant_path(participant.setting, participant),
                                  t("actions.invite", scope: "decidim.admin"),
                                  method: :post if !participant.user && participant.email.present? && !(current_setting.authorization_method == "phone") %>
               <% end %>
-              <%= icon_link_to "pencil", decidim_admin_action_delegator.edit_setting_participant_path(participant.setting, participant), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
-              <%= icon_link_to "circle-x", decidim_admin_action_delegator.setting_participant_path(participant.setting, participant), t("actions.destroy", scope: "decidim.admin"), class: "action-icon--remove", method: :delete, data: { confirm: t("actions.confirm_destroy", scope: "decidim.admin") } unless participant.voted? %>
+              <%= icon_link_to "pencil-line", decidim_admin_action_delegator.edit_setting_participant_path(participant.setting, participant), t("actions.edit", scope: "decidim.admin"), class: "action-icon--edit" %>
+              <%= icon_link_to "delete-bin-line", decidim_admin_action_delegator.setting_participant_path(participant.setting, participant), t("actions.destroy", scope: "decidim.admin"), class: "action-icon--remove", method: :delete, data: { confirm: t("actions.confirm_destroy", scope: "decidim.admin") } unless participant.voted? %>
             </td>
           </tr>
         <% end %>

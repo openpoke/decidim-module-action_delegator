@@ -28,8 +28,8 @@ module Decidim
       def send_sms!
         @response = client.call(:send_sms,
                                 message: {
-                                  user: ENV["SMS_USER"],
-                                  pass: ENV["SMS_PASS"],
+                                  user: ENV.fetch("SMS_USER", nil),
+                                  pass: ENV.fetch("SMS_PASS", nil),
                                   src: sender,
                                   dst: mobile_phone_number,
                                   msg: message

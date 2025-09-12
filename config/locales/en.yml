@@ -2,6 +2,8 @@
 en:
   activemodel:
     attributes:
+      csv_import:
+        csv_file: CSV file
       delegations_verifier:
         email: Email
         phone: Mobile phone number
@@ -13,7 +15,7 @@ en:
         name: Membership type
         name_help: Membership type
       setting:
-        decidim_consultation_id: Consultation
+        active: Active
         max_grants: Maximum vote delegations a participant can receive
         phone_freezed: Use phone number from the census. Don't allow participants
           to edit it.
@@ -31,13 +33,6 @@ en:
   decidim:
     action_delegator:
       admin:
-        consultations:
-          results:
-            ongoing_consultation: This consultations is still ongoing. Be aware that
-              results may change as more people vote.
-            title: Results by answer, membership type and weight
-          weighted_results:
-            title: Results by answer summing membership weights
         delegations:
           create:
             error: There was a problem creating the delegation
@@ -57,21 +52,16 @@ en:
             actions:
               csv_import: Import via csv
               new_delegation: New delegation
-            consultation: Consultation
             created_at: Created at
-            delete: Delete
             description_html: This is the current delegations for this consultation
             grantee: Grantee (to)
             grantee_voted: Grantee has voted in behalf of granter?
             granter: Granter (from)
-            granter_voted: Granter has voted?
-            title: User vote delegations
           new:
             grantee: Grantee (to)
             granter: Granter (from)
             save: Create
             select_member: Select member
-            title: New delegation
         invite_participants:
           invite_all_users:
             error: There was an error inviting the users
@@ -95,6 +85,9 @@ en:
             required_fields: 'Required fields: granter email, grantee email'
             title: Import delegations
             title_example: 'Example:'
+            upload_button: Upload CSV file
+            upload_help: 'Must be a file in CSV format with a header. Required columns:
+              from, to.'
             upload_instructions: Must be a file in CSV format with a header.
         manage_participants:
           create:
@@ -113,12 +106,10 @@ en:
             required_fields: 'Required fields: %{authorization_method}'
             title: Import participants
             title_example: 'Example:'
+            upload_button: Upload CSV file
+            upload_help: Must be a file in CSV format with a header.
             upload_instructions: Must be a file in CSV format with a header.
         menu:
-          consultations_submenu:
-            by_answer: By answer
-            by_type_and_weight: By type and weight
-            sum_of_weights: By sum of weights
           delegations: Corporate Governance
           participants: Participants
         participants:
@@ -130,7 +121,6 @@ en:
             success: Participant successfully destroyed
           edit:
             save: Save
-            title: Edit participant
           index:
             actions:
               csv_import: Import CSV
@@ -149,12 +139,10 @@ en:
             phone: Phone
             ponderation: Ponderation type
             send_invitation_link: Click here to send an invitation to them
-            title: Census
             user: Name
             voted: Has voted?
           new:
             save: Create
-            title: New participant
           remove_census:
             confirm: Are you sure you want to remove the census? This operation cannot
               be undone
@@ -179,7 +167,6 @@ en:
             success: Ponderation destroyed successfully
           edit:
             save: Save
-            title: Edit ponderation type
           form:
             name_help: Member type, e.g. "member", "associate", "supporter". Must
               be unique.
@@ -192,7 +179,6 @@ en:
             created_at: Created at
             name: Membership Type
             num_users: Census total
-            title: Ponderations
             weight: Vote weight
           new:
             save: Create
@@ -205,8 +191,9 @@ en:
             both: Email and phone number
             email: Only email
             phone: Only phone number
-          authorization_method_help: |
+          authorization_method_help_html: |
             Available options are:
+            <br><br>
             <ul>
               <li><b>Only phone number:</b> Uses SMS verification. Participants must input their phone number that matches the census.</li>
               <li><b>Only email:</b> Participant's email must match the census.</li>
@@ -225,7 +212,6 @@ en:
             success: Setting successfully destroyed
           edit:
             save: Save
-            title: Edit delegation group
           form:
             max_grants: Maximum delegations per user
           index:
@@ -234,19 +220,22 @@ en:
               delegations: Edit the delegations
               new_setting: New configuration
               ponderate: Set weights for vote ponderation
+            active: Active
             authorization_method: Authorization method
             census: Census total
-            consultation: Consultation
             created_at: Created at
             delegations: Delegations
             description_html: |
-              This module is designed for organizations that do voting through consultations. The functionalities we have available are: compilation of census, delegations of participants and weights by type of member. We can also use the integrated verifier via SMS, email or both. It is possible to use this module without importing a census, you can manage it in order to make delegations and/or weightings. If you need more information, go to guia.cercles.coop.
-              <br>
-              Each group can be configured with a different number of maximum delegations per user, different user delegations grants and different sets of ponderation types.
+              <ul>
+                <li>This module is designed for organizations that require a robust system for managing participant delegations</li>
+                <li><b>Features:</b> fully managed census, delegations of participants and weights by type of member. Verification by SMS, email or both. Using a census is optional.</li>
+                <li>Each entry can be used as a unique <b>delegation group</b> with a different number of maximum delegations per user, different user delegations grants and different sets of ponderation types.</li>
+                <li><b>Usage:</b> After configuring a delegation group, you can use the <b>Corporate Governance Verifier</b> to ensure all participants are properly authorized in whatever component you require. Also, make sure to use the <b>Corporate Governance census</b> while configuring an election.</li>
+              </ul>
             max_grants: Max delegations/user
+            name: Name
             open: Open
             ponderations: Ponderation types
-            state: State
             title: Corporate Governance
           new:
             save: Create
@@ -255,14 +244,8 @@ en:
             all_users_authorized_html: All participants are verified by the <i>Corporate
               Governance Verifier</i>.
             all_users_registered_html: All participants are registered into the platform.
+            applies_to: Applies to the following voting spaces
             click_to_fix: Click here to automatically fix this
-            consultation_questions_all_verified_html: All questions are restricted
-              by the <i>Corporate Governance Verifier</i>.
-            consultation_questions_missing_verifier_html: There are %{count} questions
-              that are not restricted by the <i>Corporate Governance Verifier</i>.
-              <b>Without it, anyone will be able to vote on them.</b> <em>This is
-              ok if you are using other authorization methods or everyone is allowed
-              to vote.</em>
             missing_authorizations_html: There are %{count} participants that are
               not verified by the <i>Corporate Governance Verifier</i>. <em>This is
               ok if these participants have their votes delegated to others or you
@@ -278,14 +261,11 @@ en:
               is allowed to vote.</em>
             no_ponderations_html: There are no vote ponderations. <b>All users will
               have the same weight on their votes</b>
+            no_resources_found: No voting spaces are using this configuration!
             participant: participant
             user: user
             users_need_sync_html: The participants list needs to be synchronized.
               <b>Consultation results might be wrong!</b>
-          state:
-            closed: Closed
-            ongoing: Ongoing
-            pending: Pending
           update:
             error: There was a problem updating the settings
             success: Settings saved successfully
@@ -298,7 +278,7 @@ en:
             reach out if it's not correct.
       delegations:
         has_delegations: Delegate vote made
-        link: "\U0001F449 You have delegations granted"
+        link: "👉 You have delegations granted"
       delegations_authorizer:
         email: We are using the email %{email} to verify your identity. If you think
           this is wrong, please contact us.
@@ -307,10 +287,6 @@ en:
         not_in_census: You are not in the census
         phone: We are using the phone %{phone} to verify your identity. If you think
           this is wrong, please contact us.
-      delegations_modal:
-        callout: Remember, you are voting on behalf of
-        contextual_help: 'You have been granted the vote from:'
-        title: 'Consultation: granted delegations'
       import_mailer:
         import:
           errors_present: There were errors in the importation
@@ -333,7 +309,6 @@ en:
             the link below to confirm your participation.
           confirm: Confirm participation
           greeting: Hello %{recipient},
-      name: Decidim ActionDelegator cooperatives module
       participants_csv_importer:
         import:
           error: There was a problem importing the participants
@@ -345,15 +320,6 @@ en:
           ponderation_not_found: Ponderation type not found
           skip_import_info: Participant already exists %{with_mismatched_fields}
           with_mismatched_fields: " with mismatched fields: %{fields}"
-      questions:
-        callout_link_text: Review the summary of your vote here
-        callout_text: You have answered %{voted} from a total of %{total} questions.
-        modal:
-          modal_table_header_answer: Did you answer?
-          modal_table_header_question: Question
-          modal_votes_title: Your votes in "%{title}"
-        question_answered: Already voted
-        question_not_answered: Vote pending
       sms_message: Your verification code is %{code}
       user_delegations:
         index:
@@ -375,11 +341,14 @@ en:
             new:
               authorize: Authorize my account
               missing_phone_error: Missing membership phone
+              no_resources_found: No resources found, If you think this is a mistake,
+                please contact the administrator (it is possible that there is nothing
+                active right now).
               not_in_census: We're sorry but you can't be authorized because your
                 email is not in the census. Please contact the admin if you feel this
                 is a mistake.
               participate_in: 'This authorization allows you to participate in the
-                following consultations: %{consultations}'
+                following resources:'
               phone_warning: This phone number has been imported by the admin. Please,
                 reach out if it's not correct.
               send_code: Send verification code
@@ -391,14 +360,13 @@ en:
         invite: Send invitation
         invite_all: Send invitations to non-existing users
         resend: Resend invitation
-      consultations:
-        results:
-          default_metadata: "(membership data not available)"
-          export: Export
-          export_filename: consultation_results
-          membership_type: Membership type
-          membership_weight: Weight
-          total_delegates: "%{count} delegated votes"
+      menu:
+        action_delegator_menu:
+          delegations: Delegations
+          main: Main
+          participants: Participants
+          ponderations: Ponderations
+          settings: Settings
     authorization_handlers:
       admin:
         delegations_verifier:
@@ -408,12 +376,10 @@ en:
         explanation: Verified users with this method can delegate votes to other users
         fields:
           phone: Phone number
+          setting: Settings group
+          setting_options:
+            a: A
         name: Corporate Governance
-    resources:
-      question:
-        actions:
-          comment: Comment
-          vote: Vote
     verifications:
       authorizations:
         first_login:
@@ -425,9 +391,5 @@ en:
         subject: You have been invited to participate in the consultation
   layouts:
     decidim:
-      admin:
-        question:
-          attachments: Attachments
-          categories: Categories
       user_profile:
         vote_delegations: Vote delegations

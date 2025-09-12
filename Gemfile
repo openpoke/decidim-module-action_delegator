@@ -12,31 +12,28 @@ require_relative "#{base_path}lib/decidim/action_delegator/version"
 
 DECIDIM_VERSION = Decidim::ActionDelegator::DECIDIM_VERSION
 
+gem "puma", ">= 6.3.1"
+
 gem "decidim", DECIDIM_VERSION
 gem "decidim-action_delegator", path: "."
-gem "decidim-consultations", DECIDIM_VERSION
+gem "decidim-elections", DECIDIM_VERSION
+gem "decidim-initiatives", DECIDIM_VERSION
 
 gem "bootsnap", "~> 1.4"
-gem "savon", "~> 2.12"
-gem "twilio-ruby", "~> 5.41"
 
 group :development, :test do
   gem "byebug", "~> 11.0", platform: :mri
 
+  gem "brakeman", "~> 7.0"
   gem "decidim-dev", DECIDIM_VERSION
+  gem "parallel_tests", "~> 4.2"
 end
 
 group :development do
-  gem "faker", "~> 2.14"
-  gem "letter_opener_web", "~> 2.0"
-  gem "listen", "~> 3.1"
-  gem "rubocop-faker"
-  gem "spring"
-  gem "spring-watcher-listen"
+  gem "letter_opener_web"
   gem "web-console"
 end
 
 group :test do
-  gem "codecov", require: false
   gem "shoulda-matchers"
 end

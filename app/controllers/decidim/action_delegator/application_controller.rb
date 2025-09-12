@@ -6,9 +6,9 @@ module Decidim
     # this engine inherit.
     #
     class ApplicationController < Decidim::ApplicationController
-      # def permission_class_chain
-      #  [::Decidim::ActionDelegator::Permissions] + super
-      # end
+      def permission_class_chain
+        [::Decidim::ActionDelegator::Permissions] + super
+      end
     end
   end
 end

@@ -6,12 +6,18 @@ module Decidim
       # This controller is the abstract class from which all other controllers of
       # this engine inherit.
       class ApplicationController < Decidim::Admin::ApplicationController
-        register_permissions(ApplicationController,
-                             ActionDelegator::Permissions,
-                             Decidim::Consultations::Permissions,
-                             Decidim::Admin::Permissions)
+        helper_method :organization_settings, :current_setting
+
         def permission_class_chain
-          Decidim.permissions_registry.chain_for(ApplicationController)
+          [::Decidim::ActionDelegator::Admin::Permissions] + super
+        end
+
+        def organization_settings
+          @organization_settings ||= ActionDelegator::Setting.where(organization: current_organization)
+        end
+
+        def current_setting
+          @current_setting ||= organization_settings.find_by(id: params[:setting_id])
         end
       end
     end

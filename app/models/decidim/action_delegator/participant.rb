@@ -18,7 +18,6 @@ module Decidim
                  class_name: "Decidim::User",
                  optional: true
 
-      delegate :consultation, to: :setting
       delegate :organization, to: :setting
 
       validates :decidim_user, uniqueness: { scope: :setting }, if: -> { decidim_user.present? }
@@ -50,7 +49,7 @@ module Decidim
       end
 
       def self.verifier_ids(seeds)
-        seeds.map { |seed| Digest::MD5.hexdigest("#{seed}-#{Digest::MD5.hexdigest(Rails.application.secrets.secret_key_base)}") }
+        seeds.map { |seed| Digest::MD5.hexdigest("#{seed}-#{Digest::MD5.hexdigest(Rails.application.secret_key_base)}") }
       end
 
       def self.phone_combinations(phones)
@@ -82,15 +81,12 @@ module Decidim
         ponderation&.title
       end
 
-      # checks if the user has voted in the setting's consultation
+      # checks if the user has voted
       def voted?
         return false if user.blank?
 
-        @voted ||= Decidim::Consultations::Vote
-                   .joins(question: :consultation)
-                   .where(decidim_consultations_questions: {
-                            decidim_consultation_id: setting.consultation.id
-                          }, author: user).any?
+        # TODO: Replace vote check once new context is defined
+        false
       end
 
       private
@@ -100,8 +96,9 @@ module Decidim
       end
 
       def user_belongs_to_organization
-        return unless decidim_user && setting && setting.consultation
-        return if decidim_user.organization == organization
+        return if decidim_user.blank? || setting.blank?
+
+        return if decidim_user.organization == setting.organization
 
         errors.add(:decidim_user, :invalid)
       end

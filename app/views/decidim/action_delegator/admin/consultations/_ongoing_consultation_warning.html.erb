@@ -1,3 +1,0 @@
-<% if Decidim::ActionDelegator.admin_preview_results && !consultation.finished? %>
-  <div class="callout warning"><%= t "ongoing_consultation", scope: "decidim.action_delegator.admin.consultations.results" %></div>
-<% end %>

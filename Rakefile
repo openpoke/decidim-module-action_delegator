@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "decidim/dev/common_rake"
+# looks like there is some kind of bug related to the inclusion of parallel-tests in decidim/dev/common_rake
+require "decidim/action_delegator/common_rake"
 
 def install_module(path)
   Dir.chdir(path) do
-    system("bundle exec rake decidim_consultations:install:migrations")
     system("bundle exec rake decidim_action_delegator:install:migrations")
     system("bundle exec rake db:migrate")
   end

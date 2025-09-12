@@ -3,7 +3,7 @@
 require "savon"
 require "rails"
 require "decidim/core"
-require "decidim/consultations"
+require "decidim/elections"
 require "deface"
 
 module Decidim
@@ -12,6 +12,7 @@ module Decidim
     # Handles all the logic related to delegation except verifications
     class Engine < ::Rails::Engine
       isolate_namespace Decidim::ActionDelegator
+      include Decidim::TranslatableAttributes
 
       routes do
         # Add engine routes here
@@ -19,7 +20,6 @@ module Decidim
           resources :user_delegations, controller: :user_delegations, only: [:index]
           root to: "user_delegations#index"
         end
-        resources :questions_summary, param: :slug, only: [:show]
       end
 
       initializer "decidim_action_delegator.overrides", after: "decidim.action_controller" do
@@ -36,6 +36,13 @@ module Decidim
           workflow.engine = Decidim::ActionDelegator::Verifications::DelegationsVerifier::Engine
           workflow.expires_in = Decidim::ActionDelegator.authorization_expiration_time
           workflow.time_between_renewals = 1.minute
+          workflow.options do |options|
+            options.attribute :setting, type: :select, raw_choices: true, choices: lambda { |context|
+              Decidim::ActionDelegator::Setting.where(organization: context[:component]&.organization).map do |setting|
+                [translated_attribute(setting.title), setting.id]
+              end
+            }
+          end
         end
       end
 
@@ -43,7 +50,7 @@ module Decidim
         Decidim.register_assets_path File.expand_path("app/packs", root)
       end
 
-      initializer "decidim.user_menu" do
+      initializer "decidim_action_delegator.user_menu" do
         Decidim.menu :user_menu do |menu|
           menu.add_item :vote_delegations,
                         t("vote_delegations", scope: "layouts.decidim.user_profile"),
@@ -51,6 +58,12 @@ module Decidim
                         position: 5.0,
                         active: :exact
         end
+      end
+
+      initializer "decidim_action_delegator.icons" do
+        Decidim.icons.register(name: "weight-line", icon: "weight-line", category: "system", description: "", engine: :action_delegator)
+        Decidim.icons.register(name: "user-shared-line", icon: "user-shared-line", category: "system", description: "", engine: :action_delegator)
+        Decidim.icons.register(name: "arrow-go-forward-line", icon: "arrow-go-forward-line", category: "system", description: "", engine: :action_delegator)
       end
     end
   end

@@ -14,8 +14,6 @@ module Decidim
                class_name: "Decidim::ActionDelegator::Participant",
                dependent: :restrict_with_error
 
-      delegate :consultation, to: :setting
-
       def title
         @title ||= "#{name} (x#{weight})"
       end

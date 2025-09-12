@@ -32,11 +32,11 @@ module Decidim
       end
 
       def twilio_account_sid
-        ENV["TWILIO_ACCOUNT_SID"]
+        ENV.fetch("TWILIO_ACCOUNT_SID", nil)
       end
 
       def twilio_auth_token
-        ENV["TWILIO_AUTH_TOKEN"]
+        ENV.fetch("TWILIO_AUTH_TOKEN", nil)
       end
     end
   end

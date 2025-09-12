@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "delegations_verifier code verification", type: :system do
+describe "delegations_verifier code verification" do
   let(:organization) do
     create(:organization, available_authorizations: ["delegations_verifier"])
   end
