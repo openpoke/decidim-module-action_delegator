@@ -1,0 +1,3 @@
+<!-- replace_contents "div.flex.items-center.justify-between" -->
+
+<%= render "decidim/action_delegator/elections/option_results" %>
