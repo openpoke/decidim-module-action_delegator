@@ -1,4 +1,4 @@
-<div data-results-live-update="<%= dashboard_election_path(election) %>">
+<div data-weight-results-live-update="<%= decidim_action_delegator.elections_admin_results_totals_path(election) %>">
   <div class="table-scroll my-4">
     <table class="table-list">
       <thead>
@@ -15,10 +15,10 @@
           <% question_stats = elections_question_stats(question) %>
           <tr>
             <td><%= translated_attribute(question.body) %> <small class="font-normal ml-4"><%= t("decidim.forms.question_types.#{question.question_type}") %></small></td>
-            <td _data-question-unweighted-votes-count-text="<%= question.id %>"><%= t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: question_stats[:unweighted_votes]) %></td>
-            <td _data-question-weighted-votes-count-text="<%= question.id %>"><%= t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: question_stats[:weighted_votes]) %></td>
-            <td _data-question-delegated-votes-count-text="<%= question.id %>"><%= t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: question_stats[:delegated_votes]) %></td>
-            <td _data-question-participants-count-text="<%= question.id %>"><%= t("participants_count", scope: "decidim.action_delegator.elections.admin.dashboard.questions_table", count: question_stats[:participants]) %></td>
+            <td data-question-unweighted-count-text="<%= question.id %>"><%= question_stats[:unweighted_votes_text] %></td>
+            <td data-question-weighted-count-text="<%= question.id %>"><%= question_stats[:weighted_votes_text] %></td>
+            <td data-question-delegated-count-text="<%= question.id %>"><%= question_stats[:delegated_votes_text] %></td>
+            <td data-question-participants-count-text="<%= question.id %>"><%= question_stats[:participants_text] %></td>
           </tr>
         <% end %>
       </tbody>

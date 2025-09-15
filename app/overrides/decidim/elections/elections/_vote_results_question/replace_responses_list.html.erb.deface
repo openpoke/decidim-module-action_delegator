@@ -1,7 +1,0 @@
-<!-- surround_contents "div[data-options-container]" -->
-
-<% if question.id.positive? && settings_for(election).present? %>
-  <%= render "decidim/action_delegator/elections/question_responses_list", question: %>
-<% else %>
-  <%= render_original %>
-<% end %>

@@ -15,7 +15,15 @@ module Decidim
       include Decidim::TranslatableAttributes
 
       routes do
-        # Add engine routes here
+        namespace :elections do
+          get ":id/sum_of_weights", to: "results#sum_of_weights", as: :results_sum_of_weights
+          namespace :admin do
+            get ":id/by_type_and_weight", to: "results#by_type_and_weight", as: :results_by_type_and_weight
+            get ":id/sum_of_weights", to: "results#sum_of_weights", as: :results_sum_of_weights
+            get ":id/totals", to: "results#totals", as: :results_totals
+          end
+        end
+
         authenticate(:user) do
           resources :user_delegations, controller: :user_delegations, only: [:index]
           root to: "user_delegations#index"

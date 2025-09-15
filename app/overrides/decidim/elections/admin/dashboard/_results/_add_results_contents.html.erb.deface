@@ -4,6 +4,7 @@
 
 <% if settings_for(election).present? && lookup_context.exists?("decidim/action_delegator/elections/admin/dashboard/#{params[:results]}", [], true) %>
   <%= render "decidim/action_delegator/elections/admin/dashboard/#{params[:results]}" %>
+  <% append_javascript_pack_tag("decidim_action_delegator_elections") %>
 <% else %>
   <%= render "decidim/elections/admin/dashboard/questions_with_results" %>
 <% end %>

@@ -1,0 +1,12 @@
+<div data-weight-results-live-update="<%= decidim_action_delegator.elections_results_sum_of_weights_path(election) %>">
+  <div data-questions-container>
+    <% questions.each do |question| %>
+      <%= render "decidim/action_delegator/elections/vote_results_question", question: %>
+    <% end %>
+  </div>
+
+  <%= render "decidim/action_delegator/elections/vote_results_question", question: OpenStruct.new(id: 0, body: {}, response_options: []) %>
+  <%= render "decidim/elections/elections/vote_results_option", option: OpenStruct.new(id: 0, body: {}, votes_count: 0, votes_percent: 0) %>
+</div>
+
+<% console %>

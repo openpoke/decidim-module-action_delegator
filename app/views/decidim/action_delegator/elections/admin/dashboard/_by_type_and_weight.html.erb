@@ -1,4 +1,4 @@
-<div data-results-live-update="<%= dashboard_election_path(election) %>">
+<div data-weight-results-live-update="<%= decidim_action_delegator.elections_admin_results_by_type_and_weight_path(election) %>">
   <% election_questions.each do |question| %>
     <div class="card mb-4" id="question_<%= question.id %>">
       <div class="card-divider">
@@ -30,10 +30,10 @@
             <tbody>
             <% elections_question_responses_by_type(question).each do |option| %>
               <tr>
-                <td><%= translated_attribute option[:body] %></td>
-                <td _data-option-votes-weight-text="<%= question.id %>,<%= option[:id] %>"><%= option[:ponderation_title] %></td>
-                <td _data-option-votes-count-text="<%= question.id %>,<%= option[:id] %>"><%= t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: option[:votes_total]) %></td>
-                <td _data-option-votes-percent-text="<%= question.id %>,<%= option[:id] %>"><%= number_to_percentage(option[:votes_percent], precision: 1) %></td>
+                <td><%= option[:body] %></td>
+                <td data-option-votes-weight-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:ponderation_title] %></td>
+                <td data-option-votes-count-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:votes_count_text] %></td>
+                <td data-option-votes-percent-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:votes_percent_text] %></td>
               </tr>
             <% end %>
             </tbody>

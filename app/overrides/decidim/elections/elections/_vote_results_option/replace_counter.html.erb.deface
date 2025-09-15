@@ -1,7 +1,0 @@
-<!-- surround_contents "div.flex.items-center.justify-between" -->
-
-<% if settings_for(election).present? %>
-  <%= render "decidim/action_delegator/elections/option_results", option: %>
-<% else %>
-  <%= render_original %>
-<% end %>
