@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/decidim/decidim.git
-  revision: 7256769aa5cea1958d741e03c39ec94f3a77d153
+  revision: 59727d5d26124403728e3e95f25db711ff6f54e0
   branch: develop
   specs:
     decidim (0.31.0.dev)
@@ -414,7 +414,7 @@ GEM
       html-pipeline (~> 2.9)
     factory_bot (6.5.5)
       activesupport (>= 6.1.0)
-    factory_bot_rails (6.5.0)
+    factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
     faker (3.5.2)
@@ -446,7 +446,7 @@ GEM
     geom2d (0.4.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-protobuf (4.32.0)
+    google-protobuf (4.32.1)
       bigdecimal
       rake (>= 13)
     graphql (2.4.17)
@@ -553,12 +553,12 @@ GEM
       net-imap
       net-pop
       net-smtp
-    marcel (1.0.4)
+    marcel (1.1.0)
     matrix (0.4.3)
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0909)
+    mime-types-data (3.2025.0916)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
@@ -580,7 +580,7 @@ GEM
       net-protocol
     nio4r (2.7.4)
     nkf (0.2.0)
-    nokogiri (1.18.9)
+    nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nori (2.7.1)
@@ -591,14 +591,14 @@ GEM
       version_gem (~> 1.1)
     oauth-tty (1.0.5)
       version_gem (~> 1.1, >= 1.1.1)
-    oauth2 (2.0.15)
+    oauth2 (2.0.17)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
       logger (~> 1.2)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0, >= 2.0.3)
-      version_gem (~> 1.1, >= 1.1.8)
+      version_gem (~> 1.1, >= 1.1.9)
     omniauth (2.1.3)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
@@ -654,7 +654,7 @@ GEM
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
-    prism (1.4.0)
+    prism (1.5.1)
     psych (5.2.6)
       date
       stringio
@@ -729,7 +729,7 @@ GEM
       psych (>= 4.0.0)
     redcarpet (3.6.1)
     redis (4.8.1)
-    regexp_parser (2.11.2)
+    regexp_parser (2.11.3)
     reline (0.6.2)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -737,7 +737,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.4.2)
+    rexml (3.4.4)
     rqrcode (2.2.0)
       chunky_png (~> 1.0)
       rqrcode_core (~> 1.0)
@@ -770,7 +770,7 @@ GEM
       rspec-support (~> 3.13)
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
-    rspec-support (3.13.5)
+    rspec-support (3.13.6)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
     rubocop (1.78.0)
@@ -800,10 +800,10 @@ GEM
     rubocop-graphql (1.5.6)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1, < 2)
-    rubocop-performance (1.25.0)
+    rubocop-performance (1.26.0)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
-      rubocop-ast (>= 1.38.0, < 2.0)
+      rubocop-ast (>= 1.44.0, < 2.0)
     rubocop-rails (2.32.0)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
@@ -889,9 +889,9 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    unicode-display_width (3.1.5)
-      unicode-emoji (~> 4.0, >= 4.0.4)
-    unicode-emoji (4.0.4)
+    unicode-display_width (3.2.0)
+      unicode-emoji (~> 4.1)
+    unicode-emoji (4.1.0)
     uniform_notifier (1.18.0)
     uri (1.0.3)
     useragent (0.16.11)
@@ -909,10 +909,10 @@ GEM
       rexml (~> 3.2)
     warden (1.2.9)
       rack (>= 2.0.9)
-    warden-jwt_auth (0.11.0)
+    warden-jwt_auth (0.12.0)
       dry-auto_inject (>= 0.8, < 2)
       dry-configurable (>= 0.13, < 2)
-      jwt (~> 2.1)
+      jwt (>= 2.1, < 4)
       warden (~> 1.2)
     wasabi (5.1.0)
       addressable
