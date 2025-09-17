@@ -46,12 +46,12 @@ module Decidim
             }
           end
 
-            private
+          private
 
           def election
             @election ||= Decidim::Elections::Election.find(params[:id])
           end
-          end
+        end
       end
     end
   end

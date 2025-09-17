@@ -24,14 +24,19 @@ module Decidim
 
       before_destroy { |record| throw(:abort) if record.grantee_voted? }
 
-      # TODO: Replace when new context is defined
-      def self.granted_to?(_user, _context)
-        false
+      def grantee_voted?
+        return false unless grantee && setting
+
+        @grantee_voted ||= PaperTrail::Version.exists?(
+          whodunnit: grantee.id,
+          object_changes: { decidim_action_delegator_delegation_id: id }
+        )
       end
 
-      # TODO: Replace when context provides questions and votes
-      def grantee_voted?
-        false
+      # a safe way to get the user that represents the granter in this setting
+      # it might not exist if the granter is not in the census
+      def user
+        @user ||= setting.participants.find_by(decidim_user: granter)&.decidim_user
       end
 
       # a safe way to get the user that represents the granter in this setting
