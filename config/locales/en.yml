@@ -388,6 +388,7 @@ en:
         fields:
           phone: Phone number
           setting: Settings group
+          setting_id: Setting
           setting_options:
             a: A
         name: Corporate Governance
