@@ -1,0 +1,3 @@
+<!-- insert_bottom ".election__aside-vote" -->
+
+<%= render "decidim/action_delegator/elections/delegation_buttons" if election.ongoing? %>

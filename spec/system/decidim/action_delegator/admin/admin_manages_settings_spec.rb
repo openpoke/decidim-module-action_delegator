@@ -187,7 +187,6 @@ describe "Admin manages settings" do
       end
 
       expect(page).to have_admin_callout("successfully")
-
       first_setting.reload
       expect(first_setting.participants.count).to eq(first_setting_count + second_setting_count)
     end

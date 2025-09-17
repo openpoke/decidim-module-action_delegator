@@ -1,0 +1,3 @@
+<!-- insert_after "erb[loud]:contains('question_title')" -->
+
+<input type="hidden" name="delegation" value="<%= @delegation&.id %>">

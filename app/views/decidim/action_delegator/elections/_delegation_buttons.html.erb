@@ -1,0 +1,10 @@
+<% delegations = delegations_for(election, current_user) %>
+<% if delegations.any? %>
+  <div class="election__aside-voted mt-6 hidden lg:block">
+    <% if election.per_question? %>
+      <%= render "decidim/action_delegator/elections/per_question_buttons", delegations: %>
+    <% else %>
+      <%= render "decidim/action_delegator/elections/normal_election_buttons", delegations: %>
+    <% end %>
+  </div>
+<% end %>

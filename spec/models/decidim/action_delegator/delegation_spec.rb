@@ -105,6 +105,22 @@ module Decidim
       #   end
       # end
       # end
+
+      describe "#user" do
+        context "when granter exists in setting participants" do
+          let!(:participant) { create(:participant, setting: subject.setting, decidim_user: subject.granter) }
+
+          it "returns the granter user" do
+            expect(subject.user).to eq(subject.granter)
+          end
+        end
+
+        context "when granter does not exist in setting participants" do
+          it "returns nil" do
+            expect(subject.user).to be_nil
+          end
+        end
+      end
     end
   end
 end

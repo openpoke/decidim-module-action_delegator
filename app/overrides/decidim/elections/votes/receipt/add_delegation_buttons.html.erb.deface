@@ -1,0 +1,4 @@
+<!-- insert_bottom ".vote-submitted" -->
+
+
+<%= render "decidim/action_delegator/elections/per_question_waiting_buttons" if election.per_question? %>
