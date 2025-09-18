@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Decidim::ActionDelegator::Admin::DelegationHelper do
+describe Decidim::ActionDelegator::Admin::SettingsHelper do
   subject { helper }
 
   let(:organization) { create(:organization) }

@@ -28,7 +28,7 @@ module Decidim
         private
 
         def election
-          @election ||= Decidim::Elections::Election.published.find(params[:id])
+          @election ||= Decidim::Elections::Election.published.includes(questions: { votes: :versions }).find(params[:id])
         end
       end
     end

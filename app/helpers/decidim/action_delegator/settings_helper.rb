@@ -46,11 +46,14 @@ module Decidim
       end
 
       def elections_question_responses_by_type(question)
+        # Use size instead of count since votes are preloaded
+        total_votes = question.votes.size
+
         ElectionsQuestionResponsesByType.new(question, current_resource_settings).query.map do |option|
           ponderation ||= Decidim::ActionDelegator::Ponderation.find_by(id: option.ponderation_id)
           votes_count = option.votes_total || 0
           votes_count_text = I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: votes_count)
-          votes_percent = question.votes.count.positive? ? (option.votes_total.to_f / question.votes.count) * 100 : 0
+          votes_percent = total_votes.positive? ? (option.votes_total.to_f / total_votes) * 100 : 0
           {
             id: option.id,
             body: translated_attribute(option.body),
@@ -65,6 +68,9 @@ module Decidim
       end
 
       def elections_question_weighted_responses(question)
+        # Use size instead of count since votes are preloaded
+        total_votes = question.votes.size
+
         question_totals = {}
         responses = ElectionsQuestionWeightedResponses.new(question, current_resource_settings).query.map do |option|
           question_totals[question.id] ||= 0.0
@@ -74,7 +80,7 @@ module Decidim
 
         responses.map do |option|
           votes_count = option.weighted_votes_total || 0
-          votes_percent = question.votes.count.positive? ? (option.weighted_votes_total.to_f / question_totals[question.id]) * 100 : 0
+          votes_percent = total_votes.positive? ? (option.weighted_votes_total.to_f / question_totals[question.id]) * 100 : 0
           {
             id: option.id,
             question_id: question.id,
@@ -94,11 +100,13 @@ module Decidim
           question_totals[question.id] += option.weighted_votes_total.to_f
         end
 
-        unweighted_votes = question.votes.count
+        # Use preloaded votes association
+        votes = question.votes
+        unweighted_votes = votes.size
         weighted_votes = question_totals[question.id].to_f.round
         # Note that this works because votes cannot be edited, only created or destroyed. So only one version will exist per vote (the creation event)
-        delegated_votes = question.votes.joins(:versions).where.not(versions: { decidim_action_delegator_delegation_id: nil }).count
-        participants = question.votes.select(:voter_uid).distinct.count
+        delegated_votes = votes.select { |vote| vote.versions.any? { |v| v.decidim_action_delegator_delegation_id.present? } }.size
+        participants = votes.map(&:voter_uid).uniq.size
 
         {
           participants: participants,

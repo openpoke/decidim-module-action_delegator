@@ -16,12 +16,6 @@ module Decidim
           setting.ponderations.map { |ponderation| [ponderation.title, ponderation.id] }
         end
 
-        def missing_verifications_for(resources, action)
-          resources.where.not(id: Decidim::ResourcePermission.select(:resource_id)
-            .where(resource: resources)
-            .where(Arel.sql("permissions->'#{action}'->'authorization_handlers'->>'delegations_verifier' IS NOT NULL")))
-        end
-
         def missing_decidim_users(participants)
           participants.where(decidim_user: nil).or(participants.where.not(decidim_user: current_organization.users)).where.not(id: missing_registered_users(participants))
         end

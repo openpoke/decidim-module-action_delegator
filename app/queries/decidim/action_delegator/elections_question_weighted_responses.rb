@@ -3,7 +3,6 @@
 module Decidim
   module ActionDelegator
     class ElectionsQuestionWeightedResponses
-      # Add your query logic here
 
       def initialize(question, settings)
         @question = question

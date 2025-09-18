@@ -17,10 +17,12 @@ module Decidim
           .new(question.response_options, settings)
           .query
           .select("#{Decidim::Elections::ResponseOption.table_name}.*,
-            decidim_action_delegator_ponderation_id AS ponderation_id,
-            COALESCE(CAST(decidim_action_delegator_ponderations.weight AS FLOAT), 1.0) AS ponderation_weight,
-            COUNT(decidim_elections_votes.id) AS votes_total")
-          .group("#{Decidim::Elections::ResponseOption.table_name}.id, decidim_action_delegator_ponderation_id, decidim_action_delegator_ponderations.weight")
+           COALESCE(decidim_action_delegator_ponderation_id, 0) AS ponderation_id,
+           COALESCE(CAST(decidim_action_delegator_ponderations.weight AS FLOAT), 1.0) AS ponderation_weight,
+           COUNT(decidim_elections_votes.id) AS votes_total")
+          .group("#{Decidim::Elections::ResponseOption.table_name}.id,
+           COALESCE(decidim_action_delegator_ponderation_id, 0),
+           COALESCE(CAST(decidim_action_delegator_ponderations.weight AS FLOAT), 1.0)")
       end
 
       private

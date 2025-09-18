@@ -5,13 +5,13 @@ require "spec_helper"
 module Decidim
   module ActionDelegator
     describe AuthorizedResources do
-      let(:component) { create(:component) }
-      let(:election) { create(:election, component:, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "delegations_verifier" => {} } }) }
-      let(:another_election) { create(:election, component:, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "some_other_verifier" => {}, "delegations_verifier" => {} } }) }
+      let(:component) { create(:elections_component) }
+      let(:setting) { create(:setting, organization: component.organization) }
+      let(:election) { create(:election, component:, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "delegations_verifier" => { "options" => { "setting" => setting.id.to_s } } } }) }
+      let(:another_election) { create(:election, component:, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "some_other_verifier" => {}, "delegations_verifier" => { "options" => { "setting" => setting.id.to_s } } } }) }
       let(:invalid_election) { create(:election, component:, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "some_other_verifier" => {} } }) }
       let(:another_invalid_election) { create(:election, component:, census_manifest: "csv_census", census_settings: { "authorization_handlers" => { "delegations_verifier" => {} } }) }
       let(:external_election) { create(:election, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "delegations_verifier" => {} } }) }
-      let(:setting) { double("Setting", organization: component.organization) }
 
       subject { described_class.new(setting:) }
 
