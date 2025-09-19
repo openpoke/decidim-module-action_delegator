@@ -30,7 +30,7 @@ module Decidim
 
         it "generates correct user_global_id_prefix" do
           user_global_id_prefix = subject.instance_variable_get(:@user_global_id_prefix)
-          expect(user_global_id_prefix).to match(/gid:\/\/.*\/Decidim::User\//)
+          expect(user_global_id_prefix).to match(%r{gid://.*/Decidim::User/})
         end
       end
 

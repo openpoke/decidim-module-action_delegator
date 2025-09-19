@@ -487,7 +487,6 @@ describe "Admin weighted results in elections" do
         visit pq_dashboard_path
       end
 
-
       it "shows both enabled and disabled questions" do
         expect(page).to have_content(translated(pq_question_enabled.body))
         expect(page).to have_content(translated(pq_question_disabled.body))

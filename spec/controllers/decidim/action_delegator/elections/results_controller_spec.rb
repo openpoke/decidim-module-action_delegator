@@ -184,7 +184,7 @@ module Decidim
             get :sum_of_weights, params: { id: election.id }
 
             expect(response.content_type).to include("application/json")
-            expect { JSON.parse(response.body) }.not_to raise_error
+            expect { response.parsed_body }.not_to raise_error
           end
 
           it "includes election status information" do

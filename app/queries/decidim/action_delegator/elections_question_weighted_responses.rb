@@ -3,7 +3,6 @@
 module Decidim
   module ActionDelegator
     class ElectionsQuestionWeightedResponses
-
       def initialize(question, settings)
         @question = question
         @settings = settings
