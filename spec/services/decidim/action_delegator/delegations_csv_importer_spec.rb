@@ -5,8 +5,7 @@ require "spec_helper"
 describe Decidim::ActionDelegator::DelegationsCsvImporter do
   let(:current_user) { create(:user, :confirmed, :admin, organization: organization) }
   let(:organization) { create(:organization) }
-  let(:consultation) { create(:consultation, organization: organization) }
-  let(:current_setting) { create(:setting, consultation: consultation) }
+  let(:current_setting) { create(:setting, organization: organization) }
   let(:valid_csv_file) { File.open("spec/fixtures/valid_delegations.csv") }
   let(:invalid_csv_file) { File.open("spec/fixtures/invalid_delegations.csv") }
   let(:valid_csv_with_uppercase) { File.open("spec/fixtures/valid_delegations_with_uppercase.csv") }
