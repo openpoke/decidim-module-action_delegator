@@ -3,7 +3,7 @@
 module Decidim
   module ActionDelegator
     module Admin
-      module DelegationHelper
+      module SettingsHelper
         def granters_for_select
           current_organization.users
         end

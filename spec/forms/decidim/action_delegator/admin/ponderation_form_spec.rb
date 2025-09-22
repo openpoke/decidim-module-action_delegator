@@ -19,7 +19,6 @@ describe Decidim::ActionDelegator::Admin::PonderationForm do
   end
 
   let(:weight) { 1.0 }
-
   let(:name) { "Ponderation name" }
 
   context "when everything is OK" do
@@ -151,7 +150,6 @@ describe Decidim::ActionDelegator::Admin::PonderationForm do
       let!(:existing_ponderation) { create(:ponderation, name: "test name", setting:) }
 
       it "allows same name with different case" do
-        # Name uniqueness is case-sensitive
         expect(subject).to be_valid
       end
     end

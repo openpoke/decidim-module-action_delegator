@@ -3,7 +3,7 @@
 module Decidim
   module ActionDelegator
     module VotesControllerMethods
-      include Decidim::ActionDelegator::DelegationHelper
+      include Decidim::ActionDelegator::SettingsHelper
 
       # If there is a delegation, we vote as the granter, we don't use the census voter_uid default logic
       # as the granter might not be verified (this might be changed in the future, or put as an option)

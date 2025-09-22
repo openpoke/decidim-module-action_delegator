@@ -55,20 +55,20 @@ module Decidim
       initializer "decidim_elections_admin.menu" do
         Decidim.menu :admin_action_delegator_menu do |menu|
           menu.add_item :setting_main,
-                        I18n.t("main", scope: "decidim.admin.menu.action_delegator_menu"),
+                        I18n.t("main", scope: "decidim.action_delegator.admin.menu.action_delegator_menu"),
                         current_setting ? decidim_admin_action_delegator.edit_setting_path(current_setting) : decidim_admin_action_delegator.new_setting_path,
                         icon_name: "bill-line",
                         active: is_active_link?(decidim_admin_action_delegator.new_setting_path) ||
                                 (current_setting && is_active_link?(decidim_admin_action_delegator.edit_setting_path(current_setting)))
 
           menu.add_item :setting_ponderations,
-                        I18n.t("ponderations", scope: "decidim.admin.menu.action_delegator_menu"),
+                        I18n.t("ponderations", scope: "decidim.action_delegator.admin.menu.action_delegator_menu"),
                         current_setting ? decidim_admin_action_delegator.setting_ponderations_path(current_setting) : "#",
                         icon_name: "scales-line",
                         active: current_setting && is_active_link?(decidim_admin_action_delegator.setting_ponderations_path(current_setting))
 
           menu.add_item :setting_participants,
-                        I18n.t("participants", scope: "decidim.admin.menu.action_delegator_menu"),
+                        I18n.t("participants", scope: "decidim.action_delegator.admin.menu.action_delegator_menu"),
                         current_setting ? decidim_admin_action_delegator.setting_participants_path(current_setting) : "#",
                         icon_name: "group-line",
                         active: current_setting && (is_active_link?(decidim_admin_action_delegator.setting_participants_path(current_setting)) ||
@@ -77,7 +77,7 @@ module Decidim
                                                     (@participant && is_active_link?(decidim_admin_action_delegator.edit_setting_participant_path(current_setting, @participant))))
 
           menu.add_item :setting_delegations,
-                        I18n.t("delegations", scope: "decidim.admin.menu.action_delegator_menu"),
+                        I18n.t("delegations", scope: "decidim.action_delegator.admin.menu.action_delegator_menu"),
                         current_setting ? decidim_admin_action_delegator.setting_delegations_path(current_setting) : "#",
                         icon_name: "user-shared-line",
                         active: current_setting && (is_active_link?(decidim_admin_action_delegator.setting_delegations_path(current_setting)) ||
@@ -107,24 +107,29 @@ module Decidim
 
       initializer "decidim_admin_action_delegator.admin_election_menu" do
         Decidim.menu :admin_delegation_results_submenu do |menu|
+          election = @election
+          current_component_admin_proxy = election ? Decidim::EngineRouter.admin_proxy(election.component) : nil
+
           menu.add_item :by_answer,
                         I18n.t("by_answer", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
-                        decidim_admin_elections.results_election_path(current_election),
-                        position: 1.0,
-                        active: is_active_link?(decidim_admin_elections.results_election_path(current_election)),
-                        if: allowed_to?(:read, :question)
+                        @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election) : "#",
+                        icon_name: "list-check",
+                        active: :exact
           menu.add_item :by_type_and_weight,
                         I18n.t("by_type_and_weight", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
-                        decidim_admin_action_delegator.results_election_path(current_election),
-                        position: 1.1,
-                        active: is_active_link?(decidim_admin_action_delegator.results_election_path(current_election), :exact),
-                        if: allowed_to?(:read, :question)
+                        @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election, results: :by_type_and_weight) : "#",
+                        icon_name: "list-check-2",
+                        active: :exact
           menu.add_item :sum_of_weights,
                         I18n.t("sum_of_weights", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
-                        decidim_admin_action_delegator.weighted_results_election_path(current_election),
-                        position: 1.2,
-                        active: is_active_link?(decidim_admin_action_delegator.weighted_results_election_path(current_election)),
-                        if: allowed_to?(:read, :question)
+                        @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election, results: :sum_of_weights) : "#",
+                        icon_name: "bar-chart-2-line",
+                        active: :exact
+          menu.add_item :totals,
+                        I18n.t("totals", scope: "decidim.action_delegator.admin.menu.elections_submenu"),
+                        @election.present? && @election.census_ready? ? current_component_admin_proxy&.dashboard_election_path(@election, results: :totals) : "#",
+                        icon_name: "scales-line",
+                        active: :exact
         end
       end
 

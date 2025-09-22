@@ -8,7 +8,7 @@
           <%= icon "arrow-right-line", class: "fill-current mr-2" %>
           <%= t("decidim.action_delegator.elections.votes.waiting_for", name: delegation.granter.name) %>
         <% end %>
-      <% else %>
+      <% elsif question.sibling_questions.any? %>
         <%= link_to url_for(action: :show, id: question.sibling_questions.first, delegation: delegation.id), class: "button button__transparent-secondary button__lg" do %>
           <%= icon "edit-line", class: "fill-current mr-2" %>
           <%= t("decidim.action_delegator.elections.votes.edit_vote_for", name: delegation.granter.name) %>

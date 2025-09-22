@@ -5,7 +5,7 @@ require "spec_helper"
 module Decidim
   module ActionDelegator
     describe SettingPresenter do
-      let(:setting) { double("Setting", title:, description:) }
+      let!(:setting) { create(:setting, title: title, description: description) }
       let(:title) do
         {
           "en" => "Action Delegator",
@@ -30,15 +30,15 @@ module Decidim
 
       describe "#title" do
         it "returns the translated title" do
-          I18n.with_locale("en") { expect(subject.title).to eq(title["en"]) }
-          I18n.with_locale("ca") { expect(subject.title).to eq(title["ca"]) }
+          I18n.with_locale("en") { expect(subject.translated_title).to eq(title["en"]) }
+          I18n.with_locale("ca") { expect(subject.translated_title).to eq(title["ca"]) }
         end
       end
 
       describe "#description" do
         it "returns the translated description" do
-          I18n.with_locale("en") { expect(subject.description).to eq(description["en"]) }
-          I18n.with_locale("ca") { expect(subject.description).to eq(description["ca"]) }
+          I18n.with_locale("en") { expect(subject.translated_description).to eq(description["en"]) }
+          I18n.with_locale("ca") { expect(subject.translated_description).to eq(description["ca"]) }
         end
       end
     end

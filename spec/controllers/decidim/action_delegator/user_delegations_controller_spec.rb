@@ -10,8 +10,7 @@ module Decidim
       let(:organization) { create(:organization) }
       let(:user) { create(:user, :confirmed, organization: organization) }
       let(:granter) { create(:user, :confirmed, organization: organization) }
-      let(:consultation) { create(:consultation, organization: organization) }
-      let(:setting) { create(:setting, consultation: consultation) }
+      let(:setting) { create(:setting, organization: organization) }
       let!(:delegation) { create(:delegation, setting: setting, granter: granter, grantee: user) }
 
       before do

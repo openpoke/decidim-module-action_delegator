@@ -110,7 +110,18 @@ en:
             upload_help: Must be a file in CSV format with a header.
             upload_instructions: Must be a file in CSV format with a header.
         menu:
+          action_delegator_menu:
+            delegations: Delegations
+            main: Main
+            participants: Participants
+            ponderations: Ponderations
+            settings: Settings
           delegations: Corporate Governance
+          elections_submenu:
+            by_answer: By answer
+            by_type_and_weight: By type and weight
+            sum_of_weights: Sum of weights
+            totals: Totals
           participants: Participants
         participants:
           create:
@@ -288,6 +299,43 @@ en:
         phone: We are using the phone %{phone} to verify your identity. If you think
           this is wrong, please contact us.
       elections:
+        admin:
+          dashboard:
+            questions_table:
+              delegated_votes: Delegated votes
+              participants: Participants
+              participants_count:
+                one: 1 participant
+                other: "%{count} participants"
+              unweighted_votes: Unweighted votes
+              weight: Weight
+              weighted_votes: Weighted votes
+            results_type_info:
+              by_type_and_weight_html: <p>The results shown below are broken down
+                by membership type and weighted by the membership weights defined
+                in the Corporate Governance settings.</p> <p>Each response option
+                shows the number of votes it received from each membership type but
+                no weights are applied in this view.</p> <p>For example, if option
+                A received 2 votes from members with weight "3.0" and 1 vote from
+                a member with weight "1.0", the results will show 2 votes from members
+                with weight "3.0" and 1 vote from members with weight "1.0".</p> <p>⚠️
+                These results are not shown to the public.</p>
+              normal_count_html: "<p>These results are calculated by counting each
+                vote equally, regardless of the membership weight of the participant
+                that cast it.</p> <p>⚠️ These results are not shown to the public.</p>"
+              sum_of_weights_html: <p>The results shown below are weighted by the
+                membership weights defined in the Corporate Governance settings.</p>
+                <p>Each vote is multiplied by the weight of the member who cast it.</p>
+                <p>For example, if a member with weight "3.0" votes for option A,
+                and a member with weight "1.0" votes for option B, the results will
+                show 3 votes for option A and 1 vote for option B.</p> <p><strong>⚠️
+                These are the results shown to the public.</strong></p>
+              title: How to interpret these results?
+              totals_html: "<p>The results shown below show the totals for each question,
+                summing all the votes received by each response option applying the
+                membership weights and not applying them.</p> <p>Also, you can see
+                the number of participants and how many delegated votes were cast
+                for each option.</p> <p>⚠️ These results are not shown to the public.</p>"
         delegation_buttons:
           delegations_active: You have delegated votes.
           per_question_delegations: 'You can vote on behalf of the following participants
@@ -371,13 +419,6 @@ en:
         invite: Send invitation
         invite_all: Send invitations to non-existing users
         resend: Resend invitation
-      menu:
-        action_delegator_menu:
-          delegations: Delegations
-          main: Main
-          participants: Participants
-          ponderations: Ponderations
-          settings: Settings
     authorization_handlers:
       admin:
         delegations_verifier:

@@ -6,9 +6,8 @@ module Decidim
   module ActionDelegator
     describe ImportMailer do
       let(:organization) { create(:organization) }
-      let(:current_user) { create(:user, organization: organization) }
-      let(:current_setting) { create(:setting, consultation: consultation) }
-      let(:consultation) { create(:consultation, organization: organization) }
+      let(:current_user) { create(:user, organization:) }
+      let(:current_setting) { create(:setting, organization:) }
 
       describe "#import participants" do
         let(:valid_csv_file) { File.open("spec/fixtures/valid_participants.csv") }

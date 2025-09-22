@@ -7,7 +7,7 @@ module Decidim
         include NeedsPermission
         include Decidim::Paginable
 
-        helper ::Decidim::ActionDelegator::Admin::DelegationHelper
+        helper ::Decidim::ActionDelegator::Admin::SettingsHelper
         helper_method :organization_settings, :current_setting
 
         layout "decidim/admin/users"
@@ -30,6 +30,7 @@ module Decidim
             flash[:notice] = t(".success")
             redirect_to setting_delegations_path(current_setting)
           else
+            flash[:alert] = t(".error")
             render :new
           end
         end

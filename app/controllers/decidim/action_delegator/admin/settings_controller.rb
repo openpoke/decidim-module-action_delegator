@@ -4,7 +4,7 @@ module Decidim
   module ActionDelegator
     module Admin
       class SettingsController < ActionDelegator::Admin::ApplicationController
-        helper ::Decidim::ActionDelegator::Admin::DelegationHelper
+        helper ::Decidim::ActionDelegator::Admin::SettingsHelper
         include Filterable
         include Paginable
 
