@@ -3,12 +3,20 @@
 module Decidim
   module ActionDelegator
     class SettingPresenter < SimpleDelegator
+      include Decidim::TranslationsHelper
+
+      def initialize(setting)
+        @setting = setting
+
+        super
+      end
+
       def translated_title
-        translated_attribute(title).html_safe
+        translated_attribute(__getobj__.title).html_safe
       end
 
       def translated_description
-        ActionView::Base.full_sanitizer.sanitize(translated_attribute(description)).html_safe
+        ActionView::Base.full_sanitizer.sanitize(translated_attribute(__getobj__.description)).html_safe
       end
 
       def translated_resources_list
