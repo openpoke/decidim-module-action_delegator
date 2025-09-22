@@ -30,6 +30,7 @@ module Decidim
             flash[:notice] = t(".success")
             redirect_to setting_delegations_path(current_setting)
           else
+            flash[:alert] = t(".error")
             render :new
           end
         end
