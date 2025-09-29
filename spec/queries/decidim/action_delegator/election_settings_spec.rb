@@ -230,6 +230,7 @@ module Decidim
                      census_manifest: "corporate_governance_census",
                      census_settings: { "setting_id" => test_setting.id })
             end
+
             subject { described_class.new(election) }
 
             it "returns the specific setting" do
@@ -244,6 +245,7 @@ module Decidim
                      census_manifest: "corporate_governance_census",
                      census_settings: {})
             end
+
             subject { described_class.new(election) }
 
             it "returns Setting.none" do
@@ -258,12 +260,65 @@ module Decidim
                      census_manifest: "corporate_governance_census",
                      census_settings: { "setting_id" => "" })
             end
+
             subject { described_class.new(election) }
 
             it "returns Setting.none" do
               expect(subject.query).to eq(Decidim::ActionDelegator::Setting.none)
               expect(subject.query.count).to eq(0)
             end
+          end
+        end
+
+        context "when election has no census_manifest (unsupported)" do
+          let(:election) do
+            create(
+              :election,
+              :published,
+              :ongoing,
+              component: component,
+              census_manifest: nil,
+              census_settings: {
+                "authorization_handlers" => {
+                  "delegations_verifier" => {
+                    "options" => {
+                      "setting" => setting1.id
+                    }
+                  }
+                }
+              }
+            )
+          end
+
+          it "returns Setting.none as this election is not handled by action_delegator" do
+            expect(subject.query).to eq(Decidim::ActionDelegator::Setting.none)
+            expect(subject.query.count).to eq(0)
+          end
+        end
+
+        context "when election has unknown census_manifest" do
+          let(:election) do
+            create(
+              :election,
+              :published,
+              :ongoing,
+              component: component,
+              census_manifest: "unknown_census",
+              census_settings: {
+                "authorization_handlers" => {
+                  "delegations_verifier" => {
+                    "options" => {
+                      "setting" => setting1.id
+                    }
+                  }
+                }
+              }
+            )
+          end
+
+          it "returns Setting.none as this census manifest is not handled by action_delegator" do
+            expect(subject.query).to eq(Decidim::ActionDelegator::Setting.none)
+            expect(subject.query.count).to eq(0)
           end
         end
       end

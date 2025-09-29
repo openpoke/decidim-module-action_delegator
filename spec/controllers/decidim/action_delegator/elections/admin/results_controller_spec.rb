@@ -16,6 +16,7 @@ module Decidim
           let(:election) do
             create(:election, :published, :ongoing, :with_questions,
                    component:,
+                   census_manifest: "internal_users",
                    census_settings: {
                      "authorization_handlers" => {
                        "delegations_verifier" => {

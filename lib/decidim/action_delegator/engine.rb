@@ -90,23 +90,26 @@ module Decidim
             setting = Decidim::ActionDelegator::Setting.find_by(id: setting_id)
             next Decidim::User.none unless setting
 
-            participant_ids = setting.participants.pluck(:decidim_user_id)
-            delegation_ids = setting.delegations.joins(:grantee).pluck("decidim_action_delegator_delegations.grantee_id")
-
-            eligible_user_ids = (participant_ids + delegation_ids).compact.uniq
-            next election.organization.users.none if eligible_user_ids.empty?
-
-            base_scope = election.organization.users.where(id: eligible_user_ids)
             authorization_handlers = election.census_settings["authorization_handlers"]&.keys
 
             if authorization_handlers.present?
+              participant_ids = setting.participants.pluck(:decidim_user_id)
+              delegation_ids = setting.delegations.joins(:grantee).pluck("decidim_action_delegator_delegations.grantee_id")
+
+              eligible_user_ids = (participant_ids + delegation_ids).compact.uniq
+              next election.organization.users.none if eligible_user_ids.empty?
+
+              base_scope = election.organization.users.where(id: eligible_user_ids)
+
               Decidim::AuthorizedUsers.new(
                 organization: election.organization,
                 handlers: authorization_handlers,
                 strict: true
               ).query.where(id: base_scope.select(:id))
             else
-              base_scope
+              # When no authorization handlers are required, all organization users can vote
+              # This allows delegations to work even for users not explicitly in participants list
+              election.organization.users
             end
           end
 

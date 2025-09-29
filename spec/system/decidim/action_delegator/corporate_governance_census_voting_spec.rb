@@ -36,7 +36,6 @@ describe "Corporate governance census voting" do
 
     let!(:question) { create(:election_question, :with_response_options, :voting_enabled, election:) }
 
-    # TODO: this needs to be clarified
     context "when user is participant in setting" do
       let(:user) { create(:user, :confirmed, organization:) }
       let!(:user_participant) { create(:participant, setting:, decidim_user: user) }
@@ -114,10 +113,18 @@ describe "Corporate governance census voting" do
         visit election_path
       end
 
-      it "does not show voting options" do
-        # expect(page).to have_no_link("Vote") # TODO: needs clarification
+      it "allows voting without authorization when no handlers are configured" do
+        expect(page).to have_link("Vote")
         expect(page).to have_no_content("👉 Vote on behalf of")
         expect(page).to have_no_css(".election__aside-voted")
+
+        click_on "Vote"
+
+        first('input[type="radio"], input[type="checkbox"]').click
+        click_on "Next"
+        click_on "Cast vote"
+
+        expect(page).to have_content("Your vote has been successfully cast")
       end
     end
 
@@ -186,9 +193,15 @@ describe "Corporate governance census voting" do
         visit election_path
       end
 
-      it "does not allow voting" do
+      it "shows vote button but requires authorization to vote" do
+        expect(page).to have_link("Vote")
         expect(page).to have_no_content("👉 Vote on behalf of")
         expect(page).to have_no_css(".election__aside-voted")
+
+        click_on "Vote"
+
+        expect(page).to have_content("Verify your identity")
+        expect(page).to have_content("Verify with Corporate Governance")
       end
     end
 
@@ -220,7 +233,6 @@ describe "Corporate governance census voting" do
         expect(page).to have_css(".election__aside-voted")
         expect(page).to have_content("You have delegated votes")
 
-        # Should show the delegated user in sidebar
         within ".election__aside-voted" do
           expect(page).to have_content(user.name.to_s)
         end

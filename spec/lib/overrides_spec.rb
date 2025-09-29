@@ -16,7 +16,8 @@ module Decidim::ActionDelegator
       "/app/views/decidim/elections/per_question_votes/show.html.erb" => "d73ad2b911d0f1312cab94816b0e4aee",
       "/app/views/decidim/elections/elections/_election_aside.html.erb" => "5dcddd4851780cbedbe3f8fe90a04812",
       "/app/views/decidim/elections/admin/dashboard/_results.html.erb" => "af377ab1ea832fb15f211a2ea2efa361",
-      "/app/views/decidim/elections/elections/_vote_results.html.erb" => "c53443fa9a623cb366925ffe03449321"
+      "/app/views/decidim/elections/elections/_vote_results.html.erb" => "c53443fa9a623cb366925ffe03449321",
+      "/app/views/decidim/elections/admin/censuses/_internal_users_form.html.erb" => "4bda22da9c35ce12246d77f13a44a345"
     }
   ]
 
