@@ -84,32 +84,7 @@ module Decidim
           manifest.voter_form_partial = "decidim/elections/censuses/internal_users_form"
 
           manifest.user_query do |election|
-            setting_id = election.census_settings["setting_id"]
-            next Decidim::User.none unless setting_id
-
-            setting = Decidim::ActionDelegator::Setting.find_by(id: setting_id)
-            next Decidim::User.none unless setting
-
-            authorization_handlers = election.census_settings["authorization_handlers"]&.keys
-
-            if authorization_handlers.present?
-              participant_ids = setting.participants.pluck(:decidim_user_id)
-              delegation_ids = setting.delegations.joins(:grantee).pluck("decidim_action_delegator_delegations.grantee_id")
-
-              eligible_user_ids = (participant_ids + delegation_ids).compact.uniq
-              next election.organization.users.none if eligible_user_ids.empty?
-
-              base_scope = election.organization.users.where(id: eligible_user_ids)
-
-              Decidim::AuthorizedUsers.new(
-                organization: election.organization,
-                handlers: authorization_handlers,
-                strict: true
-              ).query.where(id: base_scope.select(:id))
-            else
-              # When no authorization handlers are required, all confirmed users can vote
-              election.organization.users.not_deleted.not_blocked.confirmed
-            end
+            Decidim::ActionDelegator::CorporateGovernanceCensusUsers.new(election).query
           end
 
           manifest.census_ready_validator { |election| election.census_settings["setting_id"].present? }
