@@ -11,9 +11,13 @@ module Decidim
       end
 
       def query
-        Decidim::Elections::Election.where(component: components)
-                                    .where(census_manifest: "internal_users")
-                                    .where("census_settings -> 'authorization_handlers' -> 'delegations_verifier' -> 'options' -> 'setting' ? :id", id: @setting.id.to_s)
+        condition = [
+          "(census_manifest = 'internal_users' AND census_settings -> 'authorization_handlers' -> 'delegations_verifier' -> 'options' -> 'setting' ? :setting_id) OR " \
+          "(census_manifest = 'corporate_governance_census' AND census_settings ->> 'setting_id' = :setting_id)",
+          { setting_id: @setting.id.to_s }
+        ]
+
+        Decidim::Elections::Election.where(component: components).where(condition)
       end
 
       def components
