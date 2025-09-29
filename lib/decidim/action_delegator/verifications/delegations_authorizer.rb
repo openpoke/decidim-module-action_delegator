@@ -38,15 +38,15 @@ module Decidim
 
           unless setting
             return [{
-                      key: "no_setting",
-                      params: { scope: "decidim.action_delegator.delegations_authorizer" }
-                    }]
+              key: "no_setting",
+              params: { scope: "decidim.action_delegator.delegations_authorizer" }
+            }]
           end
 
           @extra_explanations = [{
-                                   key: "not_in_census",
-                                   params: { scope: "decidim.action_delegator.delegations_authorizer" }
-                                 }]
+            key: "not_in_census",
+            params: { scope: "decidim.action_delegator.delegations_authorizer" }
+          }]
 
           @extra_explanations << {
             key: "email",
