@@ -1,8 +1,8 @@
 <div class="row column form__wrapper pb-4" id="corporate-governance-census-settings">
-  <%= form.select :setting_id,
-      options_for_select(form.object.settings_for_select, form.object.setting_id),
-      { label: t("setting_group", scope: "decidim.action_delegator.admin.census"), prompt: false },
-      { id: "action_delegator_census_setting_id" } %>
+  <%= form.select(:setting_id,
+                  options_for_select(form.object.settings_for_select, form.object.setting_id),
+                  { label: t("setting_group", scope: "decidim.action_delegator.admin.census"), prompt: false },
+                  { id: "action_delegator_census_setting_id" }) %>
 </div>
 
 <div class="row column font-semibold pb-4"><%= t("decidim.elections.censuses.internal_users.internal_type_title") %></div>
