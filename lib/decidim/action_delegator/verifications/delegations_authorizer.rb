@@ -19,32 +19,17 @@ module Decidim
         private
 
         def user_in_election_census?
-          # Найти setting для текущих выборов из опций
-          election_setting_id = options["setting"]
-          return false unless election_setting_id
+          return false unless options["setting"] == setting&.id.to_s
+          return false unless setting&.participants
 
-          election_setting = Decidim::ActionDelegator::Setting.find_by(id: election_setting_id)
-          return false unless election_setting&.participants
-
-          # Проверить, есть ли пользователь в участниках этого setting
-          election_setting.participants.exists?(decidim_user: authorization.user) ||
-            election_setting.participants.exists?(census_params_for_setting(election_setting))
-        end
-
-        def census_params_for_setting(election_setting)
-          params = { email: authorization.user.email }
-          params[:phone] = authorization.metadata["phone"] if election_setting.phone_required?
-          params
+          setting.participants.exists?(decidim_user: authorization.user) || setting.participants.exists?(census_params)
         end
 
         def census_params
           return @census_params if @census_params
 
-          election_setting_id = options["setting"]
-          election_setting = Decidim::ActionDelegator::Setting.find_by(id: election_setting_id)
-
           @census_params = { email: authorization.user.email }
-          @census_params[:phone] = authorization.metadata["phone"] if election_setting&.phone_required?
+          @census_params[:phone] = authorization.metadata["phone"] if setting.phone_required?
           @census_params
         end
 
@@ -53,15 +38,15 @@ module Decidim
 
           unless setting
             return [{
-              key: "no_setting",
-              params: { scope: "decidim.action_delegator.delegations_authorizer" }
-            }]
+                      key: "no_setting",
+                      params: { scope: "decidim.action_delegator.delegations_authorizer" }
+                    }]
           end
 
           @extra_explanations = [{
-            key: "not_in_census",
-            params: { scope: "decidim.action_delegator.delegations_authorizer" }
-          }]
+                                   key: "not_in_census",
+                                   params: { scope: "decidim.action_delegator.delegations_authorizer" }
+                                 }]
 
           @extra_explanations << {
             key: "email",
@@ -78,8 +63,7 @@ module Decidim
         end
 
         def setting
-          # Теперь setting берется из опций выборов, а не из метаданных авторизации
-          @setting ||= Decidim::ActionDelegator::Setting.find_by(id: options["setting"])
+          @setting ||= Decidim::ActionDelegator::Setting.find_by(id: authorization.metadata["setting_id"])
         end
       end
     end
