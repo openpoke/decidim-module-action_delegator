@@ -107,9 +107,8 @@ module Decidim
                 strict: true
               ).query.where(id: base_scope.select(:id))
             else
-              # When no authorization handlers are required, all organization users can vote
-              # This allows delegations to work even for users not explicitly in participants list
-              election.organization.users
+              # When no authorization handlers are required, all confirmed users can vote
+              election.organization.users.not_deleted.not_blocked.confirmed
             end
           end
 

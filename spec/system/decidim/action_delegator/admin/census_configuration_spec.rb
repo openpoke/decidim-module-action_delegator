@@ -5,12 +5,13 @@ require "spec_helper"
 describe "Census Configuration", :slow do
   let(:organization) { create(:organization, available_authorizations: ["delegations_verifier"]) }
   let(:component) { create(:elections_component, organization:) }
-  let(:user) { create(:user, :admin, :confirmed, organization:) }
+  let(:admin_user) { create(:user, :admin, :confirmed, organization:) }
   let!(:election) { create(:election, component:, census_manifest: "internal_users") }
+  let(:census_path) { Decidim::EngineRouter.admin_proxy(component).election_census_path(election) }
 
   before do
     switch_to_host(organization.host)
-    login_as user, scope: :user
+    login_as admin_user, scope: :user
   end
 
   context "when configuring census" do
@@ -18,7 +19,7 @@ describe "Census Configuration", :slow do
     let!(:setting2) { create(:setting, organization:, active: true, title: { "en" => "Another Setting" }) }
 
     before do
-      visit Decidim::EngineRouter.admin_proxy(component).election_census_path(election)
+      visit census_path
     end
 
     it "shows census manifest selector" do
@@ -42,26 +43,42 @@ describe "Census Configuration", :slow do
       end
 
       context "when setting is selected" do
-        let!(:participant1) { create(:participant, setting:, email: "corp_user1@example.org") }
-        let!(:participant2) { create(:participant, setting:, email: "corp_user2@example.org") }
-        let!(:user1) { create(:user, organization:, email: "corp_user1@example.org") }
-        let!(:user2) { create(:user, organization:, email: "corp_user2@example.org") }
+        let!(:user1) { create(:user, :confirmed, organization:, email: "corp_user1@example.org") }
+        let!(:user2) { create(:user, :confirmed, organization:, email: "corp_user2@example.org") }
+        let!(:participant1) { create(:participant, setting:, decidim_user: user1, email: "corp_user1@example.org") }
+        let!(:participant2) { create(:participant, setting:, decidim_user: user2, email: "corp_user2@example.org") }
         let!(:delegation1) { create(:delegation, setting:, granter: user1, grantee: user2) }
         let!(:delegation2) { create(:delegation, setting:, granter: user2, grantee: user1) }
 
         before do
           select "Test Setting", from: "corporate_governance_census[setting_id]"
-          sleep 1
           click_button "Save and continue"
         end
 
-        it "shows user count based on setting participants" do
-          visit Decidim::EngineRouter.admin_proxy(component).election_census_path(election)
-          expect(page).to have_content("There are currently 2 people eligible for voting")
+        it "shows all organization users count when no authorization handlers are required (enables delegations for all users)" do
+          visit census_path
+          expect(page).to have_content("There are currently 3 people eligible for voting")
         end
 
         it "allows saving configuration" do
           expect(page).to have_content("updated successfully")
+        end
+
+        context "when authorization handlers are required" do
+          let!(:auth1) { create(:authorization, user: user1, name: "delegations_verifier", granted_at: Time.current) }
+          let!(:auth2) { create(:authorization, user: user2, name: "delegations_verifier", granted_at: Time.current) }
+
+          before do
+            visit census_path
+            select "Corporate governance census", from: "census_manifest"
+            select "Test Setting", from: "corporate_governance_census[setting_id]"
+            check "Corporate Governance (Multi-Step)"
+            click_button "Save and continue"
+          end
+
+          it "shows user count based on setting participants and delegates" do
+            expect(page).to have_content("There are currently 2 people eligible for voting")
+          end
         end
       end
     end
