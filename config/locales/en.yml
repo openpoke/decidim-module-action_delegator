@@ -435,6 +435,10 @@ en:
           setting_options:
             a: A
         name: Corporate Governance
+    elections:
+      censuses:
+        action_delegator_census:
+          label: Corporate Governance census
     verifications:
       authorizations:
         first_login:

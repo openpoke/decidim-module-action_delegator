@@ -4,7 +4,7 @@ module Decidim
   module ActionDelegator
     module Admin
       # A form object that extends the internal users census form with setting selection.
-      class CorporateGovernanceCensusForm < Decidim::Elections::Admin::Censuses::InternalUsersForm
+      class ActionDelegatorCensusForm < Decidim::Elections::Admin::Censuses::InternalUsersForm
         attribute :setting_id, Integer
 
         validates :setting_id, presence: true
@@ -12,8 +12,7 @@ module Decidim
 
         # Returns the settings that need to be persisted in the census.
         def census_settings
-          parent_settings = super
-          parent_settings.merge("setting_id" => setting_id)
+          super.merge("setting_id" => setting_id)
         end
 
         def available_settings

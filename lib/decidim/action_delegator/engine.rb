@@ -77,9 +77,9 @@ module Decidim
       initializer "decidim_action_delegator.census_registry" do
         next unless Decidim.module_installed?(:elections)
 
-        Decidim::Elections.census_registry.register(:corporate_governance_census) do |manifest|
-          manifest.admin_form = "Decidim::ActionDelegator::Admin::CorporateGovernanceCensusForm"
-          manifest.admin_form_partial = "decidim/elections/admin/censuses/internal_users_form"
+        Decidim::Elections.census_registry.register(:action_delegator_census) do |manifest|
+          manifest.admin_form = "Decidim::ActionDelegator::Admin::ActionDelegatorCensusForm"
+          manifest.admin_form_partial = "decidim/action_delegator/admin/censuses/action_delegator_census_form"
           manifest.voter_form = "Decidim::Elections::Censuses::InternalUsersForm"
           manifest.voter_form_partial = "decidim/elections/censuses/internal_users_form"
 

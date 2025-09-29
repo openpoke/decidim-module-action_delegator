@@ -13,7 +13,7 @@ module Decidim
       def query
         condition = [
           "(census_manifest = 'internal_users' AND census_settings -> 'authorization_handlers' -> 'delegations_verifier' -> 'options' -> 'setting' ? :setting_id) OR " \
-          "(census_manifest = 'corporate_governance_census' AND census_settings ->> 'setting_id' = :setting_id)",
+          "(census_manifest = 'action_delegator_census' AND census_settings ->> 'setting_id' = :setting_id)",
           { setting_id: @setting.id.to_s }
         ]
 

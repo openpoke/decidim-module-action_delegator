@@ -222,12 +222,12 @@ module Decidim
           end
         end
 
-        context "when election uses corporate_governance_census" do
+        context "when election uses action_delegator_census" do
           context "with setting_id configured" do
             let(:test_setting) { create(:setting) }
             let(:election) do
               create(:election,
-                     census_manifest: "corporate_governance_census",
+                     census_manifest: "action_delegator_census",
                      census_settings: { "setting_id" => test_setting.id })
             end
 
@@ -242,7 +242,7 @@ module Decidim
           context "with no setting_id configured" do
             let(:election) do
               create(:election,
-                     census_manifest: "corporate_governance_census",
+                     census_manifest: "action_delegator_census",
                      census_settings: {})
             end
 
@@ -257,7 +257,7 @@ module Decidim
           context "with blank setting_id" do
             let(:election) do
               create(:election,
-                     census_manifest: "corporate_governance_census",
+                     census_manifest: "action_delegator_census",
                      census_settings: { "setting_id" => "" })
             end
 

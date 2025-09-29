@@ -20,14 +20,14 @@ describe "Corporate governance census voting" do
     switch_to_host(organization.host)
   end
 
-  context "when election uses corporate_governance_census without handlers" do
+  context "when election uses action_delegator_census without handlers" do
     let!(:election) do
       create(
         :election,
         :published,
         :ongoing,
         component:,
-        census_manifest: "corporate_governance_census",
+        census_manifest: "action_delegator_census",
         census_settings: {
           "setting_id" => setting.id.to_s
         }
@@ -140,14 +140,14 @@ describe "Corporate governance census voting" do
     end
   end
 
-  context "when election uses corporate_governance_census with authorization handlers" do
+  context "when election uses action_delegator_census with authorization handlers" do
     let!(:election) do
       create(
         :election,
         :published,
         :ongoing,
         component:,
-        census_manifest: "corporate_governance_census",
+        census_manifest: "action_delegator_census",
         census_settings: {
           "setting_id" => setting.id.to_s,
           "authorization_handlers" => {
@@ -240,7 +240,7 @@ describe "Corporate governance census voting" do
     end
   end
 
-  context "when election is per_question type with corporate_governance_census" do
+  context "when election is per_question type with action_delegator_census" do
     let!(:election) do
       create(
         :election,
@@ -248,7 +248,7 @@ describe "Corporate governance census voting" do
         :per_question,
         :ongoing,
         component:,
-        census_manifest: "corporate_governance_census",
+        census_manifest: "action_delegator_census",
         census_settings: {
           "setting_id" => setting.id.to_s,
           "authorization_handlers" => {
@@ -297,7 +297,7 @@ describe "Corporate governance census voting" do
         :published,
         :finished,
         component:,
-        census_manifest: "corporate_governance_census",
+        census_manifest: "action_delegator_census",
         census_settings: {
           "setting_id" => setting.id.to_s
         }

@@ -101,8 +101,8 @@ describe "Admin manages settings" do
   context "when viewing setting with corporate governance census elections" do
     let!(:setting) { create(:setting, organization:, active: true, title: { "en" => "Test Setting" }) }
     let!(:component) { create(:elections_component, organization:) }
-    let!(:election1) { create(:election, component:, census_manifest: "corporate_governance_census", census_settings: { "setting_id" => setting.id.to_s }, title: { "en" => "Corporate Election 1" }) }
-    let!(:election2) { create(:election, component:, census_manifest: "corporate_governance_census", census_settings: { "setting_id" => setting.id.to_s }, title: { "en" => "Corporate Election 2" }) }
+    let!(:election1) { create(:election, component:, census_manifest: "action_delegator_census", census_settings: { "setting_id" => setting.id.to_s }, title: { "en" => "Corporate Election 1" }) }
+    let!(:election2) { create(:election, component:, census_manifest: "action_delegator_census", census_settings: { "setting_id" => setting.id.to_s }, title: { "en" => "Corporate Election 2" }) }
     let!(:election3) { create(:election, component:, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "delegations_verifier" => { "options" => { "setting" => setting.id.to_s } } } }, title: { "en" => "Internal Users Election" }) }
 
     before do

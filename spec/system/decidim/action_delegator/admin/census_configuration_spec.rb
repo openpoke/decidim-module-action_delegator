@@ -23,23 +23,23 @@ describe "Census Configuration", :slow do
     end
 
     it "shows census manifest selector" do
-      expect(page).to have_select("census_manifest", with_options: ["Registered participants (dynamic)", "Corporate governance census"])
+      expect(page).to have_select("census_manifest", with_options: ["Registered participants (dynamic)", "Corporate Governance census"])
     end
 
-    context "when corporate governance census is selected" do
+    context "when Corporate Governance census is selected" do
       before do
-        select "Corporate governance census", from: "census_manifest"
+        select "Corporate Governance census", from: "census_manifest"
         sleep 1
       end
 
       it "shows setting selector" do
-        expect(page).to have_select("corporate_governance_census[setting_id]", with_options: ["Test Setting", "Another Setting"])
+        expect(page).to have_select("action_delegator_census[setting_id]", with_options: ["Test Setting", "Another Setting"])
       end
 
       it "shows authorization handlers section and setting selector" do
         expect(page).to have_content("Additional required authorizations to vote")
         expect(page).to have_content("Corporate Governance")
-        expect(page).to have_select("corporate_governance_census[setting_id]")
+        expect(page).to have_select("action_delegator_census[setting_id]")
       end
 
       context "when setting is selected" do
@@ -51,7 +51,7 @@ describe "Census Configuration", :slow do
         let!(:delegation2) { create(:delegation, setting:, granter: user2, grantee: user1) }
 
         before do
-          select "Test Setting", from: "corporate_governance_census[setting_id]"
+          select "Test Setting", from: "action_delegator_census[setting_id]"
           click_button "Save and continue"
         end
 
@@ -70,8 +70,8 @@ describe "Census Configuration", :slow do
 
           before do
             visit census_path
-            select "Corporate governance census", from: "census_manifest"
-            select "Test Setting", from: "corporate_governance_census[setting_id]"
+            select "Corporate Governance census", from: "census_manifest"
+            select "Test Setting", from: "action_delegator_census[setting_id]"
             check "Corporate Governance (Multi-Step)"
             click_button "Save and continue"
           end
@@ -94,7 +94,7 @@ describe "Census Configuration", :slow do
       end
 
       it "does not show setting selector" do
-        expect(page).to have_no_select("corporate_governance_census[setting_id]")
+        expect(page).to have_no_select("action_delegator_census[setting_id]")
       end
 
       context "when corporate governance verifier is checked" do
@@ -130,33 +130,33 @@ describe "Census Configuration", :slow do
       let!(:user1) { create(:user, organization:, email: "switch_user1@example.org") }
 
       it "does not cause state pollution" do
-        # Start with corporate governance census
-        select "Corporate governance census", from: "census_manifest"
+        # Start with Corporate Governance census
+        select "Corporate Governance census", from: "census_manifest"
         sleep 1
 
-        select "Test Setting", from: "corporate_governance_census[setting_id]"
+        select "Test Setting", from: "action_delegator_census[setting_id]"
         sleep 1
 
         # Switch to registered participants
         select "Registered participants (dynamic)", from: "census_manifest"
         sleep 1
 
-        expect(page).to have_no_select("corporate_governance_census[setting_id]")
+        expect(page).to have_no_select("action_delegator_census[setting_id]")
         expect(page).to have_content("Additional required authorizations to vote")
 
-        # Switch back to corporate governance census
-        select "Corporate governance census", from: "census_manifest"
+        # Switch back to Corporate Governance census
+        select "Corporate Governance census", from: "census_manifest"
         sleep 1
 
-        expect(page).to have_select("corporate_governance_census[setting_id]")
+        expect(page).to have_select("action_delegator_census[setting_id]")
         expect(page).to have_content("Additional required authorizations to vote")
       end
     end
 
     context "when validating form submission" do
-      context "with corporate governance census" do
+      context "with Corporate Governance census" do
         before do
-          select "Corporate governance census", from: "census_manifest"
+          select "Corporate Governance census", from: "census_manifest"
           sleep 1
         end
 
@@ -167,7 +167,7 @@ describe "Census Configuration", :slow do
 
         it "shows validation error when setting does not exist" do
           # Manually set an invalid setting_id via JavaScript
-          page.execute_script("document.querySelector('#corporate_governance_census_setting_id').value = '99999'")
+          page.execute_script("document.querySelector('#action_delegator_census_setting_id').value = '99999'")
           click_button "Save and continue"
           expect(page).to have_content("There is an error in this field")
         end
@@ -178,7 +178,7 @@ describe "Census Configuration", :slow do
 
           it "shows validation error when setting belongs to different organization" do
             # Manually set setting_id from different organization via JavaScript
-            page.execute_script("document.querySelector('#corporate_governance_census_setting_id').value = '#{other_setting.id}'")
+            page.execute_script("document.querySelector('#action_delegator_census_setting_id').value = '#{other_setting.id}'")
             click_button "Save and continue"
             expect(page).to have_content("There is an error in this field")
           end
@@ -189,7 +189,7 @@ describe "Census Configuration", :slow do
 
           it "shows validation error when setting is inactive" do
             # Inactive settings should not appear in dropdown, but test direct assignment
-            page.execute_script("document.querySelector('#corporate_governance_census_setting_id').value = '#{inactive_setting.id}'")
+            page.execute_script("document.querySelector('#action_delegator_census_setting_id').value = '#{inactive_setting.id}'")
             click_button "Save and continue"
             expect(page).to have_content("There is an error in this field")
           end
@@ -201,12 +201,12 @@ describe "Census Configuration", :slow do
             setting.destroy!
             setting2.destroy!
             visit Decidim::EngineRouter.admin_proxy(component).election_census_path(election)
-            select "Corporate governance census", from: "census_manifest"
+            select "Corporate Governance census", from: "census_manifest"
             sleep 1
           end
 
           it "shows empty setting selector and validation error on submit" do
-            expect(page).to have_select("corporate_governance_census[setting_id]", options: [""])
+            expect(page).to have_select("action_delegator_census[setting_id]", options: [""])
             click_button "Save and continue"
             expect(page).to have_content("There is an error in this field")
           end

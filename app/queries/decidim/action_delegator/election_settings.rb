@@ -10,7 +10,7 @@ module Decidim
 
       def query
         setting_id = case @election.census_manifest
-                     when "corporate_governance_census"
+                     when "action_delegator_census"
                        @election.census_settings["setting_id"]
                      when "internal_users"
                        @election.census_settings.dig("authorization_handlers", "delegations_verifier", "options", "setting")
