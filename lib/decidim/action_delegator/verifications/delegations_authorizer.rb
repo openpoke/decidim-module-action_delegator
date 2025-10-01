@@ -19,18 +19,21 @@ module Decidim
         private
 
         def user_in_election_census?
-          return false unless options["setting"] == setting&.id.to_s
-          return false unless setting&.participants
+          setting_id = options["setting"]
+          return false unless setting_id
 
-          setting.participants.exists?(decidim_user: authorization.user) || setting.participants.exists?(census_params)
+          setting = Decidim::ActionDelegator::Setting.find_by(id: setting_id)
+          return false unless setting
+
+          setting.participants.where(decidim_user: authorization.user)
+                 .or(setting.participants.where(census_params(setting)))
+                 .exists?
         end
 
-        def census_params
-          return @census_params if @census_params
-
-          @census_params = { email: authorization.user.email }
-          @census_params[:phone] = authorization.metadata["phone"] if setting.phone_required?
-          @census_params
+        def census_params(setting)
+          params = { email: authorization.user.email }
+          params[:phone] = authorization.metadata["phone"] if setting.phone_required?
+          params
         end
 
         def extra_explanations

@@ -42,8 +42,22 @@ module Decidim
         def metadata
           {
             phone: phone,
-            setting_id: setting.id
+            setting_ids: user_setting_ids
           }
+        end
+
+        def user_setting_ids
+          return [] unless current_user
+
+          Decidim::ActionDelegator::Setting
+            .joins(:participants)
+            .where(
+              organization: current_user.organization,
+              participants: { email: current_user.email }
+            )
+            .pluck(:id)
+            .uniq
+            .sort
         end
 
         # The verification metadata to validate in the next step.
