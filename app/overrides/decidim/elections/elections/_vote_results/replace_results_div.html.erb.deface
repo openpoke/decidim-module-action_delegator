@@ -1,6 +1,6 @@
 <!-- surround "div[data-erb-data-results-live-update]" -->
 
-<% if settings_for(election).present? %>
+<% if current_resource_settings.present? %>
   <%= render "decidim/action_delegator/elections/vote_results", questions: %>
   <% append_javascript_pack_tag("decidim_action_delegator_elections") %>
 <% else %>
