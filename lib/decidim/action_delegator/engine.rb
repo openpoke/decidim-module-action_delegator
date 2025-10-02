@@ -74,6 +74,23 @@ module Decidim
         end
       end
 
+      initializer "decidim_action_delegator.census_registry" do
+        next unless Decidim.module_installed?(:elections)
+
+        Decidim::Elections.census_registry.register(:action_delegator_census) do |manifest|
+          manifest.admin_form = "Decidim::ActionDelegator::Admin::ActionDelegatorCensusForm"
+          manifest.admin_form_partial = "decidim/action_delegator/admin/censuses/action_delegator_census_form"
+          manifest.voter_form = "Decidim::Elections::Censuses::InternalUsersForm"
+          manifest.voter_form_partial = "decidim/elections/censuses/internal_users_form"
+
+          manifest.user_query do |election|
+            Decidim::ActionDelegator::CorporateGovernanceCensusUsers.new(election).query
+          end
+
+          manifest.census_ready_validator { |election| election.census_settings["setting_id"].present? }
+        end
+      end
+
       initializer "decidim_action_delegator.icons" do
         Decidim.icons.register(name: "weight-line", icon: "weight-line", category: "system", description: "", engine: :action_delegator)
         Decidim.icons.register(name: "user-shared-line", icon: "user-shared-line", category: "system", description: "", engine: :action_delegator)

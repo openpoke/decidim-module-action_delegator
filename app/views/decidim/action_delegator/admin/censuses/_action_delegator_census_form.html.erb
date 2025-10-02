@@ -1,0 +1,44 @@
+<div class="row column form__wrapper pb-4" id="corporate-governance-census-settings">
+  <%= form.select(:setting_id,
+                  options_for_select(form.object.settings_for_select, form.object.setting_id),
+                  { label: t("setting_group", scope: "decidim.action_delegator.admin.census"), prompt: false },
+                  { id: "action_delegator_census_setting_id" }) %>
+</div>
+
+<div class="row column font-semibold pb-4"><%= t("decidim.elections.censuses.internal_users.internal_type_title") %></div>
+<div class="row column">
+  <div class="callout">
+    <%= t("decidim.elections.censuses.action_delegator_census.authorizer_handler_admin_callout_html") %>
+  </div>
+
+</div>
+<div class="mt-4 form__wrapper gap-1">
+  <%= form.collection_check_boxes :authorization_handlers_names,
+                                  @form.available_authorizations,
+                                  :name,
+                                  :description do |builder| %>
+    <div class="row">
+      <%= builder.label { builder.check_box + builder.text } %>
+      <div id="authorization-handler-<%= builder.value %>" class="authorization-handler my-4 ml-6" style="display: <%= form.object.authorization_handlers_names.include?(builder.value) ? "block" : "none" %>;">
+        <%= render "decidim/action_delegator/admin/censuses/action_delegator_census_options_form", form: form, handler_name: builder.value %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", function() {
+    const checkboxes = document.querySelectorAll("input[type='checkbox'][id^='action_delegator_census_authorization_handlers_names_']");
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", function() {
+        const handlerId = `authorization-handler-${this.value}`;
+        const handlerElement = document.getElementById(handlerId);
+        if (this.checked) {
+          handlerElement.style.display = "block";
+        } else {
+          handlerElement.style.display = "none";
+        }
+      });
+    });
+  });
+</script>

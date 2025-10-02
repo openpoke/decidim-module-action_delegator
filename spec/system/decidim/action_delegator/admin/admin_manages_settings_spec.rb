@@ -98,6 +98,32 @@ describe "Admin manages settings" do
     end
   end
 
+  context "when viewing setting with corporate governance census elections" do
+    let!(:setting) { create(:setting, organization:, active: true, title: { "en" => "Test Setting" }) }
+    let!(:component) { create(:elections_component, organization:) }
+    let!(:election1) { create(:election, component:, census_manifest: "action_delegator_census", census_settings: { "setting_id" => setting.id.to_s }, title: { "en" => "Corporate Election 1" }) }
+    let!(:election2) { create(:election, component:, census_manifest: "action_delegator_census", census_settings: { "setting_id" => setting.id.to_s }, title: { "en" => "Corporate Election 2" }) }
+    let!(:election3) { create(:election, component:, census_manifest: "internal_users", census_settings: { "authorization_handlers" => { "delegations_verifier" => { "options" => { "setting" => setting.id.to_s } } } }, title: { "en" => "Internal Users Election" }) }
+
+    before do
+      visit decidim_admin_action_delegator.settings_path
+    end
+
+    it "shows voting spaces section with corporate governance census elections" do
+      expect(page).to have_content("Applies to the following voting spaces")
+      expect(page).to have_link("Corporate Election 1")
+      expect(page).to have_link("Corporate Election 2")
+      expect(page).to have_link("Internal Users Election")
+    end
+
+    it "displays warning callout for voting spaces" do
+      within ".callout.warning" do
+        expect(page).to have_content("Applies to the following voting spaces")
+        expect(page).to have_css("ul.happy-faces")
+      end
+    end
+  end
+
   context "when creating with copy from other setting" do
     let!(:source_setting) { create(:setting, :with_participants, :with_ponderations, organization:, authorization_method: :both) }
 
