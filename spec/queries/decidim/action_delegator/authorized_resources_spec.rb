@@ -23,7 +23,11 @@ module Decidim
 
       describe "#query" do
         it "returns the authorized resources" do
-          expect(subject.query).to eq([election, another_election])
+          # Force creation of elections before querying
+          [election, another_election, invalid_election, another_invalid_election, external_election]
+
+          result = subject.query.to_a
+          expect(result).to contain_exactly(election, another_election)
         end
       end
     end

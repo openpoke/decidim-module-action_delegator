@@ -37,3 +37,4 @@ ignore_unused:
   - "decidim.action_delegator.admin.weighted_results.title"
   - "decidim.action_delegator.authorizations.*"
   - "decidim.action_delegator.delegations.*"
+  - "decidim.elections.censuses.action_delegator_census.label"
