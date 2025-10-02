@@ -425,7 +425,8 @@ en:
       admin:
         delegations_verifier:
           help:
-          - A verification method for delegate voting
+          - A verification method for delegate voting, weighted voting and fully managed
+            census.
       delegations_verifier:
         explanation: Verified users with this method can delegate votes to other users
         fields:
@@ -438,6 +439,11 @@ en:
     elections:
       censuses:
         action_delegator_census:
+          authorizer_handler_admin_callout_html: Choose the "Corporate Governance"
+            authorization method if you want to use the participants list from the
+            chosen setting group to validate who can vote.<br> You can also use another
+            authorization method if your source of census is external or if you don't
+            want to use a census at all (and everyone registered can vote).
           label: Corporate Governance census
     verifications:
       authorizations:

@@ -7,7 +7,10 @@
 
 <div class="row column font-semibold pb-4"><%= t("decidim.elections.censuses.internal_users.internal_type_title") %></div>
 <div class="row column">
-  <p class="mb-2"><%= t("decidim.elections.censuses.internal_users.info_html") %></p>
+  <div class="callout">
+    <%= t("decidim.elections.censuses.action_delegator_census.authorizer_handler_admin_callout_html") %>
+  </div>
+
 </div>
 <div class="mt-4 form__wrapper gap-1">
   <%= form.collection_check_boxes :authorization_handlers_names,
