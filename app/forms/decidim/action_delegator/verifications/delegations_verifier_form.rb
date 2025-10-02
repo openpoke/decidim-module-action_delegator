@@ -5,7 +5,15 @@ require "securerandom"
 module Decidim
   module ActionDelegator
     module Verifications
-      # A form object to be used when public users want to get verified using their phone.
+      # This verifier checks if there is some setting in which the participant is required
+      # to verify it's phone (the first active setting will be used for that).
+      # If no setting requires phone verification, it will check if there is some setting
+      # in which the participant is required to verify it's email.
+      # If no setting requires email verification, the user won't be able to proceed.
+      # If there are multiple active settings, the user will be verified for the first one
+      #
+      # Note that the ActionAuthorizer associated with this handler will check the current status
+      # of the settings and delegations regardless of this verification metadata
       class DelegationsVerifierForm < AuthorizationHandler
         attribute :email, String
         attribute :phone, String
@@ -13,7 +21,7 @@ module Decidim
         validates :verification_code, :sms_gateway, presence: true, if: ->(form) { form.setting&.phone_required? }
         validates :phone, presence: true, if: ->(form) { form.setting&.phone_required? }
         validates :email, presence: true, if: ->(form) { form.setting&.email_required? }
-        validate :setting_exists
+
         validate :user_in_census
 
         alias user current_user
@@ -41,23 +49,15 @@ module Decidim
 
         def metadata
           {
-            phone: phone,
-            setting_ids: user_setting_ids
+            phone:,
+            setting_ids:
           }
         end
 
-        def user_setting_ids
+        def setting_ids
           return [] unless current_user
 
-          Decidim::ActionDelegator::Setting
-            .joins(:participants)
-            .where(
-              organization: current_user.organization,
-              participants: { email: current_user.email }
-            )
-            .pluck(:id)
-            .uniq
-            .sort
+          valid_participants&.map(&:setting_id)&.uniq || []
         end
 
         # The verification metadata to validate in the next step.
@@ -70,32 +70,39 @@ module Decidim
 
         # currently, we rely on the last setting.
         # This could be improved by allowing the user to select the setting (or related phone).
-        def setting
-          @setting ||= context[:setting]
+        def active_settings
+          @active_settings ||= context[:active_settings]
         end
 
-        def participants
-          @participants ||= Decidim::ActionDelegator::Participant.where(setting: setting)
-        end
-
+        # find the participant in any of the active settings
+        # If phone is required, just find the first participant and validate the phone
+        # if not, find by email in any of the active settings
         def participant
-          return unless setting
+          valid_participants&.first
+        end
 
-          @participant ||= begin
+        def valid_participants
+          return [] unless setting
+
+          @valid_participants ||= begin
             params = {}
             params[:email] = email if setting.email_required?
             if setting.phone_required?
               if phone.blank?
-                @participant = setting.participants.none
+                @valid_participants = setting.participants.none
               else
-                params[:phone] = phone
                 params[:phone] = phone_prefixes.map { |prefix| "#{prefix}#{phone}" }
                 params[:phone] += phone_prefixes.map { |prefix| phone.delete_prefix(prefix).to_s }
               end
             end
 
-            setting.participants.find_by(params)
+            setting.participants.where(params)
           end
+        end
+
+        # find the first setting where phone is required or, if not, the first setting where email is required
+        def setting
+          @setting ||= active_settings.phone_required.first || active_settings.email_required.first
         end
 
         private
@@ -112,14 +119,6 @@ module Decidim
 
           errors.add(:phone, :phone_not_found) if setting.phone_required?
           errors.add(:email, :email_not_found) if setting.email_required?
-        end
-
-        def setting_exists
-          return if errors.any?
-          return if setting
-
-          errors.add(:phone, :invalid)
-          errors.add(:email, :invalid)
         end
 
         def verification_code
