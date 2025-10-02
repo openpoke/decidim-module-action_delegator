@@ -15,7 +15,7 @@ module Decidim
       private
 
       def delegations
-        @delegations ||= Delegation.where(grantee_id: current_user.id)
+        @delegations ||= user_signed_in? ? Delegation.where(grantee_id: current_user.id) : Delegation.none
       end
     end
   end

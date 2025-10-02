@@ -16,7 +16,7 @@ module Decidim
       end
 
       def delegations
-        @delegations ||= delegations_for(election, current_user)
+        @delegations ||= user_signed_in? ? delegations_for(election, current_user) : Decidim::ActionDelegator::Delegation.none
       end
 
       def delegation
