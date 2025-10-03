@@ -298,9 +298,15 @@ en:
       delegations_authorizer:
         email: We are using the email %{email} to verify your identity. If you think
           this is wrong, please contact us.
-        no_setting: No delegation group found for this consultation. Please contact
-          the admin to fix it.
-        not_in_census: You are not in the census
+        inactive_setting_html: The census "%{census}" is not active. You can try to
+          <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise,
+          please contact the administrator if you think this is a mistake.
+        no_setting_html: It seems that you do not belong to the current census. You
+          can try to <a href="%{renew_path}" class="underline">renew your verification</a>.
+          Otherwise, please contact the administrator if you think this is a mistake.
+        not_in_census_html: It seems that you do not belong to the census "%{census}".
+          You can try to <a href="%{renew_path}" class="underline">renew your verification</a>.
+          Otherwise, please contact the administrator if you think this is a mistake.
         phone: We are using the phone %{phone} to verify your identity. If you think
           this is wrong, please contact us.
       elections:
