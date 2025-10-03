@@ -21,6 +21,9 @@ en:
           to edit it.
         verify_with_sms: Verify with SMS
     errors:
+      messages:
+        only_one_active_setting_per_phone_required: There can only be one active setting
+          with phone verification at a time.
       models:
         delegations_verifier:
           attributes:

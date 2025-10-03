@@ -176,6 +176,47 @@ describe Decidim::ActionDelegator::Admin::SettingForm do
         expect(subject.active).to be false
       end
     end
+
+    context "when there's already an active setting with phone verification" do
+      let(:active) { true }
+      let(:authorization_method) { :phone }
+
+      before do
+        create(:setting, authorization_method: :phone, active: true, organization:)
+      end
+
+      it { is_expected.to be_invalid }
+    end
+
+    context "when there's already an active setting with both phone and email verification" do
+      let(:active) { true }
+      let(:authorization_method) { :both }
+
+      before do
+        create(:setting, authorization_method: :both, active: true, organization:)
+      end
+
+      it { is_expected.to be_invalid }
+    end
+
+    context "when there's no other active setting with phone verification" do
+      let(:active) { true }
+      let(:authorization_method) { :email }
+
+      before do
+        create(:setting, authorization_method: :email, active: true, organization:)
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context "when the model exists" do
+      subject { described_class.from_model(existing_setting).with_context(context) }
+
+      let!(:existing_setting) { create(:setting, authorization_method: :phone, active: true, organization:) }
+
+      it { is_expected.to be_valid }
+    end
   end
 
   describe "form attributes" do

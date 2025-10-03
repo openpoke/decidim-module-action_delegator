@@ -57,7 +57,7 @@ module Decidim
         def setting_ids
           return [] unless current_user
 
-          valid_participants&.map(&:setting_id)&.uniq || []
+          valid_participants&.map(&:decidim_action_delegator_setting_id)&.uniq || []
         end
 
         # The verification metadata to validate in the next step.
@@ -101,8 +101,10 @@ module Decidim
         end
 
         # find the first setting where phone is required or, if not, the first setting where email is required
+        # This works because the email is unique per user so it does not matter which setting we use to find the participant
+        # If the setting requires phone, only one active setting with phone verification is allowed to exist at a time
         def setting
-          @setting ||= active_settings.phone_required.first || active_settings.email_required.first
+          @setting ||= active_settings&.phone_required&.first || active_settings&.email_required&.first
         end
 
         private
@@ -117,8 +119,8 @@ module Decidim
           return if errors.any?
           return if participant
 
-          errors.add(:phone, :phone_not_found) if setting.phone_required?
-          errors.add(:email, :email_not_found) if setting.email_required?
+          errors.add(:phone, :phone_not_found) if setting&.phone_required?
+          errors.add(:email, :email_not_found) if setting&.email_required?
         end
 
         def verification_code
