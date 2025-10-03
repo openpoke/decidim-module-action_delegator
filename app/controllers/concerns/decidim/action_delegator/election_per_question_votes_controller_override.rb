@@ -8,7 +8,7 @@ module Decidim
       included do
         include Decidim::ActionDelegator::VotesControllerMethods
 
-        helper_method :pending_questions_for
+        helper_method :pending_questions_for, :delegations
 
         alias_method :original_next_vote_step_action, :next_vote_step_action
 
