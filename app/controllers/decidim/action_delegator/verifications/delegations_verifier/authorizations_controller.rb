@@ -17,18 +17,17 @@ module Decidim
             end
           end
 
-          def new
-            @authorization.destroy! if authorization&.persisted? && !authorization&.granted?
+          def new # rubocop:disable Metrics/CyclomaticComplexity
+            authorization.destroy! if authorization&.persisted? && !authorization&.granted?
 
             enforce_permission_to :create, :authorization, authorization: authorization
-            @form = form(DelegationsVerifierForm).instance(active_settings: active_settings)
-            participant = @form&.participant
+            @form = delegation_form = form(DelegationsVerifierForm).instance(active_settings: active_settings)
 
             return unless ActionDelegator.authorize_on_login && @form&.setting&.verify_with_email?
 
             Decidim::Verifications::PerformAuthorizationStep.call(authorization, @form) do
               on(:ok) do
-                grant_and_redirect(participant)
+                grant_and_redirect(delegation_form&.participant)
               end
               on(:invalid) do
                 render :new

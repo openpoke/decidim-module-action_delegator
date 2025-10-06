@@ -100,7 +100,7 @@ module Decidim
                             if resource.census_manifest == "action_delegator_census"
                               resource.census_settings["setting_id"]
                             else
-                              resource.census_settings.dig("authorization_handlers", "delegations_verifier", "options", "setting_id")
+                              resource.census_settings.dig("authorization_handlers", "delegations_verifier", "options", "setting")
                             end
                           else
                             options["setting"]
