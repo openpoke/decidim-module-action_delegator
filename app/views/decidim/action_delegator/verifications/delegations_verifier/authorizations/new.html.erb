@@ -9,7 +9,7 @@
       <%= decidim_form_for(@form, url: authorization_path(redirect_url: redirect_url), html: { class: "form" }) do |form| %>
         <div class="form__wrapper">
           <%= form_required_explanation %>
-          <% if setting&.email_required? %>
+          <% if @form.setting&.email_required? %>
             <% unless @form.participant.present? %>
               <%= cell("decidim/announcement", t("not_in_census", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new")) %>
             <% end %>
@@ -17,30 +17,32 @@
             <%= form.text_field :email, readonly: true %>
           <% end %>
 
-          <% if setting&.phone_required? %>
-            <%= form.text_field :phone, readonly: setting&.verify_with_both? %>
+          <% if @form.setting&.phone_required? %>
+            <%= form.text_field :phone, readonly: @form.setting&.verify_with_both? %>
 
-            <% if setting&.verify_with_both? %>
+            <% if @form.setting&.verify_with_both? %>
               <%= cell("decidim/announcement", t("phone_warning", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new")) %>
             <% end %>
           <% end %>
 
-          <div class="">
-            <h3><%= translated_attribute(@form.setting.presenter.translated_title) %></h3>
-            <div><%= translated_attribute(@form.setting.presenter.translated_description) %></div>
-            <h4 class="pt-4"><%= t("participate_in", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new") %></h4>
-            <% if @form.setting.presenter.translated_resources_list.any? %>
-              <ul>
-                <% @form.setting.presenter.translated_resources_list.each do |resource| %>
-                  <li><%= resource.title %></li>
-                <% end %>
-              </ul>
-            <% else %>
-              <p class="text-alert"><%= t("no_resources_found", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new") %></p>
+          <% if active_settings.any? %>
+            <h3><%= t("participate_in", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new") %></h3>
+            <% active_settings.each do |setting| %>
+              <h4 class="pb-0 mb-0"><%= translated_attribute(setting.presenter.translated_title) %></h4>
+              <div><%= translated_attribute(setting.presenter.translated_description) %></div>
+              <% if setting.presenter.translated_resources_list.any? %>
+                <ul class="pt-0 mt-0">
+                  <% setting.presenter.translated_resources_list.each do |resource| %>
+                    <li><%= resource.title %></li>
+                  <% end %>
+                </ul>
+              <% end %>
             <% end %>
-          </div>
+          <% else %>
+            <p class="text-alert"><%= t("no_resources_found", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new") %></p>
+          <% end %>
           <div class="form__wrapper-block">
-            <%= form.submit t(setting&.phone_required? ? "send_code" : "authorize", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new"), :class => "button button__lg button__secondary", "data-disable-with" => "#{t("send_code", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new")}...", :disabled => (setting&.email_required? && (!@form.participant || (@form.phone.blank? && setting&.verify_with_both?))) %>
+            <%= form.submit t(@form.setting&.phone_required? ? "send_code" : "authorize", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new"), :class => "button button__lg button__secondary", "data-disable-with" => "#{t("send_code", scope: "decidim.action_delegator.verifications.delegations_verifier.authorizations.new")}...", :disabled => (@form.setting&.email_required? && (!@form.participant || (@form.phone.blank? && @form.setting&.verify_with_both?))) %>
           </div>
         </div>
       <% end %>
