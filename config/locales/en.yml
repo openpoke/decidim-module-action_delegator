@@ -440,6 +440,7 @@ en:
         explanation: Verified users with this method can delegate votes to other users
         fields:
           phone: Phone number
+          setting: Setting
           setting_ids: Settings
         name: Corporate Governance
     elections:
