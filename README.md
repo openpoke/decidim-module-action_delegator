@@ -130,6 +130,9 @@ For instance, this file should work for Sidekiq:
 > **What gets migrated:** Consultations, questions, response options, votes, and all related settings (participants, delegations, weights).
 >
 > **Note:** After migration, verify results in the admin panel before removing old tables.
+>
+> Example:
+> ![Consultation migration to elections](docs/consultations_import.png)
 
 ## Usage
 
