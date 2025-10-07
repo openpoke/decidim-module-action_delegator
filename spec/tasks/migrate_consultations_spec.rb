@@ -385,6 +385,29 @@ describe "rake action_delegator:migrate_consultations", type: :task do
       setting.reload
       expect(setting.decidim_consultation_id).to eq(consultation_id)
     end
+
+    context "when running migration twice (idempotency)" do
+      it "skips already migrated consultations" do
+        # First run
+        task.execute(component_id: component.id.to_s)
+        first_count = Decidim::Elections::Election.count
+
+        # Second run
+        expect do
+          task.execute(component_id: component.id.to_s)
+        end.not_to change(Decidim::Elections::Election, :count).from(first_count)
+      end
+
+      it "does not duplicate votes" do
+        # First run
+        task.execute(component_id: component.id.to_s)
+        first_votes_count = Decidim::Elections::Vote.count
+
+        # Second run
+        task.execute(component_id: component.id.to_s)
+        expect(Decidim::Elections::Vote.count).to eq(first_votes_count)
+      end
+    end
   end
 
   context "when no consultations exist" do

@@ -85,6 +85,7 @@ namespace :action_delegator do
       responses: 0,
       votes: 0,
       skipped_votes: 0,
+      skipped_consultations: 0,
       errors: []
     }
 
@@ -201,6 +202,19 @@ namespace :action_delegator do
     consultations.find_each do |consultation|
       ActiveRecord::Base.transaction do
         setting = Decidim::ActionDelegator::Setting.find_by(decidim_consultation_id: consultation.id)
+
+        # Check if already migrated (idempotency check by matching title)
+        existing_election = Decidim::Elections::Election.joins(:component)
+                                                        .where(component: component, title: consultation.title)
+                                                        .first
+
+        if existing_election
+          cons_title = consultation.title["en"] || consultation.title.values.first
+          puts "  ✓ Consultation ##{consultation.id} (#{cons_title}) already migrated to Election ##{existing_election.id}"
+          migrated_stats[:skipped_consultations] += 1
+          next
+        end
+
         census_manifest, census_settings = determine_census_config(consultation, setting)
 
         # Create Election from Consultation
@@ -288,6 +302,8 @@ namespace :action_delegator do
     puts format("%-12s %12d %12d %12d %12d", "SOURCE", source_stats[:consultations], source_stats[:questions], source_stats[:responses], source_stats[:votes])
     puts format("%-12s %12d %12d %12d %12d", "MIGRATED", migrated_stats[:elections], migrated_stats[:questions], migrated_stats[:responses], migrated_stats[:votes])
 
+    puts format("%-12s %12d %12s %12s %12s", "ALREADY", migrated_stats[:skipped_consultations], "-", "-", "-") if migrated_stats[:skipped_consultations].positive?
+
     puts format("%-12s %12s %12s %12s %12d", "SKIPPED", "-", "-", "-", migrated_stats[:skipped_votes]) if migrated_stats[:skipped_votes].positive?
 
     if migrated_stats[:errors].any?
@@ -296,12 +312,22 @@ namespace :action_delegator do
     end
 
     puts ""
-    success = migrated_stats[:elections] == source_stats[:consultations] &&
+    total_processed = migrated_stats[:elections] + migrated_stats[:skipped_consultations]
+    success = total_processed == source_stats[:consultations] &&
               migrated_stats[:questions] == source_stats[:questions] &&
               migrated_stats[:responses] == source_stats[:responses] &&
               migrated_stats[:votes] == source_stats[:votes] &&
               migrated_stats[:errors].empty? &&
               (migrated_stats[:skipped_votes]).zero?
-    puts success ? "✓ All data migrated successfully" : "⚠ Some data was not migrated"
+
+    if success
+      if migrated_stats[:skipped_consultations].positive?
+        puts "✓ All data processed (#{migrated_stats[:elections]} migrated, #{migrated_stats[:skipped_consultations]} already existed)"
+      else
+        puts "✓ All data migrated successfully"
+      end
+    else
+      puts "⚠ Some data was not migrated (see details above)"
+    end
   end
 end
