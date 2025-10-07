@@ -52,7 +52,7 @@ module Decidim
           workflow.time_between_renewals = 1.minute
           workflow.options do |options|
             options.attribute :setting, type: :select, raw_choices: true, choices: lambda { |context|
-              Decidim::ActionDelegator::Setting.where(organization: context[:component]&.organization).map do |setting|
+              Decidim::ActionDelegator::Setting.where(organization: context[:component]&.organization).active.map do |setting|
                 [translated_attribute(setting.title), setting.id]
               end
             }
@@ -80,11 +80,11 @@ module Decidim
         Decidim::Elections.census_registry.register(:action_delegator_census) do |manifest|
           manifest.admin_form = "Decidim::ActionDelegator::Admin::ActionDelegatorCensusForm"
           manifest.admin_form_partial = "decidim/action_delegator/admin/censuses/action_delegator_census_form"
-          manifest.voter_form = "Decidim::Elections::Censuses::InternalUsersForm"
-          manifest.voter_form_partial = "decidim/elections/censuses/internal_users_form"
+          manifest.voter_form = "Decidim::ActionDelegator::Censuses::InternalUsersForm"
+          manifest.voter_form_partial = "decidim/action_delegator/censuses/internal_users_form"
 
           manifest.user_query do |election|
-            Decidim::ActionDelegator::CorporateGovernanceCensusUsers.new(election).query
+            Decidim::ActionDelegator::ActionDelegatorCensusUsers.new(election).query
           end
 
           manifest.census_ready_validator { |election| election.census_settings["setting_id"].present? }

@@ -8,27 +8,26 @@ module Decidim
           include Decidim::FormFactory
           include Decidim::Verifications::Renewable
 
-          helper_method :authorization, :setting
+          helper_method :authorization, :active_settings
 
           before_action do
-            unless setting
+            unless active_settings
               flash[:alert] = t("verifications.delegations_verifier.not_active", scope: "decidim.action_delegator")
               redirect
             end
           end
 
-          def new
-            @authorization.destroy! if authorization&.persisted? && !authorization&.granted?
+          def new # rubocop:disable Metrics/CyclomaticComplexity
+            authorization.destroy! if authorization&.persisted? && !authorization&.granted?
 
             enforce_permission_to :create, :authorization, authorization: authorization
-            @form = form(DelegationsVerifierForm).instance(setting: setting)
-            participant = @form&.participant
+            @form = delegation_form = form(DelegationsVerifierForm).instance(active_settings: active_settings)
 
-            nil unless ActionDelegator.authorize_on_login && setting&.verify_with_email?
+            return unless ActionDelegator.authorize_on_login && @form&.setting&.verify_with_email?
 
             Decidim::Verifications::PerformAuthorizationStep.call(authorization, @form) do
               on(:ok) do
-                grant_and_redirect(participant)
+                grant_and_redirect(delegation_form&.participant)
               end
               on(:invalid) do
                 render :new
@@ -39,17 +38,16 @@ module Decidim
           def create
             enforce_permission_to :create, :authorization, authorization: authorization
 
-            @form = form(DelegationsVerifierForm).from_params(params, setting: setting)
-            participant = @form&.participant
+            @form = delegation_form = form(DelegationsVerifierForm).from_params(params, active_settings: active_settings)
 
             Decidim::Verifications::PerformAuthorizationStep.call(authorization, @form) do
               on(:ok) do
-                if setting.phone_required?
+                if delegation_form&.setting&.phone_required?
                   flash[:notice] = t("authorizations.create.success", scope: "decidim.verifications.sms")
                   authorization_method = Decidim::Verifications::Adapter.from_element(authorization.name)
                   redirect_to authorization_method.resume_authorization_path(redirect_url: redirect_url)
                 else
-                  grant_and_redirect(participant)
+                  grant_and_redirect(delegation_form&.participant)
                 end
               end
               on(:invalid) do
@@ -96,6 +94,8 @@ module Decidim
           private
 
           def grant_and_redirect(participant)
+            return unless participant
+
             authorization.grant!
             participant.update!(decidim_user: authorization.user)
             flash[:notice] = t("authorizations.update.success", scope: "decidim.verifications.sms")
@@ -117,12 +117,8 @@ module Decidim
             )
           end
 
-          def setting
-            @setting ||= all_settings.first
-          end
-
-          def all_settings
-            @all_settings ||= Setting.where(organization: current_user.organization).active
+          def active_settings
+            @active_settings ||= Setting.where(organization: current_user.organization).active
           end
         end
       end

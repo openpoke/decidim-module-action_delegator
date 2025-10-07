@@ -3,7 +3,7 @@
 module Decidim
   module ActionDelegator
     # Query to find eligible users for corporate governance census elections
-    class CorporateGovernanceCensusUsers < Decidim::Query
+    class ActionDelegatorCensusUsers < Decidim::Query
       def initialize(election)
         @election = election
         @setting_id = election.census_settings["setting_id"]

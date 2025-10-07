@@ -14,25 +14,25 @@ module Decidim
     # this is the SmsGateway provided by this module
     # Note that it will be ignored if you provide your own SmsGateway in Decidim.sms_gateway_service
     config_accessor :sms_gateway_service do
-      "Decidim::ActionDelegator::SmsGateway"
+      Decidim::Env.new("AD_SMS_GATEWAY_SERVICE", "Decidim::ActionDelegator::SmsGateway").to_s
     end
 
     # The default expiration time for the integrated authorization
     # if zero, the authorization won't be registered
     config_accessor :authorization_expiration_time do
-      3.months
+      Decidim::Env.new("AD_AUTHORIZATION_EXPIRATION_TIME").presence&.to_i || 3.months
     end
 
     # Put this to false if you don't want to allow administrators to invite users not registered
     # in the platform when uploading a census (inviting users without permission can be a GDPR offense).
     config_accessor :allow_to_invite_users do
-      true
+      Decidim::Env.new("AD_ALLOW_TO_INVITE_USERS", true).present?
     end
 
     # If true, tries to automatically authorize users when they log in with the "Corporate Governance Verifier"
     # Note that this is only possible when the verifier is configured to use only the email (if SMS is required, the user will have to do the standard verification process)
     config_accessor :authorize_on_login do
-      true
+      Decidim::Env.new("AD_AUTHORIZE_ON_LOGIN", true).present?
     end
 
     # used for comparing phone numbers from a census list and the ones introduced by the user
@@ -40,23 +40,12 @@ module Decidim
     # if you have a census list with  +34 666 666 666 and the user introduces 0034666666666 or 666666666, they will be considered the same
     # can be empty or null if yo don't want to check different combinations of prefixes
     config_accessor :phone_prefixes do
-      %w(+34 0034 34)
+      Decidim::Env.new("AD_PHONE_PREFIXES", "+34,0034,34").to_array
     end
 
     # The regex for validating phone numbers
     config_accessor :phone_regex do
-      /^\d{6,15}$/ # 6 to 15 digits
-    end
-
-    # In an election the highlighted questions are duplicated in the list of regular questions
-    # this maintains the highlighted questions in the highlighted list and removes them from the regular list
-    config_accessor :remove_duplicated_highlighted_questions do
-      true
-    end
-
-    # If true, admins can view the result of an election even if the election is ongoing
-    config_accessor :admin_preview_results do
-      true
+      Decidim::Env.new("AD_PHONE_REGEX", '^\d{6,15}$').to_s # 6 to 15 digits
     end
   end
 end
