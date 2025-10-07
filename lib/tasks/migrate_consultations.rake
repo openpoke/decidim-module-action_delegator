@@ -302,7 +302,7 @@ namespace :action_delegator do
     puts format("%-12s %12d %12d %12d %12d", "SOURCE", source_stats[:consultations], source_stats[:questions], source_stats[:responses], source_stats[:votes])
     puts format("%-12s %12d %12d %12d %12d", "MIGRATED", migrated_stats[:elections], migrated_stats[:questions], migrated_stats[:responses], migrated_stats[:votes])
 
-    puts format("%-12s %12d %12s %12s %12s", "ALREADY", migrated_stats[:skipped_consultations], "-", "-", "-") if migrated_stats[:skipped_consultations].positive?
+    puts format("%-12s %12d %12s %12s %12s", "EXISTED", migrated_stats[:skipped_consultations], "-", "-", "-") if migrated_stats[:skipped_consultations].positive?
 
     puts format("%-12s %12s %12s %12s %12d", "SKIPPED", "-", "-", "-", migrated_stats[:skipped_votes]) if migrated_stats[:skipped_votes].positive?
 
