@@ -1,9 +1,9 @@
 # Decidim::ActionDelegator
 
-[![[CI] Lint](https://github.com/coopdevs/decidim-module-action_delegator/actions/workflows/lint.yml/badge.svg)](https://github.com/coopdevs/decidim-module-action_delegator/actions/workflows/lint.yml)
-[![[CI] Test](https://github.com/coopdevs/decidim-module-action_delegator/actions/workflows/test.yml/badge.svg)](https://github.com/coopdevs/decidim-module-action_delegator/actions/workflows/test.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6ec3c39e8dc2075808e1/maintainability)](https://codeclimate.com/github/coopdevs/decidim-module-action_delegator/maintainability)
-[![Codecov](https://codecov.io/gh/coopdevs/decidim-module-action_delegator/branch/master/graph/badge.svg)](https://codecov.io/gh/coopdevs/decidim-module-action_delegator)
+[![[CI] Lint](https://github.com/openpoke/decidim-module-action_delegator/actions/workflows/lint.yml/badge.svg)](https://github.com/openpoke/decidim-module-action_delegator/actions/workflows/lint.yml)
+[![[CI] Test](https://github.com/openpoke/decidim-module-action_delegator/actions/workflows/test.yml/badge.svg)](https://github.com/openpoke/decidim-module-action_delegator/actions/workflows/test.yml)
+[![Maintainability](https://qlty.sh/gh/openpoke/projects/decidim-module-action_delegator/maintainability.svg)](https://qlty.sh/gh/openpoke/projects/decidim-module-action_delegator)
+[![Codecov](https://codecov.io/gh/openpoke/decidim-module-action_delegator/branch/master/graph/badge.svg)](https://codecov.io/gh/openpoke/decidim-module-action_delegator)
 [![Gem Version](https://badge.fury.io/rb/decidim-action_delegator.svg)](https://badge.fury.io/rb/decidim-action_delegator)
 
 A tool for Decidim that provides extended functionalities for cooperatives or any other type of organization that need to vote with weighted-vote results and/or vote-delegation.
@@ -31,16 +31,55 @@ gem "decidim-action_delegator"
 Or, if you want to stay up to date with the latest changes use this line instead:
 
 ```ruby
-gem 'decidim-action_delegator', git: "https://github.com/coopdevs/decidim-module-action_delegator"
+gem 'decidim-action_delegator', git: "https://github.com/openpoke/decidim-module-action_delegator"
 ```
 
-And then execute:
+Install dependencies:
 
-```bash
+```
 bundle
-bundle exec rails decidim_action_delegator:install:migrations
-bundle exec rails db:migrate
+bin/rails decidim:upgrade
+bin/rails db:migrate
 ```
+
+> **EXPERTS ONLY**
+>
+> Under the hood, when running `bundle exec rails decidim:upgrade` the `decidim-action_delegator` gem will run the following two tasks (that can also be run manually if you consider):
+>
+> ```bash
+> bin/rails decidim_action_delegator:install:migrations
+> ```
+
+The correct version of Action Delegator module should resolved automatically by the Bundler.
+
+Depending on your Decidim version, choose the corresponding Action Delegator version to ensure compatibility:
+
+| Version | Compatible Decidim versions |
+|---------|-----------------------------|
+| 0.9.x   | 0.31.x                      |
+| 0.8.x   | 0.27.x                      |
+| 0.7.x   | 0.26.x                      |
+| 0.6.x   | 0.26.x                      |
+| 0.5     | 0.25.x                      |
+| 0.4     | 0.24.x                      |
+| 0.3     | 0.24.x                      |
+| 0.2     | 0.23.x                      |
+| 0.1     | 0.22.0                      |
+
+
+## Configuration
+
+By default, you can just get use ENV vars to automatically configure the plugin (although the default configuration is probably just what you need):
+
+| ENV | Description | Example |
+|---|---|---|
+| AD_SMS_GATEWAY_SERVICE | Configure a custom class to send SMS with if you need it. Note that the built-in SMS gateway in Decidim takes precence if configured. | `Decidim::ActionDelegator::SmsGateway` |
+| AD_AUTHORIZATION_EXPIRATION_TIME | Expiration time for the action authorization authorization. This is used to check if the user is in the census. In most cases is issued automatically. | 3 months |
+| AD_ALLOW_TO_INVITE_USERS | Whether to allow admins to invite users from the admin interface. | `true` |
+| AD_AUTHORIZE_ON_LOGIN | Automatically issue the action delegator authorization when the user logs in if is a member of some census (this does not work for phone verifications) | `true` |
+| AD_PHONE_PREFIXES | List of prefixes to strip from user-entered phones to prevent duplications | `+34,0034,34` |
+| AD_PHONE_REGEX | Phone Regex to check its validity | `^\d{6,15}$` (checks that it is a number between 6 and 15 chars) |
+
 
 **ActiveJob Configuration**
 
@@ -71,33 +110,6 @@ For instance, this file should work for Sidekiq:
   - [close_meeting_reminder, 1]
 ```
 
-
-> **UPGRADE NOTES:** 
->
-> If you are upgrading from a previous version, you need to run the migrations again and import all membership types/weights into the built-in census by executing in your production server:
->
-> ```bash
-> RAILS_ENV=production bundle exec rails action_delegator:import_direct_verifications
-> ```
->
-> *It is safe to run the previous command multiple times, no content will be imported twice.*
-
-
-Depending on your Decidim version, you can choose the corresponding version to ensure compatibility:
-
-| Version | Compatible Decidim versions |
-|---------|-----------------------------|
-| 0.9.x   | 0.31.x                      |
-| 0.8.x   | 0.27.x                      |
-| 0.7.x   | 0.26.x                      |
-| 0.6.x   | 0.26.x                      |
-| 0.5     | 0.25.x                      |
-| 0.4     | 0.24.x                      |
-| 0.3     | 0.24.x                      |
-| 0.2     | 0.23.x                      |
-| 0.1     | 0.22.0                      |
-
-
 ## Usage
 
 ActionDelegator does not provides new Components or Participatory Spaces but enhances some functionalities in them.
@@ -106,9 +118,17 @@ Currently it is designed to work with the Elections module.
 
 - On one side, provides a custom verification method that allows admins to ensure only those in specific census (that can be uploaded via CSV) are able to vote. This census can be different for each election. This is optional and doesn't affect weighted voting or delegations.
 
-- On the other, each set of census can work with a different set of weights and delegation.
+- On the other, each set of census can work with a different set of weights and delegation:
 
-![](docs/settings.png)
+![Settings & census configuration](docs/census_conf.png)
+
+- The election module can be configured with the built-in census:
+
+![Action Delegator census in elections](docs/elections_census.png)
+
+- In elections, results are expanded to details ponderations (if exist):
+
+![Expanded results as sum of weights](docs/sum_of_weights.png)
 
 ### Extended elections results
 
@@ -210,12 +230,12 @@ When performing votes and unvotes of delegations you'll see things like the
 following in your `versions` table:
 
 ```sql
-  id  |          item_type           | item_id |  event  | whodunnit | decidim_action_delegator_delegation_id 
+  id  |          item_type      | item_id |  event  | whodunnit | decidim_action_delegator_delegation_id 
 ------+------------------------------+---------+---------+-----------+----------------------------------------
- 2019 | Decidim::Election::Vote |     143 | destroy | 1         |                                     22
- 2018 | Decidim::Election::Vote |     143 | create  | 1         |                                     22
- 2017 | Decidim::Election::Vote |     142 | create  | 1         |                                     23
- 2016 | Decidim::Election::Vote |     138 | destroy | 1         |                                     23
+ 2019 | Decidim::Election::Vote |     143 | destroy | 1         |                        22
+ 2018 | Decidim::Election::Vote |     143 | create  | 1         |                        22
+ 2017 | Decidim::Election::Vote |     142 | create  | 1         |                        23
+ 2016 | Decidim::Election::Vote |     138 | destroy | 1         |                        23
 ```
 
 Note that the `item_type` is `Decidim::Election::Vote` and `whoddunit`
@@ -223,12 +243,19 @@ refers to a `Decidim::User` record. This enables joining `versions` and
 `decidim_users` tables although this doesn't follow Decidim's convention of
 using gids, such as `gid://decidim/Decidim::User/1`.
 
-You can use `Decidim::ActionDelegato::DelegatedVotesVersions` query object for
-that matter.
+You can use `Decidim::ActionDelegator::ElectionsDelegatedVotesVersions` query object for
+that matter:
+
+```ruby
+election = Decidim::Elections::Election.find 123
+Decidim::ActionDelegator::ElectionsDelegatedVotesVersions.new(election).query.each do |v| 
+  puts "#{v.item_type} | #{v.item_id} | #{v.event} | #{v.created_at} | #{v.decidim_action_delegator_delegation_id}"
+end
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/coopdevs/decidim-module-action_delegator.
+Bug reports and pull requests are welcome on GitHub at https://github.com/openpoke/decidim-module-action_delegator.
 
 ### Developing
 
