@@ -118,9 +118,17 @@ Currently it is designed to work with the Elections module.
 
 - On one side, provides a custom verification method that allows admins to ensure only those in specific census (that can be uploaded via CSV) are able to vote. This census can be different for each election. This is optional and doesn't affect weighted voting or delegations.
 
-- On the other, each set of census can work with a different set of weights and delegation.
+- On the other, each set of census can work with a different set of weights and delegation:
 
-![](docs/settings.png)
+![Settings & census configuration](docs/census_conf.png)
+
+- The election module can be configured with the built-in census:
+
+![Action Delegator census in elections](docs/elections_census.png)
+
+- In elections, results are expanded to details ponderations (if exist):
+
+![Expanded results as sum of weights](docs/sum_of_weights.png)
 
 ### Extended elections results
 
