@@ -19,6 +19,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
         start_voting_date date NOT NULL,
         end_voting_date date NOT NULL,
         published_at timestamp without time zone,
+        results_published_at timestamp without time zone,
         created_at timestamp without time zone NOT NULL,
         updated_at timestamp without time zone NOT NULL
       );
@@ -31,6 +32,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
         subtitle jsonb DEFAULT '{}',
         what_is_decided jsonb DEFAULT '{}',
         slug character varying NOT NULL,
+        max_votes integer,
         "order" integer,
         published_at timestamp without time zone,
         votes_count integer DEFAULT 0 NOT NULL,
@@ -43,6 +45,14 @@ describe "rake action_delegator:migrate_consultations", type: :task do
         decidim_consultations_questions_id bigint NOT NULL,
         title jsonb DEFAULT '{}' NOT NULL,
         votes_count integer DEFAULT 0 NOT NULL,
+        created_at timestamp without time zone NOT NULL,
+        updated_at timestamp without time zone NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS decidim_consultations_response_groups (
+        id bigserial PRIMARY KEY,
+        decidim_consultations_questions_id bigint NOT NULL,
+        title jsonb DEFAULT '{}' NOT NULL,
         created_at timestamp without time zone NOT NULL,
         updated_at timestamp without time zone NOT NULL
       );
@@ -63,6 +73,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     ActiveRecord::Base.connection.execute <<-SQL.squish
       DROP TABLE IF EXISTS decidim_consultations_votes CASCADE;
       DROP TABLE IF EXISTS decidim_consultations_responses CASCADE;
+      DROP TABLE IF EXISTS decidim_consultations_response_groups CASCADE;
       DROP TABLE IF EXISTS decidim_consultations_questions CASCADE;
       DROP TABLE IF EXISTS decidim_consultations CASCADE;
     SQL
@@ -81,6 +92,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
           start_voting_date,
           end_voting_date,
           published_at,
+          results_published_at,
           created_at,
           updated_at
         ) VALUES (
@@ -91,6 +103,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
           'simple-consultation-#{Time.current.to_i}',
           '#{Date.current - 30.days}',
           '#{Date.current + 30.days}',
+          '#{Time.current}',
           '#{Time.current}',
           '#{Time.current}',
           '#{Time.current}'

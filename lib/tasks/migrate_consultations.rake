@@ -338,7 +338,7 @@ namespace :action_delegator do
         end
         migrated_stats[:errors] << "Consultation ##{consultation.id} (#{cons_title}): #{e.message}"
         puts "  ✗ Exception migrating Consultation ##{consultation.id} (#{cons_title}): #{e.message}"
-        puts e.backtrace
+        Rails.logger.error e.backtrace.join("\n")
         raise ActiveRecord::Rollback
       end
     end
