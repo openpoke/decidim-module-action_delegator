@@ -15,7 +15,7 @@ class AddTitleToActionDelegatorSettings < ActiveRecord::Migration[7.2]
         consultation = ActiveRecord::Base.connection.execute("SELECT * FROM decidim_consultations WHERE id = #{setting.decidim_consultation_id}").first
         next unless consultation
 
-        setting.update!(title: JSON.parse(consultation["title"]), organization_id: consultation["decidim_organization_id"])
+        setting.update!(title: JSON.parse(consultation["title"]), decidim_organization_id: consultation["decidim_organization_id"])
       end
     end
 
