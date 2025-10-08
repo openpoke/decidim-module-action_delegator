@@ -104,14 +104,14 @@ namespace :action_delegator do
     end
     puts "\nSource data summary:"
     puts "-" * 70
-    puts format("%-12s %12s %12s %12s %12s", "TYPE", "Elections", "Questions", "Responses", "Votes")
+    puts "TYPE            Elections    Questions    Responses        Votes"
     puts "-" * 70
     puts format("%-12s %12d %12d %12d %12d", "SOURCE", source_stats[:consultations], source_stats[:questions], source_stats[:responses], source_stats[:votes])
     puts "-" * 70
     puts ""
     unless ENV["CI"].present? || ENV["FORCE_MIGRATION"].to_s.downcase == "true"
       print "Continue migration? (y/N): "
-      answer = STDIN.gets.chomp.downcase
+      answer = $stdin.gets.chomp.downcase
       unless answer == "y"
         puts "Aborted by user."
         exit 0
@@ -222,7 +222,6 @@ namespace :action_delegator do
         else
           votes_skipped += 1
           migrated_stats[:skipped_votes] += 1
-          byebug
           puts "    ✗ Failed to migrate Vote ##{old_vote.id}: #{new_vote.errors.full_messages.join(", ")}"
         end
       end
