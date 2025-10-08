@@ -35,6 +35,13 @@ namespace :action_delegator do
       class Response < ApplicationRecord
         self.table_name = "decidim_consultations_responses"
         belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultations_questions_id
+        belongs_to :response_group, class_name: "Legacy::ResponseGroup", foreign_key: :decidim_consultations_response_group_id, optional: true
+      end
+
+      class ResponseGroup < ApplicationRecord
+        self.table_name = "decidim_consultations_response_groups"
+        belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultations_questions_id
+        has_many :responses, class_name: "Legacy::Response", foreign_key: :decidim_consultations_response_group_id
       end
 
       class Vote < ApplicationRecord
@@ -91,17 +98,24 @@ namespace :action_delegator do
 
     puts "\nStarting migration of #{source_stats[:consultations]} consultations from decidim-consultations to decidim-elections"
     puts "Component: ##{component.id} - #{component.name}"
+    puts "Consultations:"
+    consultations.each do |c|
+      puts "  • ##{c.id} - #{c.title}"
+    end
+    puts "\nSource data summary:"
     puts "-" * 70
     puts format("%-12s %12s %12s %12s %12s", "TYPE", "Elections", "Questions", "Responses", "Votes")
     puts "-" * 70
     puts format("%-12s %12d %12d %12d %12d", "SOURCE", source_stats[:consultations], source_stats[:questions], source_stats[:responses], source_stats[:votes])
     puts "-" * 70
     puts ""
-    print "Continue migration? (y/N): "
-    answer = STDIN.gets.chomp.downcase
-    unless answer == "y"
-      puts "Aborted by user."
-      exit 0
+    unless ENV["CI"].present? || ENV["FORCE_MIGRATION"].to_s.downcase == "true"
+      print "Continue migration? (y/N): "
+      answer = STDIN.gets.chomp.downcase
+      unless answer == "y"
+        puts "Aborted by user."
+        exit 0
+      end
     end
 
     def determine_census_config(consultation, setting)
@@ -208,6 +222,8 @@ namespace :action_delegator do
         else
           votes_skipped += 1
           migrated_stats[:skipped_votes] += 1
+          byebug
+          puts "    ✗ Failed to migrate Vote ##{old_vote.id}: #{new_vote.errors.full_messages.join(", ")}"
         end
       end
 
@@ -260,7 +276,7 @@ namespace :action_delegator do
               body: old_question.title.transform_values { |t| ActionController::Base.helpers.strip_tags(t) },
               description: build_question_description(old_question),
               position: old_question.order || index,
-              question_type: "single_option",
+              question_type: (old_question.max_votes.to_i > 1 ? "multiple_option" : "single_option"),
               created_at: old_question.created_at,
               updated_at: old_question.updated_at
             )
@@ -275,9 +291,17 @@ namespace :action_delegator do
 
             response_mapping = {}
             old_question.responses.each do |old_response|
+              title = old_response.title
+              if old_response.response_group
+                title = title.to_h do |locale, text|
+                  group_text = old_response.response_group.title[locale]
+                  combined_text = [group_text, text].compact.join(" - ")
+                  [locale, combined_text]
+                end
+              end
               new_response = Decidim::Elections::ResponseOption.new(
                 question: new_question,
-                body: old_response.title,
+                body: title,
                 created_at: old_response.created_at,
                 updated_at: old_response.updated_at
               )
