@@ -22,19 +22,19 @@ namespace :action_delegator do
     module Legacy
       class Consultation < ApplicationRecord
         self.table_name = "decidim_consultations"
-        has_many :questions, class_name: "Legacy::Question", foreign_key: :decidim_consultation_id, dependent: :destroy
+        has_many :questions, class_name: "Legacy::Question", foreign_key: :decidim_consultation_id
       end
 
       class Question < ApplicationRecord
         self.table_name = "decidim_consultations_questions"
         belongs_to :consultation, class_name: "Legacy::Consultation", foreign_key: :decidim_consultation_id
-        has_many :responses, class_name: "Legacy::Response", foreign_key: :decidim_consultations_question_id, dependent: :destroy
-        has_many :votes, class_name: "Legacy::Vote", foreign_key: :decidim_consultation_question_id, dependent: :destroy
+        has_many :responses, class_name: "Legacy::Response", foreign_key: :decidim_consultations_questions_id
+        has_many :votes, class_name: "Legacy::Vote", foreign_key: :decidim_consultation_question_id
       end
 
       class Response < ApplicationRecord
         self.table_name = "decidim_consultations_responses"
-        belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultations_question_id
+        belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultations_questions_id
       end
 
       class Vote < ApplicationRecord
@@ -53,7 +53,7 @@ namespace :action_delegator do
 
     # Fetch consultations to migrate
     consultations = if consultation_id.present?
-                      Legacy::Consultation.where(id: consultation_id, decidim_organization_id: component.organization.id)
+                      Legacy::Consultation.where(id: consultation_id)
                     else
                       Legacy::Consultation.where(decidim_organization_id: component.organization.id)
                     end
@@ -88,6 +88,21 @@ namespace :action_delegator do
       skipped_consultations: 0,
       errors: []
     }
+
+    puts "\nStarting migration of #{source_stats[:consultations]} consultations from decidim-consultations to decidim-elections"
+    puts "Component: ##{component.id} - #{component.name}"
+    puts "-" * 70
+    puts format("%-12s %12s %12s %12s %12s", "TYPE", "Elections", "Questions", "Responses", "Votes")
+    puts "-" * 70
+    puts format("%-12s %12d %12d %12d %12d", "SOURCE", source_stats[:consultations], source_stats[:questions], source_stats[:responses], source_stats[:votes])
+    puts "-" * 70
+    puts ""
+    print "Continue migration? (y/N): "
+    answer = STDIN.gets.chomp.downcase
+    unless answer == "y"
+      puts "Aborted by user."
+      exit 0
+    end
 
     def determine_census_config(consultation, setting)
       resource_handlers = extract_authorization_handlers(consultation)
@@ -196,6 +211,8 @@ namespace :action_delegator do
         end
       end
 
+      puts "    ✓ Migrated #{votes_migrated} votes, skipped #{votes_skipped} votes"
+
       [votes_migrated, votes_skipped]
     end
 
@@ -225,6 +242,7 @@ namespace :action_delegator do
           start_at: consultation.start_voting_date&.to_time&.beginning_of_day,
           end_at: consultation.end_voting_date&.to_time&.end_of_day,
           published_at: consultation.published_at,
+          published_results_at: consultation.results_published_at,
           results_availability: "after_end",
           census_manifest: census_manifest,
           census_settings: census_settings,
@@ -234,11 +252,12 @@ namespace :action_delegator do
 
         if election.save
           migrated_stats[:elections] += 1
+          puts "  ✓ Created Election ##{election.id} from Consultation ##{consultation.id}"
 
           consultation.questions.order(:order).each_with_index do |old_question, index|
             new_question = Decidim::Elections::Question.new(
               election: election,
-              body: old_question.title,
+              body: old_question.title.transform_values { |t| ActionController::Base.helpers.strip_tags(t) },
               description: build_question_description(old_question),
               position: old_question.order || index,
               question_type: "single_option",
@@ -248,6 +267,7 @@ namespace :action_delegator do
 
             unless new_question.save
               migrated_stats[:errors] << "Question creation failed: #{new_question.errors.full_messages.join(", ")}"
+              puts "    ✗ Failed to create Question from Old Question ##{old_question.id}: #{new_question.errors.full_messages.join(", ")}"
               next
             end
 
@@ -267,8 +287,11 @@ namespace :action_delegator do
                 migrated_stats[:responses] += 1
               else
                 migrated_stats[:errors] << "Response failed: #{new_response.errors.full_messages.join(", ")}"
+                puts "    ✗ Failed to create Response from Old Response ##{old_response.id}: #{new_response.errors.full_messages.join(", ")}"
               end
             end
+
+            puts "    ✓ Created Question ##{new_question.id} with #{response_mapping.size} Responses"
 
             migrate_question_votes(old_question, new_question, response_mapping, migrated_stats)
 
@@ -281,6 +304,7 @@ namespace :action_delegator do
         else
           cons_title = consultation.title["en"] || consultation.title.values.first
           migrated_stats[:errors] << "Consultation ##{consultation.id} (#{cons_title}): #{election.errors.full_messages.join(", ")}"
+          puts "  ✗ Failed to create Election from Consultation ##{consultation.id}: #{election.errors.full_messages.join(", ")}"
           raise ActiveRecord::Rollback
         end
       rescue StandardError => e
@@ -290,6 +314,8 @@ namespace :action_delegator do
           "ID #{consultation.id}"
         end
         migrated_stats[:errors] << "Consultation ##{consultation.id} (#{cons_title}): #{e.message}"
+        puts "  ✗ Exception migrating Consultation ##{consultation.id} (#{cons_title}): #{e.message}"
+        puts e.backtrace
         raise ActiveRecord::Rollback
       end
     end

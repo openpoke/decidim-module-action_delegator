@@ -40,7 +40,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
 
       CREATE TABLE IF NOT EXISTS decidim_consultations_responses (
         id bigserial PRIMARY KEY,
-        decidim_consultations_question_id bigint NOT NULL,
+        decidim_consultations_questions_id bigint NOT NULL,
         title jsonb DEFAULT '{}' NOT NULL,
         votes_count integer DEFAULT 0 NOT NULL,
         created_at timestamp without time zone NOT NULL,
@@ -133,7 +133,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     let!(:response_yes_id) do
       ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
         INSERT INTO decidim_consultations_responses (
-          decidim_consultations_question_id,
+          decidim_consultations_questions_id,
           title,
           votes_count,
           created_at,
@@ -152,7 +152,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     let!(:response_no_id) do
       ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
         INSERT INTO decidim_consultations_responses (
-          decidim_consultations_question_id,
+          decidim_consultations_questions_id,
           title,
           votes_count,
           created_at,
@@ -341,7 +341,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     let!(:response_id) do
       ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
         INSERT INTO decidim_consultations_responses (
-          decidim_consultations_question_id,
+          decidim_consultations_questions_id,
           title,
           votes_count,
           created_at,
