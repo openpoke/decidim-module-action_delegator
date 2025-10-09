@@ -2,6 +2,8 @@
 es:
   activemodel:
     attributes:
+      csv_import:
+        csv_file: CSV file
       delegations_verifier:
         email: Correo electrónico
         phone: Número de teléfono móvil
@@ -13,11 +15,13 @@ es:
         name: Tipo de miembro
         name_help: Tipo de miembro
       setting:
-        decidim_consultation_id: Consulta
+        active: Active
         max_grants: Número máximo de delegaciones de voto que una participante puede recibir
         phone_freezed: Utilice el número de teléfono del censo. No permita que los participantes lo editen.
         verify_with_sms: Verificar con SMS
     errors:
+      messages:
+        only_one_active_setting_per_phone_required: There can only be one active setting with phone verification at a time.
       models:
         delegations_verifier:
           attributes:
@@ -28,12 +32,8 @@ es:
   decidim:
     action_delegator:
       admin:
-        consultations:
-          results:
-            ongoing_consultation: Estas consultas siguen en curso. Tenga en cuenta que los resultados pueden cambiar a medida que más personas voten.
-            title: Resultados por respuesta, tipo de membresía y peso
-          weighted_results:
-            title: Resultados por respuesta sumando pesos por membresía
+        census:
+          setting_group: Setting group
         delegations:
           create:
             error: Se ha producido un error al crear la delegación
@@ -52,21 +52,16 @@ es:
             actions:
               csv_import: Importar un fichero CSV
               new_delegation: Nueva participante
-            consultation: Consulta
             created_at: Creado el
-            delete: Eliminar
             description_html: Estas son las delegaciones actuales para esta consulta
             grantee: Receptora (a)
             grantee_voted: '¿Se ha utilizado la delegación?'
             granter: Otorgante
-            granter_voted: '¿Ha votado la otorgante?'
-            title: Participantes
           new:
             grantee: Beneficiario
             granter: Otorgante
             save: Crear
             select_member: Seleccionar miembro
-            title: Nueva delegación
         invite_participants:
           invite_all_users:
             error: Hubo un error al invitar a las participantes
@@ -88,6 +83,8 @@ es:
             required_fields: 'Campos requeridos: correo del otorgante, correo del receptor'
             title: Importar delegaciones
             title_example: 'Ejemplo:'
+            upload_button: Upload CSV file
+            upload_help: 'Must be a file in CSV format with a header. Required columns: from, to.'
             upload_instructions: Debe ser un archivo en formato CSV con un encabezado.
         manage_participants:
           create:
@@ -103,13 +100,22 @@ es:
             required_fields: 'Campos requeridos: %{authorization_method}'
             title: Importar participantes
             title_example: 'Ejemplo:'
+            upload_button: Upload CSV file
+            upload_help: Must be a file in CSV format with a header.
             upload_instructions: Debe ser un archivo en formato CSV con un encabezado.
         menu:
-          consultations_submenu:
-            by_answer: Por respuesta
-            by_type_and_weight: Por tipo y peso
-            sum_of_weights: Por suma de pesos
+          action_delegator_menu:
+            delegations: Delegations
+            main: Main
+            participants: Participants
+            ponderations: Ponderations
+            settings: Settings
           delegations: Gobernanza Societaria
+          elections_submenu:
+            by_answer: By answer
+            by_type_and_weight: By type and weight
+            sum_of_weights: Sum of weights
+            totals: Totals
           participants: Participantes
         participants:
           create:
@@ -120,7 +126,6 @@ es:
             success: Participante correctamente eliminado
           edit:
             save: Guardar
-            title: Editar participante
           index:
             actions:
               csv_import: Importar CSV
@@ -137,12 +142,10 @@ es:
             phone: Teléfono
             ponderation: Tipos de ponderación
             send_invitation_link: Haga clic aquí para enviarles una invitación
-            title: Censo
             user: Nombre
             voted: '¿Ha votado?'
           new:
             save: Crear
-            title: Nueva participante
           remove_census:
             confirm: '¿Está seguro de que quiere eliminar el censo? Esta acción no se puede deshacer'
             success: "%{participants_count} entradas fueron eliminadas de la página con éxito"
@@ -164,7 +167,6 @@ es:
             success: Ponderación destruida correctamente
           edit:
             save: Guardar
-            title: Editar tipos de ponderación
           form:
             name_help: Tipo de asociado, p. ej., "socio", "consumidor", "patrón". Debe ser único.
             name_placeholder: 'Prueba, por ejemplo: "miembro", "asociado", "partidario"...'
@@ -175,7 +177,6 @@ es:
             created_at: Creado el
             name: Tipo de miembro
             num_users: Censo total
-            title: Ponderaciones
             weight: Peso del voto
           new:
             save: Crear
@@ -188,12 +189,13 @@ es:
             both: Correo electrónico y número de teléfono
             email: Solo correo electrónico
             phone: Solo número de teléfono móvil
-          authorization_method_help: |
-            Las opciones disponibles son:
+          authorization_method_help_html: |
+            Available options are:
+            <br><br>
             <ul>
-            <li><b>Solo número de teléfono:</b> Utiliza verificación por SMS. Las participantes deben ingresar su número de teléfono que coincida con el censo.</li>
-            <li><b>Solo correo electrónico:</b> El correo electrónico de la participante debe coincidir con el censo.</li>
-            <li><b>Correo electrónico y número de teléfono:</b> Utiliza verificación por SMS. El correo electrónico de la participante debe coincidir con el censo y el número de teléfono estará predefinido.</li>
+              <li><b>Only phone number:</b> Uses SMS verification. Participants must input their phone number that matches the census.</li>
+              <li><b>Only email:</b> Participant's email must match the census.</li>
+              <li><b>Email and phone number:</b> Uses SMS verification. Participant's email must match the census and phone number will be predefined.</li>
             </ul>
           check_verifier:
             not_installed_html: Parece que el método de autorización "Verificador de Gobernanza Societaria" no está activado. No puedes autenticar el censo sin la activación. Instálelo en <a href="/system">/system</a>.
@@ -206,7 +208,6 @@ es:
             success: Configuración eliminada correctamente
           edit:
             save: Guardar
-            title: Editar grupo de delegación
           form:
             max_grants: Máximas delegaciones por participante
           index:
@@ -215,19 +216,22 @@ es:
               delegations: Edita las delegaciones
               new_setting: Nueva configuración
               ponderate: Establecer los pesos para la ponderación de votos
+            active: Active
             authorization_method: Método de autorización
             census: Censo total
-            consultation: Consulta
             created_at: Creado el
             delegations: Total de delegaciones
             description_html: |
-              Este módulo está diseñado para organizaciones que votan a través de consultas. Las funcionalidades que tenemos disponibles son: elaboración de censo, delegaciones de participantes y ponderaciones por tipo de miembro. También podemos utilizar el verificador integrado a través de SMS, correo electrónico o ambos. Es posible utilizar este módulo sin importar un censo, puede gestionarlo para realizar delegaciones y/o ponderaciones. Si necesitas más información, ingresa a guia.cercles.coop.
-              <br>
-              Cada grupo se puede configurar con un número diferente de delegaciones máximas por usuario, diferentes concesiones de delegaciones de usuario y diferentes conjuntos de tipos de ponderación.
+              <ul>
+                <li>This module is designed for organizations that require a robust system for managing participant delegations</li>
+                <li><b>Features:</b> fully managed census, delegations of participants and weights by type of member. Verification by SMS, email or both. Using a census is optional.</li>
+                <li>Each entry can be used as a unique <b>delegation group</b> with a different number of maximum delegations per user, different user delegations grants and different sets of ponderation types.</li>
+                <li><b>Usage:</b> After configuring a delegation group, you can use the <b>Corporate Governance Verifier</b> to ensure all participants are properly authorized in whatever component you require. Also, make sure to use the <b>Corporate Governance census</b> while configuring an election.</li>
+              </ul>
             max_grants: Máx. delegaciones/persona
+            name: Name
             open: Abierto
             ponderations: Tipos de ponderación
-            state: Estado
             title: Gobernanza Societaria
           new:
             save: Guardar
@@ -235,22 +239,18 @@ es:
           setting_checks:
             all_users_authorized_html: Todas las participantes están verificadas por el <i>Verificador de Gobernanza Societaria</i>.
             all_users_registered_html: Todos los participantes están registrados en la plataforma.
+            applies_to: Applies to the following voting spaces
             click_to_fix: Haga clic aquí para arreglar esto automáticamente
-            consultation_questions_all_verified_html: Todas las preguntas están restringidas por el <i>Verificador de Gobernanza Societaria</i>.
-            consultation_questions_missing_verifier_html: Hay %{count} preguntas que no están restringidas por el <i>Verificador de Gobernanza Societaria</i>. <b>Sin la restricción, cualquiera podrá votar las preguntas.</b> <em>Esto está bien si está utilizando otros métodos de autorización o si todas las registradas pueden votar.</em>
             missing_authorizations_html: Hay %{count} participantes que no están verificadas por el <i>Verificador de Gobernanza Societaria</i>. <em>Está bien si estas participantes tienen sus votos delegados a otras o si está utilizando otros métodos de verificación (o ninguno).</em>
             missing_emails: El método de autorización no requiere un correo electrónico. Por esto, %{count} debe registrarse en la plataforma
             missing_registered_users_html: Hay %{count} participantes que no están registrados en la plataforma.
             no_delegations_html: No hay votos delegados.
             no_participants_html: '¡No hay censo! <b>Añade participantes o nadie podrá votar si el <i>Verificador de Gobernanza Societaria</i> está activo.</b> <em>Está bien si está utilizando otros métodos de autorización o si todas las registradas pueden votar.</em>'
             no_ponderations_html: No hay ponderaciones de votos. <b>Todos los usuarios tendrán el mismo peso en sus votos</b>
+            no_resources_found: No voting spaces are using this configuration!
             participant: participante
             user: participante
             users_need_sync_html: La lista de participantes debe sincronizarse. <b>¡Los resultados de la consulta pueden ser incorrectos!</b>
-          state:
-            closed: Cerrado
-            ongoing: En proceso
-            pending: Pendiente
           update:
             error: Se ha producido un problema al actualizar la configuración
             success: Configuración guardada correctamente
@@ -262,16 +262,40 @@ es:
           phone_warning: Este número de teléfono ha sido importado por el administrador. Por favor, contacta si no es correcto.
       delegations:
         has_delegations: Voto delegado realizado
-        link: "\U0001F449 Tienes delegaciones concedidas"
+        link: "👉 You have delegations granted"
       delegations_authorizer:
         email: Estamos utilizando el correo electrónico %{email} para verificar su identidad. Si cree que esto está mal, póngase en contacto con nosotros.
-        no_setting: No se encontró ningún grupo de delegación para esta consulta. Póngase en contacto con el administrador para solucionarlo.
-        not_in_census: No estás en el censo
+        inactive_setting_html: The census "%{census}" is not active. You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
+        no_setting_html: It seems that you do not belong to the current census. You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
+        not_in_census_html: It seems that you do not belong to the census "%{census}". You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
         phone: Estamos usando el teléfono %{phone} para verificar su identidad. Si cree que esto está mal, póngase en contacto con nosotros.
-      delegations_modal:
-        callout: Recuerda, estás votando en nombre de
-        contextual_help: 'Se le ha concedido el voto de:'
-        title: 'Consulta: delegaciones concedidas'
+      elections:
+        admin:
+          dashboard:
+            questions_table:
+              delegated_votes: Delegated votes
+              participants: Participants
+              participants_count:
+                one: 1 participant
+                other: "%{count} participants"
+              unweighted_votes: Unweighted votes
+              weight: Weight
+              weighted_votes: Weighted votes
+            results_type_info:
+              by_type_and_weight_html: <p>The results shown below are broken down by membership type and weighted by the membership weights defined in the Corporate Governance settings.</p> <p>Each response option shows the number of votes it received from each membership type but no weights are applied in this view.</p> <p>For example, if option A received 2 votes from members with weight "3.0" and 1 vote from a member with weight "1.0", the results will show 2 votes from members with weight "3.0" and 1 vote from members with weight "1.0".</p> <p>⚠️ These results are not shown to the public.</p>
+              normal_count_html: "<p>These results are calculated by counting each vote equally, regardless of the membership weight of the participant that cast it.</p> <p>⚠️ These results are not shown to the public.</p>"
+              sum_of_weights_html: <p>The results shown below are weighted by the membership weights defined in the Corporate Governance settings.</p> <p>Each vote is multiplied by the weight of the member who cast it.</p> <p>For example, if a member with weight "3.0" votes for option A, and a member with weight "1.0" votes for option B, the results will show 3 votes for option A and 1 vote for option B.</p> <p><strong>⚠️ These are the results shown to the public.</strong></p>
+              title: How to interpret these results?
+              totals_html: "<p>The results shown below show the totals for each question, summing all the votes received by each response option applying the membership weights and not applying them.</p> <p>Also, you can see the number of participants and how many delegated votes were cast for each option.</p> <p>⚠️ These results are not shown to the public.</p>"
+        delegation_buttons:
+          delegations_active: You have delegated votes.
+          per_question_delegations: 'You can vote on behalf of the following participants in this election:'
+          vote_for: Vote on behalf of %{name}
+        votes:
+          delegated_voting: You are voting on behalf of %{name}
+          edit_vote_for: Edit vote for %{name}
+          self_voting: You are voting for yourself (%{name}).
+          waiting_for: Continue voting on behalf of %{name}
       import_mailer:
         import:
           errors_present: Se han producido errores durante la importación
@@ -290,7 +314,6 @@ es:
           body: Has sido invitado a participar en la consulta. Por favor, haz clic en el enlace de abajo para confirmar tu participación.
           confirm: Confirmar la participación
           greeting: '¡Hola, %{recipient}!,'
-      name: Módulo Cooperativas - ActionDelegator para Decidim
       participants_csv_importer:
         import:
           error: Se ha producido un error en importar las participantes
@@ -302,15 +325,6 @@ es:
           ponderation_not_found: Tipo de ponderación no encontrado
           skip_import_info: El participante ya existe %{with_mismatched_fields}
           with_mismatched_fields: "con campos no coincidentes: %{fields}"
-      questions:
-        callout_link_text: Revisa el resumen de tu votación aquí
-        callout_text: Has respondido %{voted} de un total de %{total} preguntas.
-        modal:
-          modal_table_header_answer: Has respondido?
-          modal_table_header_question: Pregunta
-          modal_votes_title: Tus votos a "%{title}"
-        question_answered: Already voted
-        question_not_answered: Vote pending
       sms_message: Su código de verificación es %{code}
       user_delegations:
         index:
@@ -332,8 +346,9 @@ es:
             new:
               authorize: Autorizar mi cuenta
               missing_phone_error: Falta el teléfono de miembro
+              no_resources_found: No resources found, If you think this is a mistake, please contact the administrator (it is possible that there is nothing active right now).
               not_in_census: Lo sentimos, pero no puede ser autorizado porque su correo electrónico no está en el censo. Póngase en contacto con el administrador si cree que se trata de un error.
-              participate_in: 'Esta autorización le permite participar en las siguientes consultas: %{consultations}'
+              participate_in: 'This authorization allows you to participate in the following resources:'
               phone_warning: Este número de teléfono ha sido importado por el administrador. Por favor, contacta si no es correcto.
               send_code: Enviar código de verificación
               title: Autorizar con el Verificador de Gobernanza Societaria
@@ -343,29 +358,24 @@ es:
         invite: Enviar invitación
         invite_all: Enviar invitaciones a participantes no registradas
         resend: Reenviar la invitación
-      consultations:
-        results:
-          default_metadata: "(datos de afiliación no disponibles)"
-          export: Exportar
-          export_filename: consultation_results
-          membership_type: Tipo de miembro
-          membership_weight: Peso
-          total_delegates: "%{count} votos delegados"
     authorization_handlers:
       admin:
         delegations_verifier:
           help:
-            - Un método de verificación para el voto delegado
+            - 
+              - census.
       delegations_verifier:
         explanation: Las participantes verificadas con este método pueden delegar votos a otras participantes
         fields:
           phone: Número de teléfono
+          setting: Setting
+          setting_ids: Settings
         name: Gobernanza Societaria
-    resources:
-      question:
-        actions:
-          comment: Comentario
-          vote: Votar
+    elections:
+      censuses:
+        action_delegator_census:
+          authorizer_handler_admin_callout_html: Choose the "Corporate Governance" authorization method if you want to use the participants list from the chosen setting group to validate who can vote.<br> You can also use another authorization method if your source of census is external or if you don't want to use a census at all (and everyone registered can vote).
+          label: Corporate Governance census
     verifications:
       authorizations:
         first_login:
@@ -377,9 +387,5 @@ es:
         subject: Has sido invitada a participar en una consulta
   layouts:
     decidim:
-      admin:
-        question:
-          attachments: Adjuntos
-          categories: Categorías
       user_profile:
         vote_delegations: Delegación de votos
