@@ -110,6 +110,30 @@ For instance, this file should work for Sidekiq:
   - [close_meeting_reminder, 1]
 ```
 
+> **UPGRADE NOTES:**
+>
+> ### Migrating from decidim-consultations (deprecated since Decidim 0.28)
+>
+> If you have existing consultations, migrate them to the Elections component:
+>
+> ```bash
+> # 1. Create an Elections component in Admin Panel → Participatory Space → Components
+> #    Note the component ID from the URL
+>
+> # 2. Run migration for all consultations
+> RAILS_ENV=production bundle exec rake action_delegator:migrate_consultations[COMPONENT_ID]
+>
+> # Or migrate a specific consultation
+> RAILS_ENV=production bundle exec rake action_delegator:migrate_consultations[COMPONENT_ID,CONSULTATION_ID]
+> ```
+>
+> **What gets migrated:** Consultations, questions, response options, votes, and all related settings (participants, delegations, weights).
+>
+> **Note:** After migration, verify results in the admin panel before removing old tables.
+>
+> Example:
+> ![Consultation migration to elections](docs/consultations_import.png)
+
 ## Usage
 
 ActionDelegator does not provides new Components or Participatory Spaces but enhances some functionalities in them.

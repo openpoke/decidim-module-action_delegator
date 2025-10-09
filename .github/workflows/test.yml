@@ -11,6 +11,7 @@ env:
   RUBY_VERSION: 3.3.4
   NODE_VERSION: 22.14.0
   SHAKAPACKER_RUNTIME_COMPILE: "false"
+  CI: "true"
 
 jobs:
   test:
