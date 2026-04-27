@@ -11,7 +11,9 @@ module Decidim
 
       routes do
         resources :settings do
-          resources :delegations, only: [:index, :new, :create, :destroy]
+          resources :delegations, only: [:index, :new, :create, :destroy] do
+            get :users, on: :collection
+          end
           resources :ponderations
           resources :participants
           resources :invite_participants do

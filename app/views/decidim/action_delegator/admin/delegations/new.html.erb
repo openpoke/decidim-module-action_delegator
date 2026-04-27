@@ -8,7 +8,7 @@
       <div class="form__wrapper">
         <div class="card pt-4">
           <div class="card-section">
-            <% prompt_options = { url: decidim_admin.users_organization_url, placeholder: t(".select_member") } %>
+            <% prompt_options = { url: decidim_admin_action_delegator.users_setting_delegations_url, placeholder: t(".select_member") } %>
 
             <div class="row column">
               <%= form.autocomplete_select(:granter_id, @form.granter, { multiple: false, label: t(".granter"), class: "autocomplete-field--results-inline" }, prompt_options) do |user|

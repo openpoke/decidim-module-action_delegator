@@ -9,8 +9,8 @@ module Decidim
         include Decidim::ActionDelegator::VotesControllerMethods
 
         # rubocop:disable Rails/LexicallyScopedActionFilter
-        prepend_before_action :load_delegations
-        prepend_before_action :clear_delegations, only: :new
+        prepend_before_action :load_current_delegation
+        prepend_before_action :clear_current_delegation, only: :new
 
         before_action :set_delegation_messages
 

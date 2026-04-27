@@ -84,7 +84,7 @@ module Decidim
           manifest.voter_form_partial = "decidim/action_delegator/censuses/internal_users_form"
 
           manifest.user_query do |election|
-            Decidim::ActionDelegator::ActionDelegatorCensusUsers.new(election).query
+            Decidim::ActionDelegator::ElectionCensusUsers.new(election).query
           end
 
           manifest.census_ready_validator { |election| election.census_settings["setting_id"].present? }

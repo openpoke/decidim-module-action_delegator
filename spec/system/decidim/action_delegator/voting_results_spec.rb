@@ -22,6 +22,7 @@ describe "Public delegated voting results for elections" do
       :ongoing,
       availability_trait,
       :with_questions,
+      skip_injection: true,
       component:,
       census_manifest: "internal_users",
       census_settings: {
@@ -255,8 +256,8 @@ describe "Public delegated voting results for elections" do
 
   context "with per-question results availability" do
     let!(:election) { create_election_with_action_delegator(availability_trait: :per_question) }
-    let!(:published_question) { create(:election_question, :with_response_options, :voting_enabled, election:) }
-    let!(:unpublished_question) { create(:election_question, :with_response_options, election:) }
+    let!(:published_question) { create(:election_question, :with_response_options, :voting_enabled, skip_injection: true, election:) }
+    let!(:unpublished_question) { create(:election_question, :with_response_options, skip_injection: true, election:) }
 
     let!(:basic_user) { create(:user, :confirmed, organization:) }
     let!(:premium_user) { create(:user, :confirmed, organization:) }
@@ -406,6 +407,7 @@ describe "Public delegated voting results for elections" do
         :ongoing,
         :real_time,
         :with_questions,
+        skip_injection: true,
         component:,
         census_manifest: "internal_users"
       )

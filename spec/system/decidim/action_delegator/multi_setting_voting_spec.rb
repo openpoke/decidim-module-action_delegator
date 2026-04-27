@@ -19,8 +19,8 @@ describe "User votes in elections with multiple settings" do
   let(:census_settings1) { { "authorization_handlers" => { "delegations_verifier" => { "options" => { "setting" => setting1.id.to_s } } } } }
   let(:census_settings2) { { "setting_id" => setting2.id.to_s, "authorization_handlers" => { "delegations_verifier" => { "options" => {} } } } }
 
-  let!(:election1) { create(:election, :published, :ongoing, :with_questions, component:, title: { en: "Election 1" }, census_manifest: "internal_users", census_settings: census_settings1) }
-  let!(:election2) { create(:election, :published, :ongoing, :with_questions, component:, title: { en: "Election 2" }, census_manifest: "action_delegator_census", census_settings: census_settings2) }
+  let!(:election1) { create(:election, :published, :ongoing, :with_questions, skip_injection: true, component:, title: { en: "Election 1" }, census_manifest: "internal_users", census_settings: census_settings1) }
+  let!(:election2) { create(:election, :published, :ongoing, :with_questions, skip_injection: true, component:, title: { en: "Election 2" }, census_manifest: "action_delegator_census", census_settings: census_settings2) }
 
   before do
     switch_to_host(organization.host)

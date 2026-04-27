@@ -23,16 +23,20 @@ module Decidim
         @delegation ||= delegations.find_by(id: delegation_id)
       end
 
-      def load_delegations
+      def load_current_delegation
         return unless user_signed_in?
+        return unless delegation
 
-        @delegator = delegation&.user
+        # check the granter is in the census and can vote, if not, ignore the delegation
+        return unless election.census.valid_user?(election, {}, current_user: delegation.granter)
+
+        @delegator = delegation.granter
         return unless @delegator
 
         session[:delegation_id] = delegation.id
       end
 
-      def clear_delegations
+      def clear_current_delegation
         session.delete(:delegation_id)
       end
 

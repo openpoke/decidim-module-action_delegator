@@ -11,8 +11,8 @@ describe "Delegated voting in elections", versioning: true do
   let(:setting) { create(:setting, organization: component.organization, authorization_method:, active:) }
   let(:authorization_method) { :email }
   let(:active) { true }
-  let!(:user_participant) { create(:participant, setting:, email: user.email) }
-  let!(:delegate_participant) { create(:participant, setting:, email: delegate_user.email) }
+  # let!(:user_participant) { create(:participant, setting:) }
+  # let!(:delegate_participant) { create(:participant, setting:) }
   let!(:delegation) { create(:delegation, setting:, granter: user, grantee: delegate_user) }
   let(:election_path) { Decidim::EngineRouter.main_proxy(component).election_path(election) }
 
@@ -40,10 +40,10 @@ describe "Delegated voting in elections", versioning: true do
     }
   end
 
-  let!(:current_question) { create(:election_question, :voting_enabled, question_type: "single_option", election:) }
+  let!(:current_question) { create(:election_question, :voting_enabled, skip_injection: true, question_type: "single_option", election:) }
   let!(:response_option1) { create(:election_response_option, question: current_question, body: { en: "Response 1" }) }
   let!(:response_option2) { create(:election_response_option, question: current_question, body: { en: "Response 2" }) }
-  let!(:next_question) { create(:election_question, :with_response_options, election:) }
+  let!(:next_question) { create(:election_question, :with_response_options, skip_injection: true, election:) }
   let!(:authorization) { create(:authorization, :granted, user: delegate_user, name: "delegations_verifier", metadata:) }
   let(:metadata) { {} }
 
@@ -77,7 +77,14 @@ describe "Delegated voting in elections", versioning: true do
         }
       end
 
-      it_behaves_like "voting in a per question election"
+      it_behaves_like "cannot vote with current identity"
+
+      context "when participants exist" do
+        let!(:user_participant) { create(:participant, setting:, email: user.email) }
+        let!(:delegate_participant) { create(:participant, setting:, email: delegate_user.email) }
+
+        it_behaves_like "voting in a per question election"
+      end
     end
 
     context "when using another verifier" do
@@ -89,15 +96,7 @@ describe "Delegated voting in elections", versioning: true do
         }
       end
 
-      it "does no allows to vote" do
-        expect(page).to have_css(".election__aside-voted")
-        expect(page).to have_content("You have delegated votes.")
-        expect(page).to have_content("You can vote on behalf of the following participants in this election:")
-
-        click_on "Vote"
-        expect(page).to have_content("Verify your identity")
-        expect(page).to have_content("Verify your identity\nVerify with Example authorization")
-      end
+      it_behaves_like "needs to verify identity"
 
       context "when authorization is granted" do
         let(:authorization) { create(:authorization, :granted, user: delegate_user, name: "dummy_authorization_handler") }
