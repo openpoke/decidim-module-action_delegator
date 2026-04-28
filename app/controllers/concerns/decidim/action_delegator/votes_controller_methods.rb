@@ -27,9 +27,6 @@ module Decidim
         return unless user_signed_in?
         return unless delegation
 
-        # check the granter is in the census and can vote, if not, ignore the delegation
-        return unless election.census.valid_user?(election, {}, current_user: delegation.granter)
-
         @delegator = delegation.granter
         return unless @delegator
 

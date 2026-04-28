@@ -85,6 +85,27 @@ describe "Delegated voting in elections", versioning: true do
 
         it_behaves_like "voting in a per question election"
       end
+
+      # The delegation must work even if the granter is NOT in the participants list.
+      # Per Ivan's decision (28.04.2026): treat all verifiers the same way — only the
+      # grantee needs to fulfil the verification, the granter just needs to exist as a
+      # Decidim user. The vote is registered for the granter through PaperTrail.
+      context "when granter is not in participants" do
+        let!(:delegate_participant) { create(:participant, setting:, email: delegate_user.email) }
+
+        it "casts the vote on behalf of the granter" do
+          visit election_per_question_vote_path(current_question.id, delegation.id)
+
+          expect(page).to have_content("You are voting on behalf of #{user.name}")
+
+          first("input[value=\"#{response_option1.id}\"]").click
+          click_on "Cast vote"
+
+          expect(page).to have_content("Your vote has been successfully cast")
+          expect(last_vote(user)).not_to be_nil
+          expect(last_vote(user).response_option).to eq(response_option1)
+        end
+      end
     end
 
     context "when using another verifier" do
