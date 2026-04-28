@@ -12,9 +12,8 @@ module Decidim
 
       def query
         Decidim::Elections::Election.where(
-          "census_settings ->> 'setting_id' = :id OR census_settings #> '{authorization_handlers,delegations_verifier,options,setting}' = :id_json",
-          id: @setting.id.to_s,
-          id_json: @setting.id.to_json
+          "census_settings ->> 'setting_id' = :id OR census_settings #>> '{authorization_handlers,delegations_verifier,options,setting}' = :id",
+          id: @setting.id.to_s
         )
       end
     end

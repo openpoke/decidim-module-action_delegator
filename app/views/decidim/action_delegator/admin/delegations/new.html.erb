@@ -8,6 +8,10 @@
       <div class="form__wrapper">
         <div class="card pt-4">
           <div class="card-section">
+            <div class="callout warning">
+              <%= t(".granter_not_verified_warning") %>
+            </div>
+
             <% prompt_options = { url: decidim_admin_action_delegator.users_setting_delegations_url, placeholder: t(".select_member") } %>
 
             <div class="row column">

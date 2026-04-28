@@ -95,8 +95,7 @@ So, if you want to use this feature you need to make use of the participants lis
 
 Delegations are the action of letting some else vote in your name. The way this works in the elections module is by effectively creating a vote for the user that has granted the delegation when the user benefiting from the delegation is voting. The traceability is performed through the Papertrail (Decidim's ActionLog) mechanism that stores the original user performing such action. So, at all effects, the vote is stored as it was performed by the original user.
 
-
-Delegations do not require the use of the participants list in the settings, only that the user is registered in Decidim and has granted any required authorization for the election.
+Only the **grantee** (the user who casts the vote on someone else's behalf) needs to fulfil the verification configured for the election. The **granter** (the user who delegates) only needs to exist as a Decidim user — they are not required to be in the participants list nor to pass any verification. This applies to all combinations of census and verifier.
 
 ### Using settings in elections
 
@@ -109,18 +108,19 @@ There's two ways to configure a setting in the elections module:
 
 To use this method, just select the "Registered participants census" and then "Corporate Governance" as the verification method (you can use more than one method).
 
-This method will force you to use the participants as the "source of truth" for the election.
-So, if the participant **is not** in your participant's list for the specified setting, it won't be allowed to vote.
+This method will force you to use the participants as the "source of truth" for the election. So, a user that **is not** in your participant's list for the specified setting won't be allowed to vote on their own behalf.
 
-This method allows you to use all the features of the module, delegations and weights as well.
+Note that this applies to the user casting the vote (including a grantee voting on someone else's behalf). The granter of a delegation is **not** required to be in the participants list (see "Delegations in elections" above).
+
+This method allows you to use all the features of the module — delegations and weights as well.
 
 #### Using "Corporate Governance Census"
 
 This second method is for situations when you need delegations but don't need to use weights or to verify users through the participants list.
 
-To use this method, select "Corporate Governance Census" as the election's census. Then you can optionally choose which verification methods you want to use. If you choose the "Corporate Governance" method, then nothing changes from the previous situation.
+To use this method, select "Corporate Governance Census" as the election's census. Then you can optionally choose which verification methods you want to use. If you choose the "Corporate Governance" method, the participants list is used as the verifier for the user casting the vote (same as in "Registered participants census" above) — but the granter of a delegation is still not required to be in the list.
 
-But, if you use another verification method (or none at all), then you can make use of delegations without using a participant's list but not weights. Note that the participant's list can be empty as it won't be used at all in this case. 
+If you use another verification method (or none at all), then the participant's list is not used to verify identity at all. Delegations still work, weights only apply to users that are listed as participants with a ponderation; everybody else votes with the default weight of 1. Note that the participants list can be empty in this case.
 
 ## Configuration
 
