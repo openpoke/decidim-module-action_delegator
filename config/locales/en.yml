@@ -65,7 +65,9 @@ en:
           new:
             grantee: Grantee (to)
             granter: Granter (from)
-            granter_not_verified_warning: The granter is not required to be in the participants list nor to be verified — they only need to exist as a Decidim user. Make sure you trust the delegation you are about to create.
+            granter_not_verified_warning: The granter is not required to be in the
+              participants list nor to be verified — they only need to exist as a
+              Decidim user. Make sure you trust the delegation you are about to create.
             save: Create
             select_member: Select member
         invite_participants:

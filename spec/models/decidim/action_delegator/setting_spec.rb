@@ -112,7 +112,8 @@ module Decidim
         end
 
         it "memoizes the result" do
-          expect(setting.elections.object_id).to eq(setting.elections.object_id)
+          first_call = setting.elections
+          expect(setting.elections).to be(first_call)
         end
       end
     end
