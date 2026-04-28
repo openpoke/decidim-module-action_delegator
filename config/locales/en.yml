@@ -393,7 +393,8 @@ en:
       sms_message: Your verification code is %{code}
       user_delegations:
         index:
-          vote_delegated: You can vote on behalf of %{name} in this consultation
+          no_active_delegations: You have no active delegated votes at the moment.
+          vote_delegated: Vote delegated by %{name}
       verification:
         admin:
           members:
