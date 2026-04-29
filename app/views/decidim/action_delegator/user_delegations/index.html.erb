@@ -11,7 +11,7 @@
                             Decidim::EngineRouter.main_proxy(election.component).election_path(election) %>
               </h5>
               <div class="card__list-text">
-                <%= t("vote_delegated", scope: "decidim.action_delegator.user_delegations.index", name: "<strong>#{delegation.granter.name}</strong>").html_safe %>
+                <%= t("vote_delegated_html", scope: "decidim.action_delegator.user_delegations.index", name: delegation.granter.name) %>
               </div>
             </div>
           </div>

@@ -102,7 +102,7 @@ Only the **grantee** (the user who casts the vote on someone else's behalf) need
 There's two ways to configure a setting in the elections module:
 
 1. By using the "Registered participants census" and selecting "Corporate Governance" as the verification method.
-2. By using the built in "Corporate Governance Census" directly.
+2. By using the built-in "Corporate Governance Census" directly.
 
 #### Using "Registered participants census"
 

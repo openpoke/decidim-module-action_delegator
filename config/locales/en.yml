@@ -397,7 +397,7 @@ en:
       user_delegations:
         index:
           no_active_delegations: You have no active delegated votes at the moment.
-          vote_delegated: Vote delegated by %{name}
+          vote_delegated_html: Vote delegated by <strong>%{name}</strong>
       verification:
         admin:
           members:
