@@ -70,7 +70,7 @@ module Decidim
               item_id: vote.id,
               event: "create",
               whodunnit: grantee.id.to_s,
-              object_changes: { decidim_action_delegator_delegation_id: delegation.id }
+              decidim_action_delegator_delegation_id: delegation.id
             )
           end
 

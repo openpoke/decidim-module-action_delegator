@@ -1,6 +1,5 @@
 <%= render layout: "layouts/decidim/shared/layout_user_profile" do %>
   <div class="row column voluntary-work-list">
-    <% active_pairs = delegations.flat_map { |d| d.setting.elections.published.ongoing.map { |e| [e, d] } } %>
     <% if active_pairs.any? %>
       <div class="card__list-list">
         <% active_pairs.each do |election, delegation| %>

@@ -26,8 +26,8 @@ module Decidim
         return false unless grantee && setting
 
         @grantee_voted ||= PaperTrail::Version.exists?(
-          whodunnit: grantee.id,
-          object_changes: { decidim_action_delegator_delegation_id: id }
+          whodunnit: grantee.id.to_s,
+          decidim_action_delegator_delegation_id: id
         )
       end
 
