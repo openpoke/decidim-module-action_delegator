@@ -93,7 +93,7 @@ So, if you want to use this feature you need to make use of the participants lis
 
 ### Delegations in elections
 
-Delegations are the action of letting some else vote in your name. The way this works in the elections module is by effectively creating a vote for the user that has granted the delegation when the user benefiting from the delegation is voting. The traceability is performed through the Papertrail (Decidim's ActionLog) mechanism that stores the original user performing such action. So, at all effects, the vote is stored as it was performed by the original user.
+Delegations are the action of letting someone else vote in your name. The way this works in the elections module is by effectively creating a vote for the user that has granted the delegation when the user benefiting from the delegation is voting. The traceability is performed through the Papertrail (Decidim's ActionLog) mechanism that stores the original user performing such action. So, at all effects, the vote is stored as it was performed by the original user.
 
 Only the **grantee** (the user who casts the vote on someone else's behalf) needs to fulfil the verification configured for the election. The **granter** (the user who delegates) only needs to exist as a Decidim user — they are not required to be in the participants list nor to pass any verification. This applies to all combinations of census and verifier.
 
