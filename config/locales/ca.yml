@@ -3,7 +3,7 @@ ca:
   activemodel:
     attributes:
       csv_import:
-        csv_file: Arxiu CSV
+        csv_file: CSV file
       delegations_verifier:
         email: Correu electrònic
         phone: Número de telèfon mòbil
@@ -15,13 +15,13 @@ ca:
         name: Tipus d'associat
         name_help: Tipus d'associat
       setting:
-        active: Actiu
+        active: Active
         max_grants: Màxim nombre de delegacions que pot rebre una participant
         phone_freezed: Usa el número de telèfon del cens. No permet als participants editar-lo.
         verify_with_sms: Verifica amb SMS
     errors:
       messages:
-        only_one_active_setting_per_phone_required: Només hi pot haver una configuració activa amb la verificació telefònica alhora.
+        only_one_active_setting_per_phone_required: There can only be one active setting with phone verification at a time.
       models:
         delegations_verifier:
           attributes:
@@ -33,7 +33,7 @@ ca:
     action_delegator:
       admin:
         census:
-          setting_group: Grup de configuració
+          setting_group: Setting group
         delegations:
           create:
             error: S'ha produït un error en crear aquesta delegació
@@ -60,6 +60,7 @@ ca:
           new:
             grantee: Receptora (a)
             granter: Atorgant
+            granter_not_verified_warning: The granter is not required to be in the participants list nor to be verified — they only need to exist as a Decidim user. Make sure you trust the delegation you are about to create.
             save: Crear
             select_member: Selecciona un membre
         invite_participants:
@@ -83,8 +84,8 @@ ca:
             required_fields: 'Camps obligatoris: Email de l''atorgant, email de la receptora'
             title: Importa les delegacions
             title_example: 'Exemple:'
-            upload_button: Carrega un arxiu CSV
-            upload_help: 'Ha de ser un fitxer en format CSV amb una capçalera. Columnes obligatòries: from, to.'
+            upload_button: Upload CSV file
+            upload_help: 'Must be a file in CSV format with a header. Required columns: from, to.'
             upload_instructions: Ha de ser un fitxer en format CSV amb una capçalera.
         manage_participants:
           create:
@@ -100,22 +101,22 @@ ca:
             required_fields: 'Camps obligatoris: %{authorization_method}'
             title: Importar participants
             title_example: 'Exemple:'
-            upload_button: Carrega un arxiu CSV
-            upload_help: Ha de ser un fitxer en format CSV amb una capçalera.
+            upload_button: Upload CSV file
+            upload_help: Must be a file in CSV format with a header.
             upload_instructions: Ha de ser un fitxer en format CSV amb una capçalera.
         menu:
           action_delegator_menu:
-            delegations: Delegacions
-            main: General
+            delegations: Delegations
+            main: Main
             participants: Participants
-            ponderations: Ponderacions
-            settings: Configuració
+            ponderations: Ponderations
+            settings: Settings
           delegations: Governança societària
           elections_submenu:
-            by_answer: Per resposta
-            by_type_and_weight: Per tipus i ponderació
-            sum_of_weights: Per suma ponderada
-            totals: Total
+            by_answer: By answer
+            by_type_and_weight: By type and weight
+            sum_of_weights: Sum of weights
+            totals: Totals
           participants: Participants
         participants:
           create:
@@ -190,12 +191,12 @@ ca:
             email: Només correu electrònic
             phone: Només telèfon mòbil
           authorization_method_help_html: |
-            Les opcions disponibles són:
+            Available options are:
             <br><br>
             <ul>
-               <li><b>Només el número de telèfon:</b> Utilitza la verificació per SMS. Les participants han d'introduir el seu número de telèfon que coincideixi amb el cens.</li>
-               <li><b>Només correu electrònic:</b> el correu electrònic de la participant ha de coincidir amb el cens.</li>
-               <li><b>Correu electrònic i número de telèfon:</b> utilitza la verificació per SMS. El correu electrònic de la participant ha de coincidir amb el cens i el número de telèfon estarà predefinit.</li>
+              <li><b>Only phone number:</b> Uses SMS verification. Participants must input their phone number that matches the census.</li>
+              <li><b>Only email:</b> Participant's email must match the census.</li>
+              <li><b>Email and phone number:</b> Uses SMS verification. Participant's email must match the census and phone number will be predefined.</li>
             </ul>
           check_verifier:
             not_installed_html: Sembla que el mètode d'autorització "Verificador de Governança societària" no està instal·lat. No podeu utilitzar el cens integrat sense aquest. Instal·leu-lo a <a href="/system">/system</a>.
@@ -216,17 +217,20 @@ ca:
               delegations: Edita les delegacions
               new_setting: Nova configuració
               ponderate: Estableix els pesos per les ponderacions de vot
-            active: Actiu
+            active: Active
             authorization_method: Mètode de verificació de la condició d'associat
             census: Cens total
             created_at: Creat el
             delegations: Delegacions totals
             description_html: |
-              Aquest mòdul està dissenyat per organitzacions que voten mitjançant consultes. Les funcionalitats que tenim disponibles són: càrrega de cens, delegacions de participants i ponderacions per tipus de membre. També podem utilitzar el verificador integrat per SMS, correu electrònic o ambdós. És possible utilitzar aquest mòdul sense carregar un nou cens, podeu gestionar el vostre cens per fer delegacions i/o ponderacions. Si necessiteu més informació, aneu a guia.cercles.coop.
-              <br>
-              Cada grup es pot configurar amb un nombre diferent de delegacions màximes per receptora i diferents tipus de ponderació.
+              <ul>
+                <li>This module is designed for organizations that require a robust system for managing participant delegations</li>
+                <li><b>Features:</b> fully managed census, delegations of participants and weights by type of member. Verification by SMS, email or both. Using a census is optional.</li>
+                <li>Each entry can be used as a unique <b>delegation group</b> with a different number of maximum delegations per user, different user delegations grants and different sets of ponderation types.</li>
+                <li><b>Usage:</b> After configuring a delegation group, you can use the <b>Corporate Governance Verifier</b> to ensure all participants are properly authorized in whatever component you require. Also, make sure to use the <b>Corporate Governance census</b> while configuring an election.</li>
+              </ul>
             max_grants: Màx. delegacions/persona
-            name: Nom
+            name: Name
             open: Oberta
             ponderations: Tipus de ponderacions
             title: Governança societària
@@ -236,7 +240,7 @@ ca:
           setting_checks:
             all_users_authorized_html: Totes les participants són verficades pel <i>Verificador de Governança societària</i>.
             all_users_registered_html: Totes les participants estan registrades a la plataforma.
-            applies_to: S'aplica als següents espais de votació
+            applies_to: Applies to the following voting spaces
             click_to_fix: Feu clic aquí per solucionar-ho automàticament
             missing_authorizations_html: Hi ha %{count} participants que no estan verificats pel <i>Verificador de Governança societària</i>. <em>Això està bé si aquestes participants tenen els seus vots delegats a altres persones o si utilitzeu altres mètodes de verificació (o cap).</em>
             missing_emails: El mètode d'autorització no requereix un correu electrònic. Per això, %{count} s'han de registrar elles mateixes a la plataforma
@@ -244,7 +248,7 @@ ca:
             no_delegations_html: No hi ha delegacions de vot.
             no_participants_html: No hi ha cens! <b>Afegiu participants o ningú podrà votar si el <i>Verificador de Governança societària</i> està actiu.</b> <em>Això és correcte si feu servir altres mètodes d'autorització o si tothom té permís per votar.</em>
             no_ponderations_html: No hi ha ponderacions de vot. <b>Totes les participants tindran el mateix pes en els seus vots</b>
-            no_resources_found: Cap espai de votació utilitza aquesta configuració!
+            no_resources_found: No voting spaces are using this configuration!
             participant: participant
             user: usuària
             users_need_sync_html: Cal sincronitzar la llista de participants. <b>Els resultats de la consulta poden ser incorrectes!</b>
@@ -259,40 +263,40 @@ ca:
           phone_warning: Aquest número de telèfon s'ha importat per l'administrador. Si us plau, poseu-vos-hi en contacte si no és correcte.
       delegations:
         has_delegations: Vot delegat realitzat
-        link: "\U0001F449 Tens delegacions disponibles"
+        link: "👉 You have delegations granted"
       delegations_authorizer:
         email: Estem utilitzant el correu electrònic %{email} per verificar la vostra identitat. Si creieu que això està malament, poseu-vos en contacte amb nosaltres.
-        inactive_setting_html: El cens "%{census}" no està actiu. Podeu intentar <a href="%{renew_path}" class="underline">renovar la vostra verificació</a>. Si no, poseu-vos en contacte amb l'administrador si creieu que es tracta d'un error.
-        no_setting_html: Sembla que no pertanys al cens actual. Pots intentar <a href="%{renew_path}" class="underline">renovar la teva verificació</a>. Si no, contacta amb l'administrador si creus que es tracta d'un error.
-        not_in_census_html: Sembla que no pertanys al cens "%{census}". Pots intentar <a href="%{renew_path}" class="underline">renovar la teva verificació</a>. Si no, contacta amb l'administrador si creus que es tracta d'un error.
+        inactive_setting_html: The census "%{census}" is not active. You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
+        no_setting_html: It seems that you do not belong to the current census. You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
+        not_in_census_html: It seems that you do not belong to the census "%{census}". You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
         phone: Estem utilitzant el telèfon %{phone} per verificar la vostra identitat. Si creieu que això està malament, poseu-vos en contacte amb nosaltres.
       elections:
         admin:
           dashboard:
             questions_table:
-              delegated_votes: Vots delegats
+              delegated_votes: Delegated votes
               participants: Participants
               participants_count:
                 one: 1 participant
                 other: "%{count} participants"
-              unweighted_votes: Vots sense ponderació
-              weight: Ponderació
-              weighted_votes: Vots amb ponderació
+              unweighted_votes: Unweighted votes
+              weight: Weight
+              weighted_votes: Weighted votes
             results_type_info:
-              by_type_and_weight_html: <p>Els resultats que es mostren a continuació es desglossen per tipus de pertinença i es ponderen segons els pesos de pertinença definits a la configuració de Governança Societària</p> <p>Cada opció de resposta mostra el nombre de vots que ha rebut de cada tipus de pertinença, però no s'aplica cap pes en aquesta vista.</p> <p>Per exemple, si l'opció A ha rebut 2 vots de membres amb pes "3.0" i 1 vot d'un membre amb pes "1.0", els resultats mostraran 2 vots de membres amb pes "3.0" i 1 vot de membres amb pes "1.0".</p> <p>⚠️ Aquests resultats no es mostren al públic.</p>
-              normal_count_html: "<p>Aquests resultats es calculen comptant cada vot per igual, independentment de la ponderació del participant que l'ha emès.</p> <p>⚠️ Aquests resultats no es mostren al públic.</p>"
-              sum_of_weights_html: <p>Els resultats que es mostren a continuació es ponderen segons les ponderacions definides a la configuració de Governança Societària.</p> <p>Cada vot es multiplica pel pes del membre que l'ha emès.</p> <p>Per exemple, si un membre amb un pes "3.0" vota per l'opció A i un membre amb un pes "1.0" vota per l'opció B, els resultats mostraran 3 vots per l'opció A i 1 vot per l'opció B.</p> <p><strong>⚠️ Aquests són els resultats que es mostren al públic.</strong></p>
-              title: Com interpretar aquests resultats?
-              totals_html: "<p>Els resultats que es mostren a continuació mostren els totals de cada pregunta, sumant tots els vots rebuts per cada opció de resposta aplicant i sense aplicar les ponderacions.</p> <p>A més, podeu veure el nombre de participants i quants vots delegats es van emetre per a cada opció.</p> <p>⚠️ Aquests resultats no es mostren al públic.</p>"
+              by_type_and_weight_html: <p>The results shown below are broken down by membership type and weighted by the membership weights defined in the Corporate Governance settings.</p> <p>Each response option shows the number of votes it received from each membership type but no weights are applied in this view.</p> <p>For example, if option A received 2 votes from members with weight "3.0" and 1 vote from a member with weight "1.0", the results will show 2 votes from members with weight "3.0" and 1 vote from members with weight "1.0".</p> <p>⚠️ These results are not shown to the public.</p>
+              normal_count_html: "<p>These results are calculated by counting each vote equally, regardless of the membership weight of the participant that cast it.</p> <p>⚠️ These results are not shown to the public.</p>"
+              sum_of_weights_html: <p>The results shown below are weighted by the membership weights defined in the Corporate Governance settings.</p> <p>Each vote is multiplied by the weight of the member who cast it.</p> <p>For example, if a member with weight "3.0" votes for option A, and a member with weight "1.0" votes for option B, the results will show 3 votes for option A and 1 vote for option B.</p> <p><strong>⚠️ These are the results shown to the public.</strong></p>
+              title: How to interpret these results?
+              totals_html: "<p>The results shown below show the totals for each question, summing all the votes received by each response option applying the membership weights and not applying them.</p> <p>Also, you can see the number of participants and how many delegated votes were cast for each option.</p> <p>⚠️ These results are not shown to the public.</p>"
         delegation_buttons:
-          delegations_active: Teniu vots delegats.
-          per_question_delegations: 'Podeu votar en nom dels següents participants en aquesta elecció:'
-          vote_for: Vota en nom de %{name}
+          delegations_active: You have delegated votes.
+          per_question_delegations: 'You can vote on behalf of the following participants in this election:'
+          vote_for: Vote on behalf of %{name}
         votes:
-          delegated_voting: Esteu votant en nom de %{name}
-          edit_vote_for: Edita el vot per a %{name}
-          self_voting: Estàs votant per tu mateix (%{name}).
-          waiting_for: Continua votant en nom de %{name}
+          delegated_voting: You are voting on behalf of %{name}
+          edit_vote_for: Edit vote for %{name}
+          self_voting: You are voting for yourself (%{name}).
+          waiting_for: Continue voting on behalf of %{name}
       import_mailer:
         import:
           errors_present: Hi ha hagut errors en la importació
@@ -325,7 +329,8 @@ ca:
       sms_message: El teu codi de verificació és %{code}
       user_delegations:
         index:
-          vote_delegated: Pots votar en nom de %{name} en aquesta consulta
+          no_active_delegations: You have no active delegated votes at the moment.
+          vote_delegated_html: Vote delegated by <strong>%{name}</strong>
       verification:
         admin:
           members:
@@ -343,9 +348,9 @@ ca:
             new:
               authorize: Autoritza el meu compte
               missing_phone_error: Falta el telèfon de l'associat
-              no_resources_found: No s'han trobat recursos. Si creieu que es tracta d'un error, poseu-vos en contacte amb l'administrador (és possible que no hi hagi res actiu ara mateix).
+              no_resources_found: No resources found, If you think this is a mistake, please contact the administrator (it is possible that there is nothing active right now).
               not_in_census: Ho sentim, però no pots estar autoritzat perquè el teu correu electrònic no està al cens. Poseu-vos en contacte amb l'administrador si creieu que es tracta d'un error.
-              participate_in: 'Aquesta autorització us permet participar en les consultes següents: %{consultations}'
+              participate_in: 'This authorization allows you to participate in the following resources:'
               phone_warning: Aquest número de telèfon ha estat importat per l'administrador. Si us plau, poseu-vos en contacte si no és correcte.
               send_code: Envia el codi de verificació
               title: Autoritza amb el Verificador de Governança societària
@@ -360,19 +365,19 @@ ca:
         delegations_verifier:
           help:
             - 
-              - cens.
+              - census.
       delegations_verifier:
         explanation: Els usuaris verificats per aquest mètode poden delegar els seus vots a altres usuaris
         fields:
           phone: Número de telèfon
           setting: Setting
-          setting_ids: Configuració
+          setting_ids: Settings
         name: Governança societària
     elections:
       censuses:
         action_delegator_census:
-          authorizer_handler_admin_callout_html: Trieu el mètode d'autorització "Governança societària" si voleu utilitzar la llista de participants del grup de configuració escollit per validar qui pot votar.<br> També podeu utilitzar un altre mètode d'autorització si la vostra font de cens és externa o si no voleu utilitzar cap cens (i tothom registrat pot votar).
-          label: Cens de Governança societària
+          authorizer_handler_admin_callout_html: Choose the "Corporate Governance" authorization method if you want to use the participants list from the chosen setting group to validate who can vote.<br> You can also use another authorization method if your source of census is external or if you don't want to use a census at all (and everyone registered can vote).
+          label: Corporate Governance census
     verifications:
       authorizations:
         first_login:
