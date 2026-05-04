@@ -57,7 +57,7 @@ shared_examples "voting in a per question election" do
   end
 
   context "when delegate has voted for delegated user" do
-    let!(:next_question) { create(:election_question, :voting_enabled, :with_response_options, election:) }
+    let!(:next_question) { create(:election_question, :voting_enabled, :with_response_options, skip_injection: true, election:) }
     let!(:vote1) { create(:election_vote, question: current_question, response_option: current_question.response_options.first, voter_uid: user.to_global_id.to_s) }
     let!(:vote2) { create(:election_vote, question: next_question, response_option: next_question.response_options.first, voter_uid: user.to_global_id.to_s) }
 
@@ -79,56 +79,55 @@ shared_examples "voting in a normal election" do
     expect(page).to have_content("You have delegated votes.")
     expect(page).to have_content("Vote on behalf of #{user.name}")
 
+    # First vote — for self
     click_on "Vote"
-
-    first("input[value=\"#{response_option1.id}\"]").click
+    choose translated_attribute(response_option1.body)
     click_on "Next"
-    sleep 0.1
-    first('input[type="radio"], input[type="checkbox"]').click
+    check translated_attribute(next_question.response_options.first.body)
     click_on "Next"
     click_on "Cast vote"
-
     expect(page).to have_content("Your vote has been successfully cast")
     click_on "Exit the voting booth"
-
     expect(page).to have_content("You have already voted.")
     expect(last_vote(delegate_user).response_option).to eq(response_option1)
 
+    # First vote — on behalf of granter
     click_on "Vote on behalf of #{user.name}"
     expect(page).to have_content("You are voting on behalf of #{user.name}")
-
-    first("input[value=\"#{response_option2.id}\"]").click
+    choose translated_attribute(response_option2.body)
     click_on "Next"
-    sleep 0.1
-    first('input[type="radio"], input[type="checkbox"]').click
+    check translated_attribute(next_question.response_options.first.body)
     click_on "Next"
     click_on "Cast vote"
-
     expect(page).to have_content("Your vote has been successfully cast")
     click_on "Exit the voting booth"
     expect(page).to have_content("You have already voted.")
-
     expect(last_vote(user).response_option.reload).to eq(response_option2)
 
-    click_on "Vote"
-    first("input[value=\"#{response_option2.id}\"]").click
+    # Edit own vote — change Q1 only, leave Q2 as is
+    click_on "Edit vote"
+    expect(find("input[value='#{response_option1.id}']")).to be_checked
+    choose translated_attribute(response_option2.body)
     click_on "Next"
-    sleep 0.1
+    expect(find("input[value='#{next_question.response_options.first.id}']")).to be_checked
     click_on "Next"
     click_on "Cast vote"
+    expect(page).to have_content("Your vote has been successfully cast")
     click_on "Exit the voting booth"
-
     expect(last_vote(delegate_user).reload.response_option).to eq(response_option2)
 
+    # Edit vote on behalf of granter — change Q1 only, leave Q2 as is
     click_on "Vote on behalf of #{user.name}"
-    first("input[value=\"#{response_option1.id}\"]").click
+    expect(find("input[value='#{response_option2.id}']")).to be_checked
+    choose translated_attribute(response_option1.body)
     click_on "Next"
-    sleep 0.1
+    expect(find("input[value='#{next_question.response_options.first.id}']")).to be_checked
     click_on "Next"
     click_on "Cast vote"
+    expect(page).to have_content("Your vote has been successfully cast")
     click_on "Exit the voting booth"
-
     expect(last_vote(user).reload.response_option).to eq(response_option1)
+
     expect(last_vote(delegate_user).versions.first.whodunnit).to eq(delegate_user.id.to_s)
     expect(last_vote(delegate_user).versions.first.decidim_action_delegator_delegation_id).to be_blank
     expect(last_vote(user).versions.first.whodunnit).to eq(delegate_user.id.to_s)
@@ -140,5 +139,41 @@ shared_examples "no delegations available" do
   it "does not show delegation buttons" do
     expect(page).to have_no_css(".election__aside-voted")
     expect(page).to have_no_content("You have delegated votes.")
+  end
+end
+
+shared_examples "needs to verify identity" do |verifier_label = "Example authorization"|
+  it "does no allows to vote" do
+    expect(page).to have_css(".election__aside-voted")
+    expect(page).to have_content("You have delegated votes.")
+    expect(page).to have_content("You can vote on behalf of the following participants in this election:")
+
+    click_on "Vote"
+    expect(page).to have_content("Verify your identity")
+    expect(page).to have_content("Verify your identity\nVerify with #{verifier_label}")
+  end
+end
+
+shared_examples "needs to verify identity in normal election" do |verifier_label = "Example authorization"|
+  it "does no allows to vote" do
+    expect(page).to have_css(".election__aside-voted")
+    expect(page).to have_content("You have delegated votes.")
+    expect(page).to have_content("Vote on behalf of #{user.name}")
+
+    click_on "Vote"
+    expect(page).to have_content("Verify your identity")
+    expect(page).to have_content("Verify your identity\nVerify with #{verifier_label}")
+  end
+end
+
+shared_examples "cannot vote with current identity" do
+  it "does no allows to vote" do
+    expect(page).to have_css(".election__aside-voted")
+    expect(page).to have_content("You have delegated votes.")
+    expect(page).to have_content("You can vote on behalf of the following participants in this election:")
+
+    click_on "Vote"
+    expect(page).to have_content("You are not authorized to vote in this election")
+    expect(page).to have_content("Unfortunately, although you have all the required authorizations, some of them are not valid for this election.")
   end
 end

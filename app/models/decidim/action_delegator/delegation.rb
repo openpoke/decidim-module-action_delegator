@@ -20,23 +20,15 @@ module Decidim
       validate :granter_and_grantee_belongs_to_same_organization
       validate :granter_is_same_organization_as_context
 
-      delegate :resource, to: :setting
-
       before_destroy { |record| throw(:abort) if record.grantee_voted? }
 
       def grantee_voted?
         return false unless grantee && setting
 
         @grantee_voted ||= PaperTrail::Version.exists?(
-          whodunnit: grantee.id,
-          object_changes: { decidim_action_delegator_delegation_id: id }
+          whodunnit: grantee.id.to_s,
+          decidim_action_delegator_delegation_id: id
         )
-      end
-
-      # a safe way to get the user that represents the granter in this setting
-      # it might not exist if the granter is not in the census
-      def user
-        @user ||= setting.participants.find_by(decidim_user: granter)&.decidim_user
       end
 
       private

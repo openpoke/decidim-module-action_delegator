@@ -65,6 +65,9 @@ en:
           new:
             grantee: Grantee (to)
             granter: Granter (from)
+            granter_not_verified_warning: The granter is not required to be in the
+              participants list nor to be verified — they only need to exist as a
+              Decidim user. Make sure you trust the delegation you are about to create.
             save: Create
             select_member: Select member
         invite_participants:
@@ -393,7 +396,8 @@ en:
       sms_message: Your verification code is %{code}
       user_delegations:
         index:
-          vote_delegated: You can vote on behalf of %{name} in this consultation
+          no_active_delegations: You have no active delegated votes at the moment.
+          vote_delegated_html: Vote delegated by <strong>%{name}</strong>
       verification:
         admin:
           members:

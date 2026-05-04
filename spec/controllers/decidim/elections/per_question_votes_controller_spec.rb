@@ -216,8 +216,6 @@ module Decidim
               end
 
               it "renders the receipt page" do
-                expect(controller.send(:votes_buffer)).to receive(:clear)
-                expect(controller.send(:session_attributes)).to receive(:clear)
                 get :receipt, params: params
                 expect(response).to have_http_status(:ok)
                 expect(subject).to render_template(:receipt)

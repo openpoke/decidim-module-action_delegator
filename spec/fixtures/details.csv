@@ -1,2 +1,3 @@
-granter@example.org,grantee@example.org,"Participant already exists  with mismatched fields: granter@example.org,grantee@example.org
-"
+,,1.5,Phone cannot be blank
+user@example.org,,1.5,Phone cannot be blank
+user@example.org,6660008,member,Ponderation type not found

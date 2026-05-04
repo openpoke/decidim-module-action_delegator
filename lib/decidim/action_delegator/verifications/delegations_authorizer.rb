@@ -12,7 +12,7 @@ module Decidim
           elsif !authorization.granted?
             [:pending, { action: :resume }]
           elsif invalid_setting?
-            return [:unauthorized, { extra_explanation: extra_explanations }]
+            [:unauthorized, { extra_explanation: extra_explanations }]
           else
             [:ok, {}]
           end

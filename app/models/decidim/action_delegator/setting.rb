@@ -48,6 +48,10 @@ module Decidim
       def presenter
         Decidim::ActionDelegator::SettingPresenter.new(self)
       end
+
+      def elections
+        @elections ||= SettingElections.new(self).query
+      end
     end
   end
 end

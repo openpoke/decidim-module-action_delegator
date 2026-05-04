@@ -40,10 +40,10 @@ describe "Delegated voting in elections", versioning: true do
     }
   end
 
-  let!(:current_question) { create(:election_question, :voting_enabled, question_type: "single_option", election:) }
+  let!(:current_question) { create(:election_question, :voting_enabled, skip_injection: true, question_type: "single_option", election:) }
   let!(:response_option1) { create(:election_response_option, question: current_question, body: { en: "Response 1" }) }
   let!(:response_option2) { create(:election_response_option, question: current_question, body: { en: "Response 2" }) }
-  let!(:next_question) { create(:election_question, :with_response_options, election:) }
+  let!(:next_question) { create(:election_question, :with_response_options, skip_injection: true, election:) }
   let!(:authorization) { create(:authorization, :granted, user: delegate_user, name: "delegations_verifier", metadata:) }
   let(:metadata) { {} }
 
@@ -66,9 +66,24 @@ describe "Delegated voting in elections", versioning: true do
       visit election_path
     end
 
-    it_behaves_like "voting in a per question election"
+    context "with Registered Participants Census + Corporate Governance Verifier" do
+      it_behaves_like "voting in a per question election"
 
-    context "when census manifest is action_delegator_census" do
+      context "when granter is not in participants" do
+        let!(:user_participant) { nil }
+
+        it_behaves_like "voting in a per question election"
+      end
+
+      context "when grantee is not in participants" do
+        let!(:delegate_participant) { nil }
+        let!(:authorization) { nil }
+
+        it_behaves_like "needs to verify identity", "Corporate Governance"
+      end
+    end
+
+    context "with Corporate Governance Census + Corporate Governance Verifier" do
       let(:census_manifest) { "action_delegator_census" }
       let(:census_settings) do
         {
@@ -78,9 +93,22 @@ describe "Delegated voting in elections", versioning: true do
       end
 
       it_behaves_like "voting in a per question election"
+
+      context "when granter is not in participants" do
+        let!(:user_participant) { nil }
+
+        it_behaves_like "voting in a per question election"
+      end
+
+      context "when grantee is not in participants" do
+        let!(:delegate_participant) { nil }
+        let!(:authorization) { nil }
+
+        it_behaves_like "needs to verify identity", "Corporate Governance"
+      end
     end
 
-    context "when using another verifier" do
+    context "with Corporate Governance Census + another verifier" do
       let(:census_manifest) { "action_delegator_census" }
       let(:census_settings) do
         {
@@ -89,25 +117,25 @@ describe "Delegated voting in elections", versioning: true do
         }
       end
 
-      it "does no allows to vote" do
-        expect(page).to have_css(".election__aside-voted")
-        expect(page).to have_content("You have delegated votes.")
-        expect(page).to have_content("You can vote on behalf of the following participants in this election:")
-
-        click_on "Vote"
-        expect(page).to have_content("Verify your identity")
-        expect(page).to have_content("Verify your identity\nVerify with Example authorization")
+      context "when grantee has not yet verified with the other verifier" do
+        it_behaves_like "needs to verify identity"
       end
 
-      context "when authorization is granted" do
+      context "when grantee has verified with the other verifier" do
         let(:authorization) { create(:authorization, :granted, user: delegate_user, name: "dummy_authorization_handler") }
 
         it_behaves_like "voting in a per question election"
+
+        context "when granter is not in participants" do
+          let!(:user_participant) { nil }
+
+          it_behaves_like "voting in a per question election"
+        end
       end
     end
   end
 
-  context "when election is normal (not per_question) type" do
+  context "when election is normal (real_time) type" do
     let!(:election) do
       create(
         :election,
@@ -120,47 +148,73 @@ describe "Delegated voting in elections", versioning: true do
       )
     end
 
-    context "when delegate user visits election page" do
-      before do
-        login_as delegate_user, scope: :user
-        visit election_path
-      end
+    before do
+      login_as delegate_user, scope: :user
+      visit election_path
+    end
 
+    context "with Registered Participants Census + Corporate Governance Verifier" do
       it_behaves_like "voting in a normal election"
 
-      context "when census manifest is action_delegator_census" do
-        let(:census_manifest) { "action_delegator_census" }
-        let(:census_settings) do
-          {
-            "setting_id" => setting.id.to_s,
-            "authorization_handlers" => { "delegations_verifier" => { "options" => {} } }
-          }
-        end
+      context "when granter is not in participants" do
+        let!(:user_participant) { nil }
 
         it_behaves_like "voting in a normal election"
       end
 
-      context "when using another verifier" do
-        let(:census_manifest) { "action_delegator_census" }
-        let(:census_settings) do
-          {
-            "setting_id" => setting.id.to_s,
-            "authorization_handlers" => { "dummy_authorization_handler" => { "options" => {} } }
-          }
-        end
+      context "when grantee is not in participants" do
+        let!(:delegate_participant) { nil }
+        let!(:authorization) { nil }
 
-        it "does no allows to vote" do
-          expect(page).to have_css(".election__aside-voted")
-          expect(page).to have_content("You have delegated votes.")
-          expect(page).to have_content("Vote on behalf of #{user.name}")
+        it_behaves_like "needs to verify identity in normal election", "Corporate Governance"
+      end
+    end
 
-          click_on "Vote"
-          expect(page).to have_content("Verify your identity")
-          expect(page).to have_content("Verify your identity\nVerify with Example authorization")
-        end
+    context "with Corporate Governance Census + Corporate Governance Verifier" do
+      let(:census_manifest) { "action_delegator_census" }
+      let(:census_settings) do
+        {
+          "setting_id" => setting.id.to_s,
+          "authorization_handlers" => { "delegations_verifier" => { "options" => {} } }
+        }
+      end
 
-        context "when authorization is granted" do
-          let(:authorization) { create(:authorization, :granted, user: delegate_user, name: "dummy_authorization_handler") }
+      it_behaves_like "voting in a normal election"
+
+      context "when granter is not in participants" do
+        let!(:user_participant) { nil }
+
+        it_behaves_like "voting in a normal election"
+      end
+
+      context "when grantee is not in participants" do
+        let!(:delegate_participant) { nil }
+        let!(:authorization) { nil }
+
+        it_behaves_like "needs to verify identity in normal election", "Corporate Governance"
+      end
+    end
+
+    context "with Corporate Governance Census + another verifier" do
+      let(:census_manifest) { "action_delegator_census" }
+      let(:census_settings) do
+        {
+          "setting_id" => setting.id.to_s,
+          "authorization_handlers" => { "dummy_authorization_handler" => { "options" => {} } }
+        }
+      end
+
+      context "when grantee has not yet verified with the other verifier" do
+        it_behaves_like "needs to verify identity in normal election"
+      end
+
+      context "when grantee has verified with the other verifier" do
+        let(:authorization) { create(:authorization, :granted, user: delegate_user, name: "dummy_authorization_handler") }
+
+        it_behaves_like "voting in a normal election"
+
+        context "when granter is not in participants" do
+          let!(:user_participant) { nil }
 
           it_behaves_like "voting in a normal election"
         end

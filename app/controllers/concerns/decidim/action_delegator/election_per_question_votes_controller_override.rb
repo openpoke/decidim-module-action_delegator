@@ -13,7 +13,7 @@ module Decidim
         alias_method :original_next_vote_step_action, :next_vote_step_action
 
         # rubocop:disable Rails/LexicallyScopedActionFilter
-        prepend_before_action :load_delegations
+        prepend_before_action :load_current_delegation
 
         before_action :set_delegation_messages, except: [:waiting, :receipt]
 

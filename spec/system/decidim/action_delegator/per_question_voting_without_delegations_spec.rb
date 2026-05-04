@@ -7,8 +7,8 @@ describe "Per question voting without delegations" do
   let(:participatory_process) { create(:participatory_process, organization:) }
   let(:component) { create(:elections_component, participatory_space: participatory_process) }
   let!(:election) { create(:election, :published, :ongoing, :with_token_csv_census, :per_question, component:) }
-  let!(:question1) { create(:election_question, :with_response_options, :voting_enabled, question_type: "single_option", election:, position: 1) }
-  let!(:question2) { create(:election_question, :with_response_options, election:, position: 2) }
+  let!(:question1) { create(:election_question, :with_response_options, :voting_enabled, skip_injection: true, question_type: "single_option", election:, position: 1) }
+  let!(:question2) { create(:election_question, :with_response_options, skip_injection: true, election:, position: 2) }
   let(:voter) { election.voters.first }
   let(:email) { voter.data["email"] }
   let(:token) { voter.data["token"] }

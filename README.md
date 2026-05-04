@@ -66,6 +66,61 @@ Depending on your Decidim version, choose the corresponding Action Delegator ver
 | 0.2     | 0.23.x                      |
 | 0.1     | 0.22.0                      |
 
+## Usage
+
+This module works by providing a verification method (or authorization) and a user manager module that allows to create weighted votes, voters censuses, and vote delegations.
+
+All of these configuration depend on a so called "setting", many of the can be created at the same time. But only one can be active at a time when using the same verification methods.
+
+
+### Verification method
+
+The verification method is called "Corporate Governance" (although the name might change under some circumstances).
+
+Verification works by comparing if the user belongs to a predefined list of users for a particular setting. This comparison can be done via the email of the user, a phone number by checking an SMS or both.
+
+So, if the user is in a list, then the verification will be granted.
+
+As per the other features, weights and delegations, they only currently work with the Elections module.
+
+### Weights in elections
+
+Weights (or ponderations) work by assigning different multipliers to the vote value depending on the user. 
+
+For this to work, you need to define the different type of weights in each setting and also the user list and which weight type is assigned to every user.
+
+So, if you want to use this feature you need to make use of the participants list in the setting.
+
+### Delegations in elections
+
+Delegations are the action of letting someone else vote in your name. The way this works in the elections module is by effectively creating a vote for the user that has granted the delegation when the user benefiting from the delegation is voting. The traceability is performed through the Papertrail (Decidim's ActionLog) mechanism that stores the original user performing such action. So, at all effects, the vote is stored as it was performed by the original user.
+
+Only the **grantee** (the user who casts the vote on someone else's behalf) needs to fulfil the verification configured for the election. The **granter** (the user who delegates) only needs to exist as a Decidim user — they are not required to be in the participants list nor to pass any verification. This applies to all combinations of census and verifier.
+
+### Using settings in elections
+
+There's two ways to configure a setting in the elections module:
+
+1. By using the "Registered participants census" and selecting "Corporate Governance" as the verification method.
+2. By using the built-in "Corporate Governance Census" directly.
+
+#### Using "Registered participants census"
+
+To use this method, just select the "Registered participants census" and then "Corporate Governance" as the verification method (you can use more than one method).
+
+This method will force you to use the participants as the "source of truth" for the election. So, a user that **is not** in your participant's list for the specified setting won't be allowed to vote on their own behalf.
+
+Note that this applies to the user casting the vote (including a grantee voting on someone else's behalf). The granter of a delegation is **not** required to be in the participants list (see "Delegations in elections" above).
+
+This method allows you to use all the features of the module — delegations and weights as well.
+
+#### Using "Corporate Governance Census"
+
+This second method is for situations when you need delegations but don't need to use weights or to verify users through the participants list.
+
+To use this method, select "Corporate Governance Census" as the election's census. Then you can optionally choose which verification methods you want to use. If you choose the "Corporate Governance" method, the participants list is used as the verifier for the user casting the vote (same as in "Registered participants census" above) — but the granter of a delegation is still not required to be in the list.
+
+If you use another verification method (or none at all), then the participant's list is not used to verify identity at all. Delegations still work, weights only apply to users that are listed as participants with a ponderation; everybody else votes with the default weight of 1. Note that the participants list can be empty in this case.
 
 ## Configuration
 
@@ -134,15 +189,19 @@ For instance, this file should work for Sidekiq:
 > Example:
 > ![Consultation migration to elections](docs/consultations_import.png)
 
-## Usage
+## Feature overview
 
-ActionDelegator does not provides new Components or Participatory Spaces but enhances some functionalities in them.
+This section complements the usage details above with a quick feature summary.
 
-Currently it is designed to work with the Elections module.
+ActionDelegator does not provide new Components or Participatory Spaces but enhances existing ones.
 
-- On one side, provides a custom verification method that allows admins to ensure only those in specific census (that can be uploaded via CSV) are able to vote. This census can be different for each election. This is optional and doesn't affect weighted voting or delegations.
+Currently it integrates with the Elections module to add three key features:
 
-- On the other, each set of census can work with a different set of weights and delegation:
+- **Voter verification**: Provides a custom verification method that allows admins to restrict voting to users in a predefined census (uploaded via CSV). Each election can use a different census. This is optional and independent from weighted voting and delegations.
+
+- **Weighted votes**: Each census can assign different weight multipliers to participants, allowing votes to be counted with varying influence based on membership type.
+
+- **Vote delegation**: Participants can delegate their voting rights to others, with full traceability through audit logs.
 
 ![Settings & census configuration](docs/census_conf.png)
 
@@ -150,37 +209,67 @@ Currently it is designed to work with the Elections module.
 
 ![Action Delegator census in elections](docs/elections_census.png)
 
-- In elections, results are expanded to details ponderations (if exist):
+- In elections, results are expanded with ponderation breakdowns (if configured):
 
 ![Expanded results as sum of weights](docs/sum_of_weights.png)
 
+#### Architecture Overview
+
+Here's how the three features interact:
+
+```mermaid
+graph TD
+    A[Elections Component] --> B{Census Type}
+    B -->|Registered Participants| C[Corporate Governance Verification]
+    B -->|Corporate Governance Census| D[Direct Census Configuration]
+    
+    C --> E[Voter Verification]
+    D --> E
+    
+    E --> F{Features}
+    F -->|Weights| G[Weighted Votes]
+    F -->|Delegations| H[Vote Delegation]
+    F -->|Both| I[Weighted Delegated Votes]
+    
+    G --> J[Vote Cast]
+    H --> J
+    I --> J
+    
+    J --> K[Results Aggregation]
+    K --> L[Display Results with Audit Trail]
+```
+
 ### Extended elections results
 
-This gem modifies the elections's results page (if installed) adding two extra columns
-`Membership type` and `Membership weight`. This is based on the census uploaded for each election and the weights assigned to each participant.
+This gem modifies the election results page to add two extra columns:
+`Membership type` and `Membership weight`. These are determined by the census and weight assignments for each participant.
 
-### Authorization verfifier and SMS gateway setup
+### Authorization verifier and SMS gateway setup
 
-The integrated authorization method is called "Delegations verifier". When an election uses the Corporate Verifier authorization, it will check if the user is authorized and present in the census before letting him vote.
+The integrated authorization method is called "Delegations verifier". When an election uses the Corporate Verifier authorization, it validates whether the user is authorized and present in the census before allowing them to vote.
 
-It can be used in 3 modes:
+It supports three verification modes:
 
-1. **Email only**: This means that the participants list relies on the email only. No SMS gateway integration is needed. The user is verified if the email is found in the census.
-2. **Email and phone**: This means that the participants list relies on the email and the phone number. An SMS gateway integration is needed. The user is verified if the email is found in the census and then sending a verification code to the phone number that the user cannot edit.
-3. **Phone only**: This means that the participants list relies on the phone number only. An SMS gateway integration is needed. The user is verified by a form where a phone number must be introduced. The user can edit the phone number and the verification code is sent to the new phone number if that phone number is found in the participant's list. This method is useful to avoid to relay on keeping track of email changes for user's database.
+1. **Email only**: Verifies users by email. No SMS gateway required. The user is authorized if their email appears in the census.
+2. **Email and phone**: Verifies users by email, then sends a verification code to their phone number (which cannot be changed by the user). Requires SMS gateway integration.
+3. **Phone only**: Verifies users by phone number. The user enters their phone, and the system sends a verification code. Users can modify their phone number if it's not found in the census, allowing updates before verification. This mode is useful when email addresses change frequently.
 
 
-In order to use this new sms gateway you need to configure your application. It can work on two modes,
+To configure an SMS gateway for your application, you have two options:
 
-The first is to use the same built-in SMS gateway used in Decidim: In `config/initializers/decidim.rb` set:
+**Option 1: Use Decidim's built-in SMS gateway**
+
+In `config/initializers/decidim.rb`, set:
 
 ```ruby
 config.sms_gateway_service = 'Decidim::ActionDelegator::SmsGateway'
 ```
 
-> Note that if you use this method you will be able to use the built-in SMS verification method in Decidim.
+> Note that if you use this method you will also be able to use Decidim's built-in SMS verification methods.
 
-The other is to use a gateway service specific only for this plugin, this allows you to separate gateways or prevent decidim to allow admins to use the built in SMS verification method. This comes preinstalled and only requires you to setup some ENV variables.
+**Option 2: Use a dedicated SMS gateway**
+
+Alternatively, use a gateway service dedicated only to this plugin. This approach lets you separate gateways or prevent Decidim admins from using the built-in SMS verification method. The plugin comes with this option preinstalled and requires only ENV variable setup.
 
 #### Som Connexió
 
@@ -196,7 +285,7 @@ SMS_SENDER= # (optional) Name or phone number used as sender of the SMS
 
 #### Twilio
 
-Alternatively, you can use Twilio as provider by specifying the folowing ENV vars
+Alternatively, you can use Twilio as your SMS provider by specifying the following ENV vars
 
 ```bash
 TWILIO_ACCOUNT_SID # SID from your Twilio account
@@ -206,7 +295,7 @@ SMS_SENDER # Twilio's phone number. You need to purchase one there with SMS capa
 
 #### Custom SMS gateways
 
-It is also possible to use your own Sms Gateway. In an new initializer (ie `config/initializers/action_delegator.rb`) set:
+It is also possible to use your own SMS gateway. In a new initializer (e.g., `config/initializers/action_delegator.rb`), set:
 
 ```ruby
 Decidim::ActionDelegator.configure do |config|
@@ -221,7 +310,7 @@ There are some other configuration options available, for more info check [actio
 ```ruby
 Decidim::ActionDelegator.configure do |config|
   # this is the SmsGateway provided by this module
-  # Note that it will be ignored if you provide your own SmsGateway in Decidm.sms_gateway_service
+  # Note that it will be ignored if you provide your own SmsGateway in Decidim.sms_gateway_service
   config.sms_gateway_service = "Decidim::ActionDelegator::SmsGateway"
 
   # The default expiration time for the integrated authorization
@@ -232,10 +321,9 @@ Decidim::ActionDelegator.configure do |config|
   # in the platform when uploading a census (inviting users without permission can be a GDPR offense).
   config.allow_to_invite_users = true
 
-  # used for comparing phone numbers from a census list and the ones introduced by the user
-  # the phone number will be normalized before comparing it so, for instance,
-  # if you have a census list with  +34 666 666 666 and the user introduces 0034666666666 or 666666666, they will be considered the same
-  # can be empty or null if yo don't want to check different combinations of prefixes
+  # Used for comparing phone numbers from the census list with those entered by users.
+  # Phone numbers are normalized before comparison, so +34 666 666 666, 0034666666666, and 666666666 are treated as equivalent.
+  # Leave empty or null to disable prefix normalization.
   config.phone_prefixes = %w(+34 0034 34)
 
   # The regex for validating phone numbers
@@ -262,10 +350,7 @@ following in your `versions` table:
  2016 | Decidim::Election::Vote |     138 | destroy | 1         |                        23
 ```
 
-Note that the `item_type` is `Decidim::Election::Vote` and `whoddunit`
-refers to a `Decidim::User` record. This enables joining `versions` and
-`decidim_users` tables although this doesn't follow Decidim's convention of
-using gids, such as `gid://decidim/Decidim::User/1`.
+Note that `item_type` is `Decidim::Election::Vote` and `whodunnit` refers to a `Decidim::User` record. This enables joining `versions` and `decidim_users` tables, though it differs from Decidim's standard convention of using global IDs (gids) like `gid://decidim/Decidim::User/1`.
 
 You can use `Decidim::ActionDelegator::ElectionsDelegatedVotesVersions` query object for
 that matter:
