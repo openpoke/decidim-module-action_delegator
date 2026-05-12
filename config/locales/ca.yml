@@ -16,7 +16,7 @@ ca:
         name_help: Tipus d'associat
       setting:
         active: Active
-        max_grants: Màxim nombre de delegacions que pot rebre una participant
+        max_grants: Maximum number of vote delegations a participant can receive
         phone_freezed: Usa el número de telèfon del cens. No permet als participants editar-lo.
         verify_with_sms: Verifica amb SMS
     errors:
@@ -53,9 +53,9 @@ ca:
               csv_import: Importa un arxiu CSV
               new_delegation: Nou participant
             created_at: Creat el
-            description_html: Aquestes són les delegacions actuals per a aquesta consulta
+            description_html: These are the current delegations for this consultation
             grantee: Receptora (a)
-            grantee_voted: S'ha utilitzat la delegació?
+            grantee_voted: Has the grantee voted on behalf of the granter?
             granter: Atorgant
           new:
             grantee: Receptora (a)
@@ -96,7 +96,7 @@ ca:
               both: correu electrònic i número de telèfon mòbil
               email: correu electrònic
               phone: número de telèfon
-            describe: 'Tingueu en compte que també és possible importar pesos utilitzant el nom de la taula de ponderació en comptes del número de pes, per exemple:'
+            describe: 'Note that it''s also possible to import weights using the name on the ponderation table instead of the weight number, for instance:'
             import: Importar
             required_fields: 'Camps obligatoris: %{authorization_method}'
             title: Importar participants
@@ -155,16 +155,16 @@ ca:
             success: Participant desada correctament
         permissions:
           sync:
-            started: La sincronització dels participants ha començat. Espereu uns minuts i actualitzeu aquesta pàgina.
+            started: Participants synchronization has started. Please wait a few minutes and refresh this page.
           update:
             error: S'ha produït un error en actualitzar els permisos
             success: Permisos actualitzats correctament
         ponderations:
           create:
-            error: S'ha produït un error en crear la ponderació
+            error: There has been an error creating the ponderation
             success: Ponderació creada correctament
           destroy:
-            error: S'ha produït un error en eliminar la ponderació
+            error: There has been an error removing the ponderation
             success: Ponderació eliminada correctament
           edit:
             save: Desa
@@ -183,7 +183,7 @@ ca:
             save: Crea
             title: Nou tipus d'afiliació
           update:
-            error: S'ha produït un error en actualitzar la ponderació
+            error: There has been an error updating the ponderation
             success: Ponderació actualitzada correctament
         settings:
           authorization_method:
@@ -299,7 +299,7 @@ ca:
           waiting_for: Continue voting on behalf of %{name}
       import_mailer:
         import:
-          errors_present: Hi ha hagut errors en la importació
+          errors_present: There were errors in the import
           errors_title: "<b>S'han trobat:</b> %{errors_count} errors"
           greeting: Hola %{name},
           info_messages: Motiu d'omissió
@@ -344,7 +344,7 @@ ca:
               destroy: Reenvia el codi de verificació
               resend: No heu rebut el codi de verificació?
               send: Confirmar
-              title: Introduïeix el codi de verificació que has rebut
+              title: Enter the verification code you received
             new:
               authorize: Autoritza el meu compte
               missing_phone_error: Falta el telèfon de l'associat
