@@ -16,7 +16,7 @@ es:
         name_help: Tipo de miembro
       setting:
         active: Active
-        max_grants: Número máximo de delegaciones de voto que una participante puede recibir
+        max_grants: Maximum number of vote delegations a participant can receive
         phone_freezed: Utilice el número de teléfono del censo. No permita que los participantes lo editen.
         verify_with_sms: Verificar con SMS
     errors:
@@ -53,9 +53,9 @@ es:
               csv_import: Importar un fichero CSV
               new_delegation: Nueva participante
             created_at: Creado el
-            description_html: Estas son las delegaciones actuales para esta consulta
+            description_html: These are the current delegations for this consultation
             grantee: Receptora (a)
-            grantee_voted: '¿Se ha utilizado la delegación?'
+            grantee_voted: Has the grantee voted on behalf of the granter?
             granter: Otorgante
           new:
             grantee: Beneficiario
@@ -96,7 +96,7 @@ es:
               both: correo electrónico y número de teléfono
               email: correo electrónico
               phone: número de teléfono
-            describe: 'Tenga en cuenta que también es posible importar pesos usando el nombre en la tabla de ponderación en lugar del número de peso, por ejemplo:'
+            describe: 'Note that it''s also possible to import weights using the name on the ponderation table instead of the weight number, for instance:'
             import: Importar
             required_fields: 'Campos requeridos: %{authorization_method}'
             title: Importar participantes
@@ -155,16 +155,16 @@ es:
             success: Participantes guardados con éxito
         permissions:
           sync:
-            started: La sincronización de participantes ha comenzado. Por favor espere unos minutos y actualice esta página.
+            started: Participants synchronization has started. Please wait a few minutes and refresh this page.
           update:
             error: Se ha producido un error al actualizar los permisos
             success: Permisos correctamente actualizados.
         ponderations:
           create:
-            error: Se ha producido un error al crear la ponderación
+            error: There has been an error creating the ponderation
             success: Ponderación creada correctamente
           destroy:
-            error: Se ha producido un error al eliminar la ponderación
+            error: There has been an error removing the ponderation
             success: Ponderación destruida correctamente
           edit:
             save: Guardar
@@ -183,7 +183,7 @@ es:
             save: Crear
             title: Nuevo tipo de ponderación
           update:
-            error: Se ha producido un error al actualizar la ponderación
+            error: There has been an error updating the ponderation
             success: Ponderación actualizada correctamente
         settings:
           authorization_method:
@@ -299,7 +299,7 @@ es:
           waiting_for: Continue voting on behalf of %{name}
       import_mailer:
         import:
-          errors_present: Se han producido errores durante la importación
+          errors_present: There were errors in the import
           errors_title: "<b>Se han encontrado:</b> %{errors_count} errores"
           greeting: Hola %{name},
           info_messages: Motivo de omisión
@@ -344,7 +344,7 @@ es:
               destroy: Reiniciar código de verificación
               resend: '¿No has recibido el código de verificación?'
               send: Confirmar
-              title: Introduce el código de verificación que recibiste
+              title: Enter the verification code you received
             new:
               authorize: Autorizar mi cuenta
               missing_phone_error: Falta el teléfono de miembro
