@@ -103,8 +103,36 @@ module Decidim
         # Use preloaded votes association
         votes = question.votes
         unweighted_votes = votes.size
-        weighted_votes = question_totals[question.id].to_f.round
+        weighted_votes = question_totals[question.id].to_f.round(1)
         # Note that this works because votes cannot be edited, only created or destroyed. So only one version will exist per vote (the creation event)
+        delegated_votes = votes.select { |vote| vote.versions.any? { |v| v.decidim_action_delegator_delegation_id.present? } }.size
+        participants = votes.map(&:voter_uid).uniq.size
+
+        {
+          participants: participants,
+          participants_text: I18n.t("participants_count", scope: "decidim.action_delegator.elections.admin.dashboard.questions_table", count: participants),
+          unweighted_votes: unweighted_votes,
+          unweighted_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: unweighted_votes),
+          weighted_votes: weighted_votes,
+          weighted_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: weighted_votes),
+          delegated_votes: delegated_votes,
+          delegated_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: delegated_votes)
+        }
+      end
+
+      def election_stats(election)
+        # Use preloaded votes association
+        # Note that this works because votes cannot be edited, only created or destroyed. So only one version will exist per vote (the creation event)
+        votes = election.votes
+        unweighted_votes = votes.size
+        weighted_votes = election.questions.sum do |question|
+          question_totals = {}
+          ElectionsQuestionWeightedResponses.new(question, current_resource_settings).query.each do |option|
+            question_totals[question.id] ||= 0.0
+            question_totals[question.id] += option.weighted_votes_total.to_f
+          end
+          question_totals[question.id].to_f.round(1)
+        end
         delegated_votes = votes.select { |vote| vote.versions.any? { |v| v.decidim_action_delegator_delegation_id.present? } }.size
         participants = votes.map(&:voter_uid).uniq.size
 

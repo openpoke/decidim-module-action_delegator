@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const questionWeightedCountTexts = () => document.querySelectorAll("[data-question-weighted-count-text]");
   const questionDelegatedCountTexts = () => document.querySelectorAll("[data-question-delegated-count-text]");
   const questionParticipantsCountTexts = () => document.querySelectorAll("[data-question-participants-count-text]");
+  const electionUnweightedCountTexts = () => document.querySelectorAll("[data-unweighted-count-text]");
+  const electionWeightedCountTexts = () => document.querySelectorAll("[data-weighted-count-text]");
+  const electionDelegatedCountTexts = () => document.querySelectorAll("[data-delegated-count-text]");
+  const electionParticipantsCountTexts = () => document.querySelectorAll("[data-participants-count-text]");
 
   const animateText = (element, value) => {
     if (element.textContent === value) {
@@ -144,6 +148,26 @@ document.addEventListener("DOMContentLoaded", () => {
         const question = data.questions.find((item) => item.id === parseInt(questionId, 10));
         if (question && question.participants_text) {
           animateText(el, question.participants_text);
+        }
+      });
+      electionUnweightedCountTexts().forEach((el) => {
+        if (data.totals && data.totals.unweighted_votes_text) {
+          animateText(el, data.totals.unweighted_votes_text);
+        }
+      });
+      electionWeightedCountTexts().forEach((el) => {
+        if (data.totals && data.totals.weighted_votes_text) {
+          animateText(el, data.totals.weighted_votes_text);
+        }
+      });
+      electionDelegatedCountTexts().forEach((el) => {
+        if (data.totals && data.totals.delegated_votes_text) {
+          animateText(el, data.totals.delegated_votes_text);
+        }
+      });
+      electionParticipantsCountTexts().forEach((el) => {
+        if (data.totals && data.totals.participants_text) {
+          animateText(el, data.totals.participants_text);
         }
       });
 

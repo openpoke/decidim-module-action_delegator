@@ -11,6 +11,7 @@
       </tr>
       </thead>
       <tbody>
+          <% stats = election_stats(election) %>
         <% election_questions.each do |question| %>
           <% question_stats = elections_question_stats(question) %>
           <tr>
@@ -21,6 +22,13 @@
             <td data-question-participants-count-text="<%= question.id %>"><%= question_stats[:participants_text] %></td>
           </tr>
         <% end %>
+        <tr>
+          <td><strong><%= t("decidim.elections.admin.dashboard.questions_table.total") %></strong></td>
+          <td data-unweighted-count-text><strong><%= stats[:unweighted_votes_text] %></strong></td>
+          <td data-weighted-count-text><strong><%= stats[:weighted_votes_text] %></strong></td>
+          <td data-delegated-count-text><strong><%= stats[:delegated_votes_text] %></strong></td>
+          <td data-participants-count-text><strong><%= stats[:participants_text] %></strong></td>
+        </tr>
       </tbody>
     </table>
   </div>
