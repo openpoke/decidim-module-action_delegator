@@ -108,8 +108,8 @@ en:
               both: email and phone number
               email: email
               phone: phone number
-            describe: 'Note that it''s also possible to import weights using the
-              name on the ponderation table instead of the weight number, for instance:'
+            describe: 'Note that it''s also possible to import weights using the name
+              on the ponderation table instead of the weight number, for instance:'
             import: Import
             required_fields: 'Required fields: %{authorization_method}'
             title: Import participants
