@@ -16,7 +16,7 @@ cs:
         name_help: Typ členství
       setting:
         active: Aktivní
-        max_grants: Maximální počet delegací hlasů, které může uživatel obdržet
+        max_grants: Maximum number of vote delegations a participant can receive
         phone_freezed: Použít telefonní číslo ze seznamu obyvatel. Nedovolte účastníkům jej upravovat.
         verify_with_sms: Ověřit pomocí SMS
     errors:
@@ -53,9 +53,9 @@ cs:
               csv_import: Importovat přes csv
               new_delegation: Nový účastník
             created_at: Vytvořeno v
-            description_html: Toto jsou současné delegace pro tuto konzultaci
+            description_html: These are the current delegations for this consultation
             grantee: Příjemce
-            grantee_voted: Grantee has voted in behalf of granter?
+            grantee_voted: Has the grantee voted on behalf of the granter?
             granter: Delegující
           new:
             grantee: Příjemce
@@ -96,7 +96,7 @@ cs:
               both: e-mail a telefonní číslo
               email: e-mail
               phone: telefonní číslo
-            describe: 'Note that there''s also possible to import weights using the name on the ponderation table instead of the weight number, for instance:'
+            describe: 'Note that it''s also possible to import weights using the name on the ponderation table instead of the weight number, for instance:'
             import: Importovat
             required_fields: 'Vyžadovaná pole: %{authorization_method}'
             title: Import účastníků
@@ -155,16 +155,16 @@ cs:
             success: Účastníci úspěšně uloženi
         permissions:
           sync:
-            started: Participans synchronization has started. Please wait a few minutes and refresh this page.
+            started: Participants synchronization has started. Please wait a few minutes and refresh this page.
           update:
             error: There was a problem updating the permissions
             success: Oprávnění byla úspěšně aktualizována
         ponderations:
           create:
-            error: There's been and error creating the ponderation
+            error: There has been an error creating the ponderation
             success: New ponderation created successfully
           destroy:
-            error: There's been and error removing the ponderation
+            error: There has been an error removing the ponderation
             success: Ponderation destroyed successfully
           edit:
             save: Uložit
@@ -183,7 +183,7 @@ cs:
             save: Vytvořit
             title: New ponderation type
           update:
-            error: There's been and error updating the ponderation
+            error: There has been an error updating the ponderation
             success: Ponderation updated successfully
         settings:
           authorization_method:
@@ -301,7 +301,7 @@ cs:
           waiting_for: Continue voting on behalf of %{name}
       import_mailer:
         import:
-          errors_present: There were errors in the importation
+          errors_present: There were errors in the import
           errors_title: "<b>Found:</b> %{errors_count} errors"
           greeting: Dobrý den %{name},
           info_messages: Důvod přeskočení
@@ -346,7 +346,7 @@ cs:
               destroy: Resetovat ověřovací kód
               resend: Neobdrželi jste ověřovací kód?
               send: Potvrdit
-              title: Zadejte ověřovací kód, který vám přišel
+              title: Enter the verification code you received
             new:
               authorize: Autorizovat můj účet
               missing_phone_error: Chybějící členský telefon
