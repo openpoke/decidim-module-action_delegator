@@ -43,7 +43,7 @@ describe "delegations_verifier code verification" do
     end
 
     it "shows a form to the user to fill in the verification code" do
-      expect(page).to have_content("Introduce the verification code you received")
+      expect(page).to have_content("Enter the verification code you received")
     end
 
     context "and user verifies the code" do

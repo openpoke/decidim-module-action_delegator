@@ -6,39 +6,44 @@ describe Decidim::ActionDelegator::Permissions do
   subject { described_class.new(user, permission_action, context).permissions.allowed? }
 
   let(:permission_action) { Decidim::PermissionAction.new(**action) }
-  let(:context) { {} }
+  let(:context) { { question: question, delegation: delegation } }
 
   let(:organization) { create(:organization, available_authorizations: ["dummy_authorization_workflow"]) }
-  let(:consultation) { create(:consultation, :active, organization: organization) }
-  let(:question) { create(:question, consultation: consultation) }
-  let(:setting) { create(:setting, consultation: consultation) }
+  let(:setting) { create(:setting, organization: organization, active: true, skip_injection: true) }
   let(:granter) { create(:user, :confirmed, organization: organization) }
   let(:user) { create(:user, organization: organization) }
   let(:delegation) { create(:delegation, setting: setting, granter: granter, grantee: user) }
-
-  let(:permissions) { { "vote" => { "authorization_handlers" => { "dummy_authorization_workflow" => {} } } } }
+  let(:question) do
+    instance_double(
+      "Question",
+      can_be_voted_by?: can_be_voted_by,
+      can_be_unvoted_by?: can_be_unvoted_by
+    )
+  end
+  let(:can_be_voted_by) { true }
+  let(:can_be_unvoted_by) { true }
+  let(:authorized) { false }
 
   before do
-    question.build_resource_permission.update!(permissions: permissions)
+    allow_any_instance_of(described_class).to receive(:authorized?).and_return(authorized)
   end
 
   context "when voting a delegation" do
     let(:action) do
       { scope: :public, action: :vote_delegation, subject: :question }
     end
-    let(:context) { { question: question, delegation: delegation } }
 
     context "and the grantee is verified" do
-      before do
-        create(:authorization, name: "dummy_authorization_workflow", user: user, granted_at: Time.zone.now)
-      end
+      let(:authorized) { true }
 
-      context "and it wasn't voted yet" do
+      context "and it was not voted yet" do
+        let(:can_be_voted_by) { true }
+
         it { is_expected.to be(true) }
       end
 
       context "and it was already voted" do
-        before { create(:vote, author: granter, question: question) }
+        let(:can_be_voted_by) { false }
 
         it { is_expected.to be(false) }
       end
@@ -49,12 +54,9 @@ describe Decidim::ActionDelegator::Permissions do
     end
 
     context "and the user is not the grantee" do
+      let(:authorized) { true }
       let(:other_user) { create(:user, organization: organization) }
       let(:delegation) { create(:delegation, setting: setting, granter: granter, grantee: other_user) }
-
-      before do
-        Decidim::Authorization.create!(name: "dummy_authorization_workflow", decidim_user_id: other_user.id, granted_at: Time.zone.now)
-      end
 
       it { is_expected.to be(false) }
     end
@@ -64,21 +66,18 @@ describe Decidim::ActionDelegator::Permissions do
     let(:action) do
       { scope: :public, action: :unvote_delegation, subject: :question }
     end
-    let(:context) { { question: question, delegation: delegation } }
-
-    let!(:vote) { create(:vote, author: granter, question: question) }
 
     context "when the grantee is verified" do
-      before do
-        create(:authorization, name: "dummy_authorization_workflow", user: user, granted_at: Time.zone.now)
-      end
+      let(:authorized) { true }
 
       context "and it was already voted" do
+        let(:can_be_unvoted_by) { true }
+
         it { is_expected.to be(true) }
       end
 
-      context "and it wasn't voted yet" do
-        before { vote.destroy }
+      context "and it was not voted yet" do
+        let(:can_be_unvoted_by) { false }
 
         it { is_expected.to be(false) }
       end
@@ -89,12 +88,9 @@ describe Decidim::ActionDelegator::Permissions do
     end
 
     context "when the user is not the grantee" do
+      let(:authorized) { true }
       let(:other_user) { create(:user, organization: organization) }
       let(:delegation) { create(:delegation, setting: setting, granter: granter, grantee: other_user) }
-
-      before do
-        Decidim::Authorization.create!(name: "dummy_authorization_workflow", decidim_user_id: other_user.id, granted_at: Time.zone.now)
-      end
 
       it { is_expected.to be(false) }
     end

@@ -9,13 +9,12 @@ module Decidim::ActionDelegator::Verifications
     let(:context) do
       {
         current_user: user,
-        setting: setting
+        active_settings: Decidim::ActionDelegator::Setting.where(id: setting.id)
       }
     end
     let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier)) }
     let(:user) { create(:user, organization: organization) }
-    let(:consultation) { create(:consultation, organization: organization) }
-    let(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
+    let(:setting) { create(:setting, organization: organization, authorization_method: authorization_method, active: true, skip_injection: true) }
     let(:authorization_method) { :both }
     let(:attributes) do
       {
@@ -77,11 +76,11 @@ module Decidim::ActionDelegator::Verifications
         let(:context) do
           {
             current_user: user,
-            setting: nil
+            active_settings: Decidim::ActionDelegator::Setting.none
           }
         end
 
-        it { is_expected.to be_invalid }
+        it { is_expected.to be_valid }
       end
     end
   end

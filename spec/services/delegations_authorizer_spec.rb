@@ -7,17 +7,14 @@ module Decidim
     subject { authorizer }
 
     let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier)) }
-    let(:start_voting_date) { 1.day.ago }
-    let(:end_voting_date) { 1.day.from_now }
     let(:user) { create(:user, organization: organization) }
-    let(:consultation) { create(:consultation, organization: organization, start_voting_date: start_voting_date, end_voting_date: end_voting_date) }
-    let(:question) { create(:question, consultation: consultation) }
-    let(:component) { create(:component, permissions: permissions, organization: organization, participatory_space: consultation) }
+    let(:participatory_process) { create(:participatory_process, organization: organization) }
+    let(:component) { create(:elections_component, permissions: permissions, organization: organization, participatory_space: participatory_process) }
     let(:resource) { nil }
     let(:action) { "vote" }
     let(:permissions) { { action => permission } }
     let(:authorizer) { described_class.new(user, action, component, resource) }
-    let(:setting) { create(:setting) }
+    let(:setting) { create(:setting, organization:) }
     let(:email) { user.email }
     let(:phone) { "123456" }
     let(:authorization_method) { :email }
@@ -39,7 +36,7 @@ module Decidim
     end
 
     let(:options) { {} }
-    let(:explanations) { ["no_setting"] }
+    let(:explanations) { ["no_setting_html"] }
 
     shared_examples "unauthorized" do
       it "returns unauthorized" do
@@ -67,26 +64,18 @@ module Decidim
     end
 
     context "when there are settings" do
-      let!(:setting) { create(:setting, consultation: consultation, authorization_method: authorization_method) }
-      let(:explanations) { %w(not_in_census email) }
+      let!(:setting) { create(:setting, organization:, authorization_method: authorization_method, active: true, skip_injection: true) }
+      let(:options) { { "setting" => setting.id } }
+      let(:explanations) { %w(not_in_census_html email) }
       let!(:participants) { [create(:participant, email: email, phone: phone, setting: setting, decidim_user: decidim_user)] }
       let(:decidim_user) { create(:user, organization: organization) }
       let!(:ponderations) { create_list(:ponderation, 2, setting: setting) }
 
       it_behaves_like "authorized"
 
-      context "and is not the same consultation" do
-        let(:explanations) { ["no_setting"] }
-        let(:other_consultation) { create(:consultation, organization: organization) }
-        let(:component) { create(:component, permissions: permissions, organization: organization, participatory_space: other_consultation) }
-
-        it_behaves_like "unauthorized"
-      end
-
       context "and is in another participatory space" do
-        let(:other_consultation) { create(:consultation, organization: organization) }
         let(:participatory_process) { create(:participatory_process, organization: organization) }
-        let(:component) { create(:component, permissions: permissions, organization: organization, participatory_space: participatory_process) }
+        let(:component) { create(:elections_component, permissions: permissions, organization: organization, participatory_space: participatory_process) }
 
         it_behaves_like "authorized"
       end
@@ -99,10 +88,12 @@ module Decidim
 
       context "and user is not in the list of participants" do
         let(:email) { "other_email" }
+        let(:explanations) { %w(not_in_census_html email) }
 
         it_behaves_like "unauthorized"
 
         context "and decidim user is" do
+          let(:email) { user.email }
           let(:decidim_user) { user }
 
           it_behaves_like "authorized"
@@ -117,7 +108,7 @@ module Decidim
 
         context "and phone is not the same" do
           let(:metadata) { { "phone" => "another_phone" } }
-          let(:explanations) { %w(not_in_census email phone) }
+          let(:explanations) { %w(not_in_census_html email phone) }
 
           it_behaves_like "unauthorized"
         end

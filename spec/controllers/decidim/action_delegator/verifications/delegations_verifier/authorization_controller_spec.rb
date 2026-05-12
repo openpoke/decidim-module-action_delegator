@@ -11,8 +11,7 @@ module Decidim
 
           let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier)) }
           let(:user) { create(:user, :confirmed, organization: organization) }
-          let(:consultation) { create(:consultation, organization: organization) }
-          let(:setting) { create(:setting, authorization_method: method, consultation: consultation) }
+          let(:setting) { create(:setting, organization: organization, authorization_method: method, active: true, skip_injection: true) }
           let(:method) { :email }
           let!(:participant) { create(:participant, setting: setting, decidim_user: decidim_user, email: email, phone: phone) }
           let(:decidim_user) { create(:user, organization: organization) }
@@ -54,7 +53,7 @@ module Decidim
               post :create, params: params
 
               expect(response).to have_http_status(:redirect)
-              expect(flash.notice).to include("You've been successfully verified")
+              expect(flash.notice).to include("Congratulations. You have been successfully verified.")
 
               expect(Decidim::Authorization.last).to be_granted
               expect(participant.reload.decidim_user).to eq(user)
@@ -69,7 +68,7 @@ module Decidim
               post :create, params: params
 
               expect(response).to have_http_status(:redirect)
-              expect(flash.notice).to include("Thanks! We've sent an SMS to your phone")
+              expect(flash.notice).to include("Thanks! We have sent an SMS to your phone.")
 
               expect(Decidim::Authorization.last).not_to be_granted
               expect(participant.reload.decidim_user).not_to eq(user)
