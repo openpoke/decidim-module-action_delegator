@@ -38,7 +38,7 @@ describe "Corporate Governance Verifier request" do
       fill_in "Password", with: "decidim123456789"
       click_button "Log in"
 
-      expect(page).to have_no_content("Congratulations. You've been successfully verified")
+      expect(page).to have_no_content("Congratulations. You have been successfully verified")
       expect(page).to have_current_path(decidim.root_path, ignore_query: true)
       expect(Decidim::Authorization.find_by(user:, name: "delegations_verifier")).to be_nil
     end

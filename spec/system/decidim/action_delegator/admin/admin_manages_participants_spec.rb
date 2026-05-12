@@ -152,7 +152,7 @@ describe "Admin manages participants" do
         perform_enqueued_jobs { click_on I18n.t("participants.index.send_invitation_link", scope: i18n_scope) }
 
         expect(page).to have_admin_callout("successfully")
-        sleep 1 # Wait for the job to be performed and the page to be updated
+        expect(page).to have_css("tr[data-participant-id=\"#{participant_non_exists.id}\"]")
         within "tr[data-participant-id=\"#{participant_non_exists.id}\"]" do
           expect(find("td:nth-of-type(1)")).to have_content(participant_non_exists.email)
           expect(find("td:nth-of-type(4)")).to have_content(participant_name(participant_non_exists))

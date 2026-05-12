@@ -75,7 +75,7 @@ describe "delegations_verifier code verification" do
       end
     end
 
-    context "when reseting the code" do
+    context "when resetting the code" do
       it "deletes the verification and asks the user again" do
         accept_confirm { click_link "Reset verification code" }
 

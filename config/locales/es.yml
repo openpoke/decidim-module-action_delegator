@@ -60,6 +60,7 @@ es:
           new:
             grantee: Beneficiario
             granter: Otorgante
+            granter_not_verified_warning: "El otorgante no está obligado a estar en la lista de participantes ni a estar verificado; solo necesita existir como usuario de Decidim. Asegúrate de confiar en la delegación que estás a punto de crear."
             save: Crear
             select_member: Seleccionar miembro
         invite_participants:
@@ -325,7 +326,9 @@ es:
       sms_message: Su código de verificación es %{code}
       user_delegations:
         index:
+          no_active_delegations: No tienes ningún voto delegado activo en este momento.
           vote_delegated: Puedes votar en nombre de %{name} en esta consulta
+          vote_delegated_html: Voto delegado por <strong>%{name}</strong>
       verification:
         admin:
           members:

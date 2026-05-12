@@ -38,7 +38,7 @@ module Decidim
 
       def user_from_metadata
         @user_from_metadata ||= if setting&.email_required?
-                                  setting.organization.users.find_by(email: email.downcase)
+                                  setting.organization.users.find_by(email: email&.downcase)
                                 else
                                   Decidim::Authorization.find_by(unique_id: uniq_ids)&.user
                                 end

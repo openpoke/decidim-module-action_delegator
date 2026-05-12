@@ -16,7 +16,7 @@ en:
         name_help: Membership type
       setting:
         active: Active
-        max_grants: Maximum vote delegations a participant can receive
+        max_grants: Maximum number of vote delegations a participant can receive
         phone_freezed: Use phone number from the census. Don't allow participants
           to edit it.
         verify_with_sms: Verify with SMS
@@ -58,9 +58,9 @@ en:
               csv_import: Import via csv
               new_delegation: New delegation
             created_at: Created at
-            description_html: This is the current delegations for this consultation
+            description_html: These are the current delegations for this consultation
             grantee: Grantee (to)
-            grantee_voted: Grantee has voted in behalf of granter?
+            grantee_voted: Has the grantee voted on behalf of the granter?
             granter: Granter (from)
           new:
             grantee: Grantee (to)
@@ -108,7 +108,7 @@ en:
               both: email and phone number
               email: email
               phone: phone number
-            describe: 'Note that there''s also possible to import weights using the
+            describe: 'Note that it''s also possible to import weights using the
               name on the ponderation table instead of the weight number, for instance:'
             import: Import
             required_fields: 'Required fields: %{authorization_method}'
@@ -172,17 +172,17 @@ en:
             success: Participants saved successfully
         permissions:
           sync:
-            started: Participans synchronization has started. Please wait a few minutes
+            started: Participants synchronization has started. Please wait a few minutes
               and refresh this page.
           update:
             error: There was a problem updating the permissions
             success: Permissions updated successfully
         ponderations:
           create:
-            error: There's been and error creating the ponderation
+            error: There has been an error creating the ponderation
             success: New ponderation created successfully
           destroy:
-            error: There's been and error removing the ponderation
+            error: There has been an error removing the ponderation
             success: Ponderation destroyed successfully
           edit:
             save: Save
@@ -203,7 +203,7 @@ en:
             save: Create
             title: New ponderation type
           update:
-            error: There's been and error updating the ponderation
+            error: There has been an error updating the ponderation
             success: Ponderation updated successfully
         settings:
           authorization_method:
@@ -362,7 +362,7 @@ en:
           waiting_for: Continue voting on behalf of %{name}
       import_mailer:
         import:
-          errors_present: There were errors in the importation
+          errors_present: There were errors in the import
           errors_title: "<b>Found:</b> %{errors_count} errors"
           greeting: Hello %{name},
           info_messages: Reason for skipping
@@ -411,7 +411,7 @@ en:
               destroy: Reset verification code
               resend: Didn't receive the verification code?
               send: Confirm
-              title: Introduce the verification code you received
+              title: Enter the verification code you received
             new:
               authorize: Authorize my account
               missing_phone_error: Missing membership phone

@@ -60,6 +60,7 @@ ca:
           new:
             grantee: Receptora (a)
             granter: Atorgant
+            granter_not_verified_warning: "L'atorgant no ha de ser necessàriament a la llista de participants ni estar verificat: només cal que existeixi com a usuari de Decidim. Assegureu-vos que confieu en la delegació que esteu a punt de crear."
             save: Crear
             select_member: Selecciona un membre
         invite_participants:
@@ -325,7 +326,9 @@ ca:
       sms_message: El teu codi de verificació és %{code}
       user_delegations:
         index:
+          no_active_delegations: Ara mateix no tens cap vot delegat actiu.
           vote_delegated: Pots votar en nom de %{name} en aquesta consulta
+          vote_delegated_html: Vot delegat per <strong>%{name}</strong>
       verification:
         admin:
           members:
