@@ -125,14 +125,26 @@ module Decidim
         # Note that this works because votes cannot be edited, only created or destroyed. So only one version will exist per vote (the creation event)
         votes = election.votes
         unweighted_votes = votes.size
-        weighted_votes = election.questions.sum do |question|
-          question_totals = {}
-          ElectionsQuestionWeightedResponses.new(question, current_resource_settings).query.each do |option|
-            question_totals[question.id] ||= 0.0
-            question_totals[question.id] += option.weighted_votes_total.to_f
-          end
-          question_totals[question.id].to_f.round(1)
-        end
+
+        # Single aggregation query across all questions to avoid N per-question queries
+        # and to round only once at the end (avoiding cumulative rounding error).
+        all_options = Decidim::Elections::ResponseOption.where(question: election.questions)
+        per_ponderation_group = ElectionsVotesWithPonderations.new(all_options, current_resource_settings).query
+                                                              .select(
+                                                                "COALESCE(CAST(decidim_action_delegator_ponderations.weight AS FLOAT), 1.0) AS ponderation_weight,
+             COUNT(decidim_elections_votes.id) AS votes_total"
+                                                              )
+                                                              .group(
+                                                                "#{Decidim::Elections::ResponseOption.table_name}.id,
+             COALESCE(decidim_action_delegator_ponderation_id, 0),
+             COALESCE(CAST(decidim_action_delegator_ponderations.weight AS FLOAT), 1.0)"
+                                                              )
+        weighted_votes = Decidim::Elections::ResponseOption.unscoped
+                                                           .from("(#{per_ponderation_group.to_sql}) AS ponderation_groups")
+                                                           .pick(Arel.sql("COALESCE(SUM(votes_total * ponderation_weight), 0.0)"))
+                                                           .to_f
+                                                           .round(1)
+
         delegated_votes = votes.select { |vote| vote.versions.any? { |v| v.decidim_action_delegator_delegation_id.present? } }.size
         participants = votes.map(&:voter_uid).uniq.size
 

@@ -25,7 +25,7 @@ describe Decidim::ActionDelegator::Permissions do
   let(:authorized) { false }
 
   before do
-    allow_any_instance_of(described_class).to receive(:authorized?).and_return(authorized)
+    allow_any_instance_of(described_class).to receive(:authorized?).and_return(authorized) # rubocop:disable RSpec/AnyInstance
   end
 
   context "when voting a delegation" do
