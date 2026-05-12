@@ -148,7 +148,7 @@ describe "Admin weighted results in elections" do
       it "shows correct statistics" do
         within "tr", text: translated(question.body) do
           expect(page).to have_css("[data-question-unweighted-count-text]", text: "4 votes")
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "8 votes")
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "8.0 votes")
           expect(page).to have_css("[data-question-delegated-count-text]", text: "0 votes")
           expect(page).to have_css("[data-question-participants-count-text]", text: "4 participants")
         end
@@ -230,7 +230,7 @@ describe "Admin weighted results in elections" do
 
       it "shows weighted votes count" do
         within "tr", text: translated(question.body) do
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "8 votes")
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "8.0 votes")
         end
       end
 
@@ -376,7 +376,7 @@ describe "Admin weighted results in elections" do
       it "shows correct statistics for multiple choice question" do
         expect(page).to have_content(translated(multiple_choice_question.body))
         expect(page).to have_css("[data-question-unweighted-count-text]", text: "3 votes")
-        expect(page).to have_css("[data-question-weighted-count-text]", text: "7 votes")
+        expect(page).to have_css("[data-question-weighted-count-text]", text: "7.0 votes")
       end
     end
 
@@ -410,7 +410,7 @@ describe "Admin weighted results in elections" do
 
       expect(page).to have_content(translated(question.body))
       expect(page).to have_css("[data-question-unweighted-count-text]", text: "0 votes")
-      expect(page).to have_css("[data-question-weighted-count-text]", text: "0 votes")
+      expect(page).to have_css("[data-question-weighted-count-text]", text: "0.0 votes")
       expect(page).to have_css("[data-question-participants-count-text]", text: "0 participants")
       expect(page).to have_css("[data-question-delegated-count-text]", text: "0 votes")
     end
@@ -568,7 +568,7 @@ describe "Admin weighted results in elections" do
       it "shows correct statistics for enabled question" do
         within "tr", text: translated(pq_question_enabled.body) do
           expect(page).to have_css("[data-question-unweighted-count-text]", text: "2 votes")
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "4 votes")
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "4.0 votes")
           expect(page).to have_css("[data-question-delegated-count-text]", text: "0 votes")
           expect(page).to have_css("[data-question-participants-count-text]", text: "2 participants")
         end
@@ -577,7 +577,7 @@ describe "Admin weighted results in elections" do
       it "shows zero statistics for disabled question" do
         within "tr", text: translated(pq_question_disabled.body) do
           expect(page).to have_css("[data-question-unweighted-count-text]", text: "0 votes")
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "0 votes")
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "0.0 votes")
           expect(page).to have_css("[data-question-delegated-count-text]", text: "0 votes")
           expect(page).to have_css("[data-question-participants-count-text]", text: "0 participants")
         end
@@ -716,7 +716,7 @@ describe "Admin weighted results in elections" do
       it "shows correct statistics including delegated vote count" do
         within "tr", text: translated(question.body) do
           expect(page).to have_css("[data-question-unweighted-count-text]", text: "6 votes")
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "12 votes")
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "12.0 votes")
           expect(page).to have_css("[data-question-delegated-count-text]", text: "2 votes")
           expect(page).to have_css("[data-question-participants-count-text]", text: "6 participants")
         end
@@ -822,7 +822,7 @@ describe "Admin weighted results in elections" do
       it "shows correct statistics including delegated and non-ponderation votes" do
         within "tr", text: translated(question.body) do
           expect(page).to have_css("[data-question-unweighted-count-text]", text: "3 votes") # Total unweighted votes
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "3 votes") # Total weighted votes (all 1.0)
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "3.0 votes") # Total weighted votes (all 1.0)
           expect(page).to have_css("[data-question-delegated-count-text]", text: "1 vote") # Only 1 delegated vote
           expect(page).to have_css("[data-question-participants-count-text]", text: "3 participants") # 3 unique voter_uids
         end
@@ -886,7 +886,7 @@ describe "Admin weighted results in elections" do
 
         within "tr", text: translated(question.body) do
           expect(page).to have_css("[data-question-unweighted-count-text]", text: "1 vote")
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "3 votes") # 1 * 3.0 weight
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "3.0 votes") # 1 * 3.0 weight
           expect(page).to have_css("[data-question-delegated-count-text]", text: "1 vote") # 1 delegated vote
           expect(page).to have_css("[data-question-participants-count-text]", text: "1 participant") # 1 unique voter_uid
         end
@@ -932,9 +932,16 @@ describe "Admin weighted results in elections" do
 
         within "tr", text: translated(question.body) do
           expect(page).to have_css("[data-question-unweighted-count-text]", text: "2 votes")
-          expect(page).to have_css("[data-question-weighted-count-text]", text: "4 votes") # 1*1.0 + 1*3.0 = 4.0
+          expect(page).to have_css("[data-question-weighted-count-text]", text: "4.0 votes") # 1*1.0 + 1*3.0 = 4.0
           expect(page).to have_css("[data-question-delegated-count-text]", text: "1 vote") # Only 1 delegated vote
           expect(page).to have_css("[data-question-participants-count-text]", text: "2 participants") # 2 unique voter_uids
+        end
+
+        within "tr", text: "Total" do
+          expect(page).to have_css("[data-unweighted-count-text]", text: "2 votes")
+          expect(page).to have_css("[data-weighted-count-text]", text: "4.0 votes")
+          expect(page).to have_css("[data-delegated-count-text]", text: "1 vote")
+          expect(page).to have_css("[data-participants-count-text]", text: "2 participants")
         end
       end
     end

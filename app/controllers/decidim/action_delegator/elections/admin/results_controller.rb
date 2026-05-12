@@ -38,6 +38,7 @@ module Decidim
             render json: {
               id: election.id,
               ongoing: election.ongoing?,
+              totals: election_stats(election),
               questions: election.questions.map do |question|
                 { id: question.id }.merge(
                   elections_question_stats(question)

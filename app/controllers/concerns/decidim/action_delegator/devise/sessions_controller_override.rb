@@ -11,35 +11,46 @@ module Decidim
 
           # automatically authorize the user if theres a setting for it
           def after_sign_in_path_for(user)
-            after_sign_in_path_for_original(user) unless authorize_user_with_delegations_verifier(user)
-            super
+            authorize_user_with_delegations_verifier(user)
+            after_sign_in_path_for_original(user)
           end
 
           private
 
           def authorize_user_with_delegations_verifier(user)
-            setting = Decidim::ActionDelegator::Setting.where(organization: current_user.organization).active.first
-            delegations_verifier_authorization = Decidim::Authorization.find_or_initialize_by(
-              user: user,
-              name: "delegations_verifier"
-            )
+            authorization = delegations_verifier_authorization(user)
 
             return unless ActionDelegator.authorize_on_login
             return unless user.present? && !user.blocked?
-            return unless setting&.verify_with_email? && !delegations_verifier_authorization.granted?
 
             form = Decidim::ActionDelegator::Verifications::DelegationsVerifierForm.new.with_context(
               current_user: user,
-              setting: setting
+              active_settings: active_settings
             )
-            Decidim::Verifications::PerformAuthorizationStep.call(delegations_verifier_authorization, form) do
+            return unless form.valid? && form&.setting&.verify_with_email? && !authorization.granted?
+
+            Decidim::Verifications::PerformAuthorizationStep.call(authorization, form) do
               on(:ok) do
-                delegations_verifier_authorization.grant!
+                authorization.grant!
                 form.participant.update!(decidim_user: user)
                 flash[:notice] = t("authorizations.update.success", scope: "decidim.verifications.sms")
-                return true
+                Rails.logger.info "User #{user.id} authorized with delegations verifier on login for setting #{form.setting.id}"
+              end
+              on(:invalid) do
+                Rails.logger.warn "User #{user.id} failed authorization with delegations verifier on login for setting #{form.setting.id}"
               end
             end
+          end
+
+          def delegations_verifier_authorization(user)
+            @delegations_verifier_authorization ||= Decidim::Authorization.find_or_initialize_by(
+              user: user,
+              name: "delegations_verifier"
+            )
+          end
+
+          def active_settings
+            @active_settings ||= Setting.where(organization: current_organization).active
           end
         end
       end

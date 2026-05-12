@@ -152,7 +152,25 @@ module Decidim
 
               expect(response_data["id"]).to eq(election.id)
               expect(response_data).to have_key("ongoing")
+              expect(response_data).to have_key("totals")
               expect(response_data["questions"]).to be_an(Array)
+            end
+
+            it "includes top-level totals fields" do
+              get :totals, params: { id: election.id }
+
+              totals = response.parsed_body["totals"]
+
+              expect(totals).to include(
+                "participants",
+                "participants_text",
+                "unweighted_votes",
+                "unweighted_votes_text",
+                "weighted_votes",
+                "weighted_votes_text",
+                "delegated_votes",
+                "delegated_votes_text"
+              )
             end
 
             it "returns questions with statistics" do
@@ -215,9 +233,12 @@ module Decidim
 
                 response_data = response.parsed_body
                 question_data = response_data["questions"].first
+                totals_data = response_data["totals"]
 
                 expect(question_data["participants"]).to eq(2)
                 expect(question_data["unweighted_votes"]).to eq(2)
+                expect(totals_data["participants"]).to eq(2)
+                expect(totals_data["unweighted_votes"]).to eq(2)
               end
             end
           end

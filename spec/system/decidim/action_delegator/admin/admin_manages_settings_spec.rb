@@ -69,7 +69,7 @@ describe "Admin manages settings" do
     it "shows new setting form" do
       expect(page).to have_css(".new_setting")
       expect(page).to have_content("Title")
-      expect(page).to have_content("Maximum vote delegations a participant can receive")
+      expect(page).to have_content("Maximum number of vote delegations a participant can receive")
       expect(page).to have_content("Authorization method")
       expect(page).to have_button("Create")
     end

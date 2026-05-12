@@ -10,12 +10,12 @@ module Decidim
 
         return unless setting&.participants
 
-        setting.participants.each do |participant|
-          next if participant.decidim_user.present?
-          next if participant.user_from_metadata.blank?
+        setting.participants.where(decidim_user_id: nil).find_each do |participant|
+          next if participant.save
 
-          participant.decidim_user = participant.user_from_metadata
-          participant.save
+          Rails.logger.warn(
+            "SyncParticipantsJob failed to save participant #{participant.id}: #{participant.errors.full_messages.to_sentence}"
+          )
         end
       end
 

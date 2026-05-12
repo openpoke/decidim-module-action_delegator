@@ -229,7 +229,7 @@ describe Decidim::ActionDelegator::SettingsHelper do
     let(:question) { create(:election_question, :with_response_options, election:) }
     let(:response_option) { question.response_options.first }
     let(:ponderation) { create(:ponderation, setting:, weight: 4.0) }
-    let(:participant) { create(:participant, setting:, decidim_user: user, ponderation:) }
+    let!(:participant) { create(:participant, setting:, decidim_user: user, ponderation:) }
     let(:delegatee_user) { create(:user, :confirmed, organization:) }
     let(:delegatee_participant) { create(:participant, setting:, decidim_user: delegatee_user, ponderation:) }
     let(:delegation) { create(:delegation, setting:, granter: user, grantee: delegatee_user) }
@@ -249,7 +249,8 @@ describe Decidim::ActionDelegator::SettingsHelper do
         expect(result).to include(:participants, :participants_text, :unweighted_votes, :unweighted_votes_text, :weighted_votes, :weighted_votes_text, :delegated_votes, :delegated_votes_text)
         expect(result[:participants]).to eq(1)
         expect(result[:unweighted_votes]).to eq(1)
-        expect(result[:weighted_votes]).to be_a(Integer)
+        expect(result[:weighted_votes]).to be_a(Float)
+        expect(result[:weighted_votes]).to eq(4.0)
         expect(result[:delegated_votes]).to eq(0)
       end
 
@@ -311,6 +312,27 @@ describe Decidim::ActionDelegator::SettingsHelper do
         expect(result[:weighted_votes]).to eq(0)
         expect(result[:delegated_votes]).to eq(0)
       end
+    end
+  end
+
+  describe "#election_stats" do
+    let(:question) { create(:election_question, :with_response_options, election:) }
+    let(:response_option) { question.response_options.first }
+    let(:ponderation) { create(:ponderation, setting:, weight: 3.5) }
+    let(:participant) { create(:participant, setting:, decidim_user: user, ponderation:) }
+
+    before do
+      allow(helper).to receive(:current_resource_settings).and_return(Decidim::ActionDelegator::Setting.where(id: setting.id))
+      participant
+      create(:election_vote, question:, response_option:, voter_uid: user.to_global_id.to_s)
+    end
+
+    it "returns weighted totals independently from unweighted totals" do
+      result = helper.election_stats(election)
+
+      expect(result[:unweighted_votes]).to eq(1)
+      expect(result[:weighted_votes]).to eq(3.5)
+      expect(result[:weighted_votes]).not_to eq(result[:unweighted_votes])
     end
   end
 end
