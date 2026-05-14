@@ -9,7 +9,7 @@
     <% if question.response_options.any? %>
       <%
         responses_by_weight = elections_question_weighted_responses(question)
-        responses = if question.respond_to?(:grouped?) && question.grouped?
+        responses = if question.respond_to?(:grouped?) && respond_to?(:grouped_response_options) && question.grouped?
                       grouped_response_options(question).map do |group, options|
                         options_with_weights = responses_by_weight.filter { |option| option[:id].in?(options.map(&:id)) }
                         [group, options_with_weights]

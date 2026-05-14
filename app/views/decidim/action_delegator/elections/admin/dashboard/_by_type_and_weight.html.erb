@@ -2,7 +2,7 @@
   <% election_questions.each do |question| %>
   <%
     responses_by_type = elections_question_responses_by_type(question)
-    responses = if question.respond_to?(:grouped?) && question.grouped?
+    responses = if question.respond_to?(:grouped?) && respond_to?(:grouped_response_options) && question.grouped?
                   grouped_response_options(question).map do |group, options|
                     options_with_weights = responses_by_type.filter { |option| option[:id].in?(options.map(&:id)) }
                     [group, options_with_weights]
