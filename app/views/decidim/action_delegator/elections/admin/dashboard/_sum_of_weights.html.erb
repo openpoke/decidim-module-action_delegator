@@ -27,12 +27,15 @@
             </tr>
             </thead>
             <tbody>
-            <% elections_question_weighted_responses(question).each do |option| %>
-              <tr>
-                <td><%= translated_attribute option[:body] %></td>
-                <td data-option-votes-count-text="<%= question.id %>,<%= option[:id] %>"><%= option[:votes_count_text] %></td>
-                <td data-option-votes-percent-text="<%= question.id %>,<%= option[:id] %>"><%= option[:votes_percent_text] %></td>
-              </tr>
+            <% response_options_for_question(question, elections_question_weighted_responses(question)).each do |group, options| %>
+              <% if group %>
+                <tr class="bg-gray-1">
+                  <td colspan="3" class="font-semibold"><%= translated_attribute(group.title) %></td>
+                </tr>
+              <% end %>
+              <% options.each do |option| %>
+                <%= render "decidim/action_delegator/elections/admin/dashboard/sum_of_weights_response_option", option: option, question: question %>
+              <% end %>
             <% end %>
             </tbody>
           </table>

@@ -28,13 +28,15 @@
             </tr>
             </thead>
             <tbody>
-            <% elections_question_responses_by_type(question).each do |option| %>
-              <tr>
-                <td><%= option[:body] %></td>
-                <td data-option-votes-weight-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:ponderation_title] %></td>
-                <td data-option-votes-count-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:votes_count_text] %></td>
-                <td data-option-votes-percent-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:votes_percent_text] %></td>
-              </tr>
+            <% response_options_for_question(question, elections_question_responses_by_type(question)).each do |group, options| %>
+              <% if group %>
+                <tr class="bg-gray-1">
+                  <td colspan="4" class="font-semibold"><%= translated_attribute(group.title) %></td>
+                </tr>
+              <% end %>
+              <% options.each do |option| %>
+                <%= render "decidim/action_delegator/elections/admin/dashboard/by_type_and_weight_response_option", option: option, question: question %>
+              <% end %>
             <% end %>
             </tbody>
           </table>

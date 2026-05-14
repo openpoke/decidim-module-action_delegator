@@ -159,6 +159,19 @@ module Decidim
           delegated_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: delegated_votes)
         }
       end
+
+      def response_options_for_question(question, response_options)
+        if question.respond_to?(:grouped?) && respond_to?(:grouped_response_options) && question.grouped?
+          grouped_response_options(question).filter_map do |group, options|
+            grouped_options = response_options.filter { |option| option[:id].in?(options.map(&:id)) }
+            next if grouped_options.empty?
+
+            [group, grouped_options]
+          end.to_h
+        else
+          { nil => response_options }
+        end
+      end
     end
   end
 end
