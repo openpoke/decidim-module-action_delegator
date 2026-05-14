@@ -1,5 +1,16 @@
 <div data-weight-results-live-update="<%= decidim_action_delegator.elections_admin_results_sum_of_weights_path(election) %>">
   <% election_questions.each do |question| %>
+    <%
+      responses_by_weight = elections_question_weighted_responses(question)
+      responses = if question.respond_to?(:grouped?) && question.grouped?
+                    grouped_response_options(question).map do |group, options|
+                      options_with_weights = responses_by_weight.filter { |option| option[:id].in?(options.map(&:id)) }
+                      [group, options_with_weights]
+                    end.to_h
+                  else
+                    { nil => responses_by_weight }
+                  end
+    %>
     <div class="card mb-4" id="question_<%= question.id %>">
       <div class="card-divider">
           <h3 class="h6 my-2 flex items-center justify-between">
@@ -27,12 +38,15 @@
             </tr>
             </thead>
             <tbody>
-            <% elections_question_weighted_responses(question).each do |option| %>
-              <tr>
-                <td><%= translated_attribute option[:body] %></td>
-                <td data-option-votes-count-text="<%= question.id %>,<%= option[:id] %>"><%= option[:votes_count_text] %></td>
-                <td data-option-votes-percent-text="<%= question.id %>,<%= option[:id] %>"><%= option[:votes_percent_text] %></td>
-              </tr>
+            <% responses.each do |group, options| %>
+              <% if group %>
+                <tr class="bg-gray-1">
+                  <td colspan="3" class="font-semibold"><%= translated_attribute(group.title) %></td>
+                </tr>
+              <% end %>
+              <% options.each do |option| %>
+                <%= render "decidim/action_delegator/elections/admin/dashboard/sum_of_weights_response_option", option: option, question: question %>
+              <% end %>
             <% end %>
             </tbody>
           </table>
