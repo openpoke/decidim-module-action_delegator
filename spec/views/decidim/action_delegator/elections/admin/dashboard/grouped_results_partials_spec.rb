@@ -26,6 +26,16 @@ describe "Grouped admin results partials" do # rubocop:disable RSpec/DescribeCla
   before do
     allow(view).to receive(:decidim_action_delegator).and_return(route_helper)
     allow(view).to receive(:translated_attribute) { |value| value.is_a?(Hash) ? value["en"] : value }
+    allow(view).to receive(:response_options_for_question) do |current_question, responses|
+      if current_question.grouped?
+        [
+          [group_a, responses.select { |response| [11, 12].include?(response[:id]) }],
+          [group_b, responses.select { |response| response[:id] == 13 }]
+        ].to_h
+      else
+        { nil => responses }
+      end
+    end
   end
 
   describe "decidim/action_delegator/elections/admin/dashboard/_by_type_and_weight" do
