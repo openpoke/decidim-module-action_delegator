@@ -1,5 +1,16 @@
 <div data-weight-results-live-update="<%= decidim_action_delegator.elections_admin_results_by_type_and_weight_path(election) %>">
   <% election_questions.each do |question| %>
+  <%
+    responses_by_type = elections_question_responses_by_type(question)
+    responses = if question.respond_to?(:grouped?) && question.grouped?
+      grouped_response_options(question).map do |group, options|
+        options_with_weights = responses_by_type.filter { |option| option[:id].in?(options.map(&:id)) }
+        [group, options_with_weights]
+      end.to_h
+    else
+      { nil => responses_by_type }
+    end
+  %>
     <div class="card mb-4" id="question_<%= question.id %>">
       <div class="card-divider">
           <h3 class="h6 my-2 flex items-center justify-between">
@@ -28,13 +39,15 @@
             </tr>
             </thead>
             <tbody>
-            <% elections_question_responses_by_type(question).each do |option| %>
-              <tr>
-                <td><%= option[:body] %></td>
-                <td data-option-votes-weight-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:ponderation_title] %></td>
-                <td data-option-votes-count-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:votes_count_text] %></td>
-                <td data-option-votes-percent-text="<%= question.id %>,<%= option[:id] %>,<%= option[:ponderation_id] %>"><%= option[:votes_percent_text] %></td>
-              </tr>
+            <% responses.each do |group, options| %>
+              <% if group %>
+                <tr class="bg-gray-1">
+                  <td colspan="3" class="font-semibold"><%= translated_attribute(group.title) %></td>
+                </tr>
+              <% end %>
+              <% options.each do |option| %>
+                <%= render partial: "decidim/action_delegator/elections/admin/dashboard/by_type_and_weight_response_option", locals: { option: option, question: question } %>
+              <% end %>
             <% end %>
             </tbody>
           </table>
