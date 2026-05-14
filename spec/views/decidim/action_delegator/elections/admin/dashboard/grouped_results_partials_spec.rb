@@ -127,7 +127,9 @@ describe "Grouped admin results partials" do # rubocop:disable RSpec/DescribeCla
     end
 
     it "does not render a grouped header row" do
-      expect(rendered).not_to include("font-semibold")
+      fragment = Nokogiri::HTML.fragment(rendered)
+
+      expect(fragment.css("tbody tr").size).to eq(responses_by_weight.size)
     end
   end
 end
