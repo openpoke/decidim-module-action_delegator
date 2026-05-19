@@ -85,8 +85,9 @@ module Decidim
       def voted?
         return false if user.blank?
 
-        # TODO: Replace vote check once new context is defined
-        false
+        setting.elections.any? do |election|
+          election.votes.exists?(voter_uid: user.to_global_id.to_s)
+        end
       end
 
       private
