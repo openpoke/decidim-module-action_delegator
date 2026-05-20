@@ -67,22 +67,53 @@ module Decidim
 
       it_behaves_like "hasn't voted"
 
-      # context "when user has voted in the setting's consultation" do
-      #   let!(:vote) { create(:vote, response: response, question: question, author: user) }
-      #   let(:response) { create(:response, question: question) }
-      #   let(:question) { create(:question, consultation: setting.consultation) }
+      context "when user has voted in an election linked to the setting" do
+        let!(:election) do
+          create(:election,
+                 :ongoing,
+                 skip_injection: true,
+                 census_settings: { "setting_id" => setting.id.to_s })
+        end
+        let!(:question) { create(:election_question, :with_response_options, skip_injection: true, election: election) }
+        let!(:vote) do
+          create(:election_vote,
+                 question: question,
+                 response_option: question.response_options.first,
+                 voter_uid: user.to_global_id.to_s)
+        end
 
-      #   it_behaves_like "has voted"
+        it_behaves_like "has voted"
+      end
 
-      #   context "and voted in another consultation" do
-      #     let(:other_consultation) { create(:consultation, organization: setting.consultation.organization) }
-      #     let(:other_question) { create(:question, consultation: other_consultation) }
-      #     let(:other_response) { create(:response, question: other_question) }
-      #     let!(:vote) { create(:vote, response: other_response, question: other_question, author: user) }
+      context "when user has voted only in an unrelated election" do
+        let!(:linked_election_without_vote) do
+          create(:election,
+                 :ongoing,
+                 skip_injection: true,
+                 census_settings: { "setting_id" => setting.id.to_s })
+        end
+        let!(:unrelated_setting) { create(:setting, organization: setting.organization) }
+        let!(:unrelated_election) do
+          create(:election,
+                 :ongoing,
+                 skip_injection: true,
+                 census_settings: { "setting_id" => unrelated_setting.id.to_s })
+        end
+        let!(:unrelated_question) do
+          create(:election_question,
+                 :with_response_options,
+                 skip_injection: true,
+                 election: unrelated_election)
+        end
+        let!(:unrelated_vote) do
+          create(:election_vote,
+                 question: unrelated_question,
+                 response_option: unrelated_question.response_options.first,
+                 voter_uid: user.to_global_id.to_s)
+        end
 
-      #     it_behaves_like "hasn't voted"
-      #   end
-      # end
+        it_behaves_like "hasn't voted"
+      end
 
       context "when same email exists in another organization" do
         let!(:existing_user) { create(:user) }
