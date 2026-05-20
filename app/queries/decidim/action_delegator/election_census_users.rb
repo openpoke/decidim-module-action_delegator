@@ -14,10 +14,10 @@ module Decidim
         return Decidim::User.none unless election.census_manifest == "action_delegator_census" && setting
 
         users = if effective_authorization_handlers.present?
-          authorized_users_query(effective_authorization_handlers)
-        else
-          all_confirmed_users
-        end
+                  authorized_users_query(effective_authorization_handlers)
+                else
+                  all_confirmed_users
+                end
 
         return users unless delegations_verifier_active?
 

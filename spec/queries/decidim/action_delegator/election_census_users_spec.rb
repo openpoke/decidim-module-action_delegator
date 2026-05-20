@@ -49,7 +49,7 @@ module Decidim
 
       subject { described_class.new(election).query }
 
-      context "when election is not using internal users census" do
+      context "when election is not using action_delegator_census" do
         let(:census_manifest) { "internal_users" }
         let(:census_settings) { {} }
 
