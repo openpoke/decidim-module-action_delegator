@@ -14,7 +14,7 @@ module Decidim
         return Decidim::User.none unless election.census_manifest == "action_delegator_census" && setting
 
         if @authorization_handlers.present?
-          authorized_participants_and_delegates(setting)
+          authorized_users(setting)
         else
           all_confirmed_users
         end
@@ -28,10 +28,10 @@ module Decidim
 
       attr_reader :election
 
-      def authorized_participants_and_delegates(setting)
+      def authorized_users(setting)
         authorized_granters = setting.delegations.select(:granter_id).where(grantee_id: authorized_users_query.select(:id))
 
-        authorized_users_query.or(organization.users.where(id: authorized_granters)).distinct
+        authorized_users_query.or(all_confirmed_users.where(id: authorized_granters)).distinct
       end
 
       def authorized_users_query

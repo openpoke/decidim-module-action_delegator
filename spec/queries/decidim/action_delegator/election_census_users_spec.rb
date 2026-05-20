@@ -60,7 +60,7 @@ module Decidim
         end
       end
 
-      context "when election is has an incorrect setting_id" do
+      context "when election has an incorrect setting_id" do
         let(:census_settings) do
           {
             "setting_id" => "0",
