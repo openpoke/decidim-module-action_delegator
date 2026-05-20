@@ -116,7 +116,7 @@ This method allows you to use all the features of the module — delegations and
 
 #### Using "Corporate Governance Census"
 
-This second method is for situations when you need delegations but don't need to use weights or to verify users through the participants list.
+This second method is for situations when you need delegations but don't need to verify users through the participants list.
 
 To use this method, select "Corporate Governance Census" as the election's census. Then you can optionally choose which verification methods you want to use. If you choose the "Corporate Governance" method, the participants list is used as the verifier for the user casting the vote (same as in "Registered participants census" above) — but the granter of a delegation is still not required to be in the list.
 

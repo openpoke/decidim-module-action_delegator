@@ -11,13 +11,10 @@ module Decidim
       end
 
       def query
-        return Decidim::User.none unless @setting_id
-
-        setting = Decidim::ActionDelegator::Setting.find_by(id: @setting_id)
-        return Decidim::User.none unless setting
+        return Decidim::User.none unless election.census_manifest == "action_delegator_census" && setting
 
         if @authorization_handlers.present?
-          authorized_participants_and_delegates(setting)
+          authorized_users(setting)
         else
           all_confirmed_users
         end
@@ -25,26 +22,32 @@ module Decidim
 
       private
 
+      def setting
+        @setting ||= Decidim::ActionDelegator::Setting.find_by(id: @setting_id)
+      end
+
       attr_reader :election
 
-      def authorized_participants_and_delegates(setting)
-        participant_ids = setting.participants.pluck(:decidim_user_id)
-        delegation_ids = setting.delegations.joins(:grantee).pluck("decidim_action_delegator_delegations.grantee_id")
+      def authorized_users(setting)
+        authorized_granters = setting.delegations.select(:granter_id).where(grantee_id: authorized_users_query.select(:id))
 
-        eligible_user_ids = (participant_ids + delegation_ids).compact.uniq
-        return @election.organization.users.none if eligible_user_ids.empty?
+        authorized_users_query.or(all_confirmed_users.where(id: authorized_granters)).distinct
+      end
 
-        base_scope = @election.organization.users.where(id: eligible_user_ids)
-
+      def authorized_users_query
         Decidim::AuthorizedUsers.new(
-          organization: @election.organization,
+          organization: organization,
           handlers: @authorization_handlers,
           strict: true
-        ).query.where(id: base_scope.select(:id))
+        ).query
       end
 
       def all_confirmed_users
-        @election.organization.users.not_deleted.not_blocked.confirmed
+        organization.users.not_deleted.not_blocked.confirmed
+      end
+
+      def organization
+        @organization ||= election.organization
       end
     end
   end
