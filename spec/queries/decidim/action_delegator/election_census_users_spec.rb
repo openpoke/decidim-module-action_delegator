@@ -13,9 +13,7 @@ module Decidim
           "setting_id" => setting.id.to_s,
           "authorization_handlers" => {
             "delegations_verifier" => {
-              "options" => {
-                "setting" => [setting.id]
-              }
+              "options" => {}
             }
           }
         }
@@ -143,9 +141,7 @@ module Decidim
                 }
               },
               "delegations_verifier" => {
-                "options" => {
-                  "setting" => [setting.id]
-                }
+                "options" => {}
               }
             }
           }
