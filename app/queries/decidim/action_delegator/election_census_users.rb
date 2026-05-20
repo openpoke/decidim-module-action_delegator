@@ -13,11 +13,15 @@ module Decidim
       def query
         return Decidim::User.none unless election.census_manifest == "action_delegator_census" && setting
 
-        if @authorization_handlers.present?
-          authorized_users(setting)
+        users = if effective_authorization_handlers.present?
+          authorized_users_query(effective_authorization_handlers)
         else
           all_confirmed_users
         end
+
+        return users unless delegations_verifier_active?
+
+        users.where(id: participant_user_ids_query).distinct
       end
 
       private
@@ -28,18 +32,24 @@ module Decidim
 
       attr_reader :election
 
-      def authorized_users(setting)
-        authorized_granters = setting.delegations.select(:granter_id).where(grantee_id: authorized_users_query.select(:id))
-
-        authorized_users_query.or(all_confirmed_users.where(id: authorized_granters)).distinct
+      def participant_user_ids_query
+        setting.participants.select(:decidim_user_id)
       end
 
-      def authorized_users_query
+      def authorized_users_query(handlers)
         Decidim::AuthorizedUsers.new(
           organization: organization,
-          handlers: @authorization_handlers,
+          handlers: handlers,
           strict: true
         ).query
+      end
+
+      def delegations_verifier_active?
+        @authorization_handlers&.include?("delegations_verifier")
+      end
+
+      def effective_authorization_handlers
+        @effective_authorization_handlers ||= Array(@authorization_handlers) - ["delegations_verifier"]
       end
 
       def all_confirmed_users

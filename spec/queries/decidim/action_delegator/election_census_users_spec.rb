@@ -72,38 +72,37 @@ module Decidim
       end
 
       context "without other authorization handlers" do
-        it "returns users from the verifier and delegations" do
-          expect(subject).not_to include(user_in_participants)
-          expect(subject).to include(user_authorized_by_delegations)
+        it "returns only participants from the current setting" do
+          expect(subject).to include(user_in_participants)
+          expect(subject).not_to include(user_authorized_by_delegations)
           expect(subject).not_to include(user_authorized_by_dummy)
           expect(subject).not_to include(user_authorized_by_dummy_invalid)
-          expect(subject).to include(user_authorized_by_both)
+          expect(subject).not_to include(user_authorized_by_both)
           expect(subject).not_to include(user_in_other_org)
           expect(subject).not_to include(user_unconfirmed)
           expect(subject).not_to include(user_blocked)
           expect(subject).not_to include(user_deleted)
           expect(subject).not_to include(grantee_user_unauthorized)
-          expect(subject).to include(grantee_user_authorized)
-          expect(subject).to include(granter_user_authorized_without_authorization)
+          expect(subject).not_to include(grantee_user_authorized)
+          expect(subject).not_to include(granter_user_authorized_without_authorization)
           expect(subject).not_to include(granter_user_unauthorized)
         end
 
         context "when user in participants has an authorization" do
           let!(:authorization_participant) { create(:authorization, user: user_in_participants, name: "delegations_verifier", metadata: { "setting" => [setting.id] }) }
 
-          it "returns users from the verifier and delegations" do
+          it "returns only participants from the current setting" do
             expect(subject).to include(user_in_participants)
-            expect(subject).to include(user_authorized_by_delegations)
+            expect(subject).not_to include(user_authorized_by_delegations)
           end
         end
 
         context "when user in participants has an invalid authorization" do
           let!(:authorization_participant) { create(:authorization, user: user_in_participants, name: "delegations_verifier", metadata: { "setting" => ["0"] }) }
 
-          it "returns users from the verifier and delegations" do
-            # Note that this is correct as the final check is done by the authorizer adapter
+          it "returns participants even without a valid verifier authorization" do
             expect(subject).to include(user_in_participants)
-            expect(subject).to include(user_authorized_by_delegations)
+            expect(subject).not_to include(user_authorized_by_delegations)
           end
         end
       end
@@ -131,6 +130,8 @@ module Decidim
       end
 
       context "with both authorization handlers" do
+        let!(:participant_with_both_authorizations) { create(:participant, setting: setting, decidim_user: user_authorized_by_both) }
+
         let(:census_settings) do
           {
             "setting_id" => setting.id.to_s,
