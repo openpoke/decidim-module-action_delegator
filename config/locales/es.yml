@@ -360,6 +360,7 @@ es:
                 al público.</p>"
         delegation_buttons:
           delegations_active: Tienes votos delegados.
+          delegations_mobile_button: Votos delegados
           per_question_delegations: 'Puedes votar en nombre de los siguientes participantes
             en esta elección:'
           vote_for: Votar en nombre de %{name}
