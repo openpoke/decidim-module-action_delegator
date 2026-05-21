@@ -356,6 +356,7 @@ ca:
                 mostren al públic.</p>"
         delegation_buttons:
           delegations_active: Teniu vots delegats.
+          delegations_mobile_button: Vots delegats
           per_question_delegations: 'Podeu votar en nom dels següents participants
             en aquesta elecció:'
           vote_for: Vota en nom de %{name}

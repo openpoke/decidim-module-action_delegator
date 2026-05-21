@@ -1,5 +1,18 @@
 <% delegations = delegations_for(election, current_user) %>
 <% if delegations.any? %>
+  <div class="block order-first lg:hidden">
+    <button data-dialog-open="view-delegations" class="button button__lg button__transparent-secondary">
+      <%= t("decidim.action_delegator.elections.delegation_buttons.delegations_mobile_button") %>
+    </button>
+    <%= decidim_modal id: "view-delegations" do %>
+      <% if election.per_question? %>
+        <%= render "decidim/action_delegator/elections/per_question_buttons", delegations: %>
+      <% else %>
+        <%= render "decidim/action_delegator/elections/normal_election_buttons", delegations: %>
+      <% end %>
+    <% end %>
+  </div>
+
   <div class="election__aside-voted mt-6 hidden lg:block">
     <% if election.per_question? %>
       <%= render "decidim/action_delegator/elections/per_question_buttons", delegations: %>
