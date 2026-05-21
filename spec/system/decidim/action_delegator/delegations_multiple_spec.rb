@@ -106,5 +106,30 @@ describe "Delegation vote in elections" do
         end
       end
     end
+
+    context "when viewing on a mobile browser" do
+      before do
+        driven_by(:iphone)
+        create(:authorization, :granted, user:, name: "delegations_verifier", metadata: { setting_id: setting.id })
+        visit election_path
+        click_on "Accept all"
+      end
+
+      it "shows the delegation sticky button on mobile" do
+        expect(page).to have_css("button[data-dialog-open='view-delegations']", visible: :visible)
+      end
+
+      it "hides the desktop delegation section on mobile" do
+        expect(page).to have_no_css(".election__aside-voted", visible: :visible)
+      end
+
+      it "opens the delegation modal when clicking the button" do
+        click_on I18n.t("decidim.action_delegator.elections.delegation_buttons.delegations_mobile_button")
+
+        expect(page).to have_content(
+          I18n.t("decidim.action_delegator.elections.delegation_buttons.delegations_active")
+        )
+      end
+    end
   end
 end
