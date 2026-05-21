@@ -3,7 +3,7 @@ es:
   activemodel:
     attributes:
       csv_import:
-        csv_file: Archivo CSV
+        csv_file: CSV file
       delegations_verifier:
         email: Correo electrónico
         phone: Número de teléfono móvil
@@ -15,32 +15,25 @@ es:
         name: Tipo de miembro
         name_help: Tipo de miembro
       setting:
-        active: Activo
-        max_grants: Número máximo de delegaciones de voto que una participante puede
-          recibir
-        phone_freezed: Utilice el número de teléfono del censo. No permita que los
-          participantes lo editen.
+        active: Active
+        max_grants: Maximum number of vote delegations a participant can receive
+        phone_freezed: Utilice el número de teléfono del censo. No permita que los participantes lo editen.
         verify_with_sms: Verificar con SMS
     errors:
       messages:
-        only_one_active_setting_per_phone_required: Solo puede haber una configuración
-          activa con verificación telefónica a la vez.
+        only_one_active_setting_per_phone_required: There can only be one active setting with phone verification at a time.
       models:
         delegations_verifier:
           attributes:
             email:
-              email_not_found: Lo sentimos, este correo electrónico no está en el
-                censo. Por favor, póngase en contacto con nosotros si cree que esto
-                es un error.
+              email_not_found: Lo sentimos, este correo electrónico no está en el censo. Por favor, póngase en contacto con nosotros si cree que esto es un error.
             phone:
-              phone_not_found: Lo sentimos, este correo electrónico no está en el
-                censo. Por favor, póngase en contacto con nosotros si cree que esto
-                es un error.
+              phone_not_found: Lo sentimos, este correo electrónico no está en el censo. Por favor, póngase en contacto con nosotros si cree que esto es un error.
   decidim:
     action_delegator:
       admin:
         census:
-          setting_group: Grupo de configuración
+          setting_group: Setting group
         delegations:
           create:
             error: Se ha producido un error al crear la delegación
@@ -60,17 +53,14 @@ es:
               csv_import: Importar un fichero CSV
               new_delegation: Nueva participante
             created_at: Creado el
-            description_html: Estas son las delegaciones actuales para esta consulta
+            description_html: These are the current delegations for this consultation
             grantee: Receptora (a)
-            grantee_voted: "¿Se ha utilizado la delegación?"
+            grantee_voted: Has the grantee voted on behalf of the granter?
             granter: Otorgante
           new:
             grantee: Beneficiario
             granter: Otorgante
-            granter_not_verified_warning: El otorgante no está obligado a estar en
-              la lista de participantes ni a estar verificado; solo necesita existir
-              como usuario de Decidim. Asegúrate de confiar en la delegación que estás
-              a punto de crear.
+            granter_not_verified_warning: The granter is not required to be in the participants list nor to be verified — they only need to exist as a Decidim user. Make sure you trust the delegation you are about to create.
             save: Crear
             select_member: Seleccionar miembro
         invite_participants:
@@ -88,53 +78,45 @@ es:
         manage_delegations:
           create:
             error: Se ha producido un error en importar las participantes
-            success: El proceso de importación ha comenzado, por favor espere unos
-              minutos y actualice la página para ver la lista de participantes. Los
-              resultados de importación se enviarán por correo electrónico.
+            success: El proceso de importación ha comenzado, por favor espere unos minutos y actualice la página para ver la lista de participantes. Los resultados de importación se enviarán por correo electrónico.
           new:
             import: Importar
-            required_fields: 'Campos requeridos: correo del otorgante, correo del
-              receptor'
+            required_fields: 'Campos requeridos: correo del otorgante, correo del receptor'
             title: Importar delegaciones
             title_example: 'Ejemplo:'
-            upload_button: Cargar archivo CSV
-            upload_help: 'Debe ser un archivo en formato CSV con un encabezado. Columnas
-              requeridas: from, to.'
+            upload_button: Upload CSV file
+            upload_help: 'Must be a file in CSV format with a header. Required columns: from, to.'
             upload_instructions: Debe ser un archivo en formato CSV con un encabezado.
         manage_participants:
           create:
             error: Se ha producido un error en importar las participantes
-            success: El proceso de importación ha comenzado, por favor espere unos
-              minutos y actualice la página para ver la lista de participantes. Los
-              resultados de importación se enviarán por correo electrónico.
+            success: El proceso de importación ha comenzado, por favor espere unos minutos y actualice la página para ver la lista de participantes. Los resultados de importación se enviarán por correo electrónico.
           new:
             authorization_method:
               both: correo electrónico y número de teléfono
               email: correo electrónico
               phone: número de teléfono
-            describe: 'Tenga en cuenta que también es posible importar pesos usando
-              el nombre en la tabla de ponderación en lugar del número de peso, por
-              ejemplo:'
+            describe: 'Note that it''s also possible to import weights using the name on the ponderation table instead of the weight number, for instance:'
             import: Importar
             required_fields: 'Campos requeridos: %{authorization_method}'
             title: Importar participantes
             title_example: 'Ejemplo:'
-            upload_button: Cargar archivo CSV
-            upload_help: Debe ser un archivo en formato CSV con un encabezado.
+            upload_button: Upload CSV file
+            upload_help: Must be a file in CSV format with a header.
             upload_instructions: Debe ser un archivo en formato CSV con un encabezado.
         menu:
           action_delegator_menu:
-            delegations: Delegaciones
-            main: General
-            participants: Participantes
-            ponderations: Ponderaciones
-            settings: Configuración
+            delegations: Delegations
+            main: Main
+            participants: Participants
+            ponderations: Ponderations
+            settings: Settings
           delegations: Gobernanza Societaria
           elections_submenu:
-            by_answer: Por respuesta
-            by_type_and_weight: Por tipo y peso
-            sum_of_weights: Por suma de pesos
-            totals: Totales
+            by_answer: By answer
+            by_type_and_weight: By type and weight
+            sum_of_weights: Sum of weights
+            totals: Totals
           participants: Participantes
         participants:
           create:
@@ -150,54 +132,46 @@ es:
               csv_import: Importar CSV
               new_participant: Nueva participante
               remove_census: Eliminar censo
-            all_users_registered_html: Todas las participantes están registradas en
-              la plataforma
+            all_users_registered_html: Todas las participantes están registradas en la plataforma
             created_at: Creado el
             email: Correo electrónico
             last_login: Último acceso
-            missing_emails: El método de autorización no requiere un correo electrónico.
-              Por esto, %{count} debe registrarse en la plataforma
-            missing_registered: Hay %{missing_registered} participantes que no están
-              registradas en la plataforma
+            missing_emails: El método de autorización no requiere un correo electrónico. Por esto, %{count} debe registrarse en la plataforma
+            missing_registered: Hay %{missing_registered} participantes que no están registradas en la plataforma
             never_logged: Nunca ha iniciado sesión
             participant: participante
             phone: Teléfono
             ponderation: Tipos de ponderación
             send_invitation_link: Haga clic aquí para enviarles una invitación
             user: Nombre
-            voted: "¿Ha votado?"
+            voted: '¿Ha votado?'
           new:
             save: Crear
           remove_census:
-            confirm: "¿Está seguro de que quiere eliminar el censo? Esta acción no
-              se puede deshacer"
-            success: "%{participants_count} entradas fueron eliminadas de la página
-              con éxito"
+            confirm: '¿Está seguro de que quiere eliminar el censo? Esta acción no se puede deshacer'
+            success: "%{participants_count} entradas fueron eliminadas de la página con éxito"
           update:
             error: Se ha producido un error en actualizar las participantes
             success: Participantes guardados con éxito
         permissions:
           sync:
-            started: La sincronización de participantes ha comenzado. Por favor espere
-              unos minutos y actualice esta página.
+            started: Participants synchronization has started. Please wait a few minutes and refresh this page.
           update:
             error: Se ha producido un error al actualizar los permisos
             success: Permisos correctamente actualizados.
         ponderations:
           create:
-            error: Se ha producido un error al crear la ponderación
+            error: There has been an error creating the ponderation
             success: Ponderación creada correctamente
           destroy:
-            error: Se ha producido un error al eliminar la ponderación
+            error: There has been an error removing the ponderation
             success: Ponderación destruida correctamente
           edit:
             save: Guardar
           form:
-            name_help: Tipo de asociado, p. ej., "socio", "consumidor", "patrón".
-              Debe ser único.
+            name_help: Tipo de asociado, p. ej., "socio", "consumidor", "patrón". Debe ser único.
             name_placeholder: 'Prueba, por ejemplo: "miembro", "asociado", "partidario"...'
-            weight_help: Peso del voto p. ej., "1", "2", "1.5". Este número se utilizará
-              para sopesar los votos de las participantes en este tipo de ponderación.
+            weight_help: Peso del voto p. ej., "1", "2", "1.5". Este número se utilizará para sopesar los votos de las participantes en este tipo de ponderación.
           index:
             actions:
               new_ponderation: Nueva ponderación
@@ -209,7 +183,7 @@ es:
             save: Crear
             title: Nuevo tipo de ponderación
           update:
-            error: Se ha producido un error al actualizar la ponderación
+            error: There has been an error updating the ponderation
             success: Ponderación actualizada correctamente
         settings:
           authorization_method:
@@ -217,17 +191,15 @@ es:
             email: Solo correo electrónico
             phone: Solo número de teléfono móvil
           authorization_method_help_html: |
-            Las opciones disponibles son:
+            Available options are:
             <br><br>
             <ul>
-            <li><b>Solo número de teléfono:</b> Utiliza verificación por SMS. Las participantes deben ingresar su número de teléfono que coincida con el censo.</li>
-            <li><b>Solo correo electrónico:</b> El correo electrónico de la participante debe coincidir con el censo.</li>
-            <li><b>Correo electrónico y número de teléfono:</b> Utiliza verificación por SMS. El correo electrónico de la participante debe coincidir con el censo y el número de teléfono estará predefinido.</li>
+              <li><b>Only phone number:</b> Uses SMS verification. Participants must input their phone number that matches the census.</li>
+              <li><b>Only email:</b> Participant's email must match the census.</li>
+              <li><b>Email and phone number:</b> Uses SMS verification. Participant's email must match the census and phone number will be predefined.</li>
             </ul>
           check_verifier:
-            not_installed_html: Parece que el método de autorización "Verificador
-              de Gobernanza Societaria" no está activado. No puedes autenticar el
-              censo sin la activación. Instálelo en <a href="/system">/system</a>.
+            not_installed_html: Parece que el método de autorización "Verificador de Gobernanza Societaria" no está activado. No puedes autenticar el censo sin la activación. Instálelo en <a href="/system">/system</a>.
           copy_setting: 'Copiar ponderaciones y censo de:'
           create:
             error: Se ha producido un problema al crear la configuración
@@ -245,17 +217,20 @@ es:
               delegations: Edita las delegaciones
               new_setting: Nueva configuración
               ponderate: Establecer los pesos para la ponderación de votos
-            active: Activo
+            active: Active
             authorization_method: Método de autorización
             census: Censo total
             created_at: Creado el
             delegations: Total de delegaciones
             description_html: |
-              Este módulo está diseñado para organizaciones que votan a través de consultas. Las funcionalidades que tenemos disponibles son: elaboración de censo, delegaciones de participantes y ponderaciones por tipo de miembro. También podemos utilizar el verificador integrado a través de SMS, correo electrónico o ambos. Es posible utilizar este módulo sin importar un censo, puede gestionarlo para realizar delegaciones y/o ponderaciones. Si necesitas más información, ingresa a guia.cercles.coop.
-              <br>
-              Cada grupo se puede configurar con un número diferente de delegaciones máximas por usuario, diferentes concesiones de delegaciones de usuario y diferentes conjuntos de tipos de ponderación.
+              <ul>
+                <li>This module is designed for organizations that require a robust system for managing participant delegations</li>
+                <li><b>Features:</b> fully managed census, delegations of participants and weights by type of member. Verification by SMS, email or both. Using a census is optional.</li>
+                <li>Each entry can be used as a unique <b>delegation group</b> with a different number of maximum delegations per user, different user delegations grants and different sets of ponderation types.</li>
+                <li><b>Usage:</b> After configuring a delegation group, you can use the <b>Corporate Governance Verifier</b> to ensure all participants are properly authorized in whatever component you require. Also, make sure to use the <b>Corporate Governance census</b> while configuring an election.</li>
+              </ul>
             max_grants: Máx. delegaciones/persona
-            name: Nombre
+            name: Name
             open: Abierto
             ponderations: Tipos de ponderación
             title: Gobernanza Societaria
@@ -263,32 +238,20 @@ es:
             save: Guardar
             title: Nueva configuración
           setting_checks:
-            all_users_authorized_html: Todas las participantes están verificadas por
-              el <i>Verificador de Gobernanza Societaria</i>.
-            all_users_registered_html: Todos los participantes están registrados en
-              la plataforma.
-            applies_to: Se aplica a los siguientes espacios de votación
+            all_users_authorized_html: Todas las participantes están verificadas por el <i>Verificador de Gobernanza Societaria</i>.
+            all_users_registered_html: Todos los participantes están registrados en la plataforma.
+            applies_to: Applies to the following voting spaces
             click_to_fix: Haga clic aquí para arreglar esto automáticamente
-            missing_authorizations_html: Hay %{count} participantes que no están verificadas
-              por el <i>Verificador de Gobernanza Societaria</i>. <em>Está bien si
-              estas participantes tienen sus votos delegados a otras o si está utilizando
-              otros métodos de verificación (o ninguno).</em>
-            missing_emails: El método de autorización no requiere un correo electrónico.
-              Por esto, %{count} debe registrarse en la plataforma
-            missing_registered_users_html: Hay %{count} participantes que no están
-              registrados en la plataforma.
+            missing_authorizations_html: Hay %{count} participantes que no están verificadas por el <i>Verificador de Gobernanza Societaria</i>. <em>Está bien si estas participantes tienen sus votos delegados a otras o si está utilizando otros métodos de verificación (o ninguno).</em>
+            missing_emails: El método de autorización no requiere un correo electrónico. Por esto, %{count} debe registrarse en la plataforma
+            missing_registered_users_html: Hay %{count} participantes que no están registrados en la plataforma.
             no_delegations_html: No hay votos delegados.
-            no_participants_html: "¡No hay censo! <b>Añade participantes o nadie podrá
-              votar si el <i>Verificador de Gobernanza Societaria</i> está activo.</b>
-              <em>Está bien si está utilizando otros métodos de autorización o si
-              todas las registradas pueden votar.</em>"
-            no_ponderations_html: No hay ponderaciones de votos. <b>Todos los usuarios
-              tendrán el mismo peso en sus votos</b>
-            no_resources_found: "¡No hay espacios de votación usando esta configuración!"
+            no_participants_html: '¡No hay censo! <b>Añade participantes o nadie podrá votar si el <i>Verificador de Gobernanza Societaria</i> está activo.</b> <em>Está bien si está utilizando otros métodos de autorización o si todas las registradas pueden votar.</em>'
+            no_ponderations_html: No hay ponderaciones de votos. <b>Todos los usuarios tendrán el mismo peso en sus votos</b>
+            no_resources_found: No voting spaces are using this configuration!
             participant: participante
             user: participante
-            users_need_sync_html: La lista de participantes debe sincronizarse. <b>¡Los
-              resultados de la consulta pueden ser incorrectos!</b>
+            users_need_sync_html: La lista de participantes debe sincronizarse. <b>¡Los resultados de la consulta pueden ser incorrectos!</b>
           update:
             error: Se ha producido un problema al actualizar la configuración
             success: Configuración guardada correctamente
@@ -297,87 +260,51 @@ es:
       authorizations:
         new:
           missing_phone_error: Falta el teléfono de miembro
-          phone_warning: Este número de teléfono ha sido importado por el administrador.
-            Por favor, contacta si no es correcto.
+          phone_warning: Este número de teléfono ha sido importado por el administrador. Por favor, contacta si no es correcto.
       delegations:
         has_delegations: Voto delegado realizado
-        link: "👉 Tienes delegaciones concedidas"
+        link: "👉 You have delegations granted"
       delegations_authorizer:
-        email: Estamos utilizando el correo electrónico %{email} para verificar su
-          identidad. Si cree que esto está mal, póngase en contacto con nosotros.
-        inactive_setting_html: El censo "%{census}" no está activo. Puedes intentar
-          <a href="%{renew_path}" class="underline">renovar tu verificación</a>. De
-          lo contrario, contacta con el administrador si crees que se trata de un
-          error.
-        no_setting_html: El censo "%{census}" no está activo. Puedes intentar <a href="%{renew_path}"
-          class="underline">renovar tu verificación</a>. De lo contrario, contacta
-          con el administrador si crees que se trata de un error.
-        not_in_census_html: El censo "%{census}" no está activo. Puedes intentar <a
-          href="%{renew_path}" class="underline">renovar tu verificación</a>. De lo
-          contrario, contacta con el administrador si crees que se trata de un error.
-        phone: Estamos usando el teléfono %{phone} para verificar su identidad. Si
-          cree que esto está mal, póngase en contacto con nosotros.
+        email: Estamos utilizando el correo electrónico %{email} para verificar su identidad. Si cree que esto está mal, póngase en contacto con nosotros.
+        inactive_setting_html: The census "%{census}" is not active. You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
+        no_setting_html: It seems that you do not belong to the current census. You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
+        not_in_census_html: It seems that you do not belong to the census "%{census}". You can try to <a href="%{renew_path}" class="underline">renew your verification</a>. Otherwise, please contact the administrator if you think this is a mistake.
+        phone: Estamos usando el teléfono %{phone} para verificar su identidad. Si cree que esto está mal, póngase en contacto con nosotros.
       elections:
         admin:
           dashboard:
             questions_table:
-              delegated_votes: Votos delegados
-              participants: Participantes
+              delegated_votes: Delegated votes
+              participants: Participants
               participants_count:
-                one: 1 participante
-                other: "%{count} participantes"
-              unweighted_votes: Votos no ponderados
-              weight: Peso
-              weighted_votes: Votos ponderados
+                one: 1 participant
+                other: "%{count} participants"
+              unweighted_votes: Unweighted votes
+              weight: Weight
+              weighted_votes: Weighted votes
             results_type_info:
-              by_type_and_weight_html: <p>Los resultados que se muestran a continuación
-                se desglosan por tipo de membresía y se ponderan según las ponderaciones
-                de membresía definidas en la configuración de Governanza Societaria.</p>
-                <p> Cada opción de respuesta muestra la cantidad de votos que recibió
-                de cada tipo de membresía, pero no se aplican ponderaciones en esta
-                vista.</p> <p>Por ejemplo, si la opción A recibió 2 votos de miembros
-                con ponderación "3.0" y 1 voto de un miembro con ponderación "1.0",
-                los resultados mostrarán 2 votos de miembros con ponderación "3.0"
-                y 1 voto de miembros con ponderación "1.0". </p> <p>⚠️ Estos resultados
-                no se muestran al público.</p>
-              normal_count_html: "<p>Estos resultados se calculan contando cada voto
-                por igual, independientemente del peso de la membresía del participante
-                que lo emitió.</p> <p>⚠️ Estos resultados no se muestran al público.</p>"
-              sum_of_weights_html: "<p>Los resultados que se muestran a continuación
-                se ponderan según la ponderación de los miembros definida en la configuración
-                de Governanza Societária.</p> <p>Cada voto se multiplica por la ponderación
-                del miembro que lo emitió.</p> <p>Por ejemplo, si un miembro con una
-                ponderación de 3.0 vota por la opción A y un miembro con una ponderación
-                de 1.0 vota por la opción B, los resultados mostrarán 3 votos para
-                la opción A y 1 voto para la opción B.</p> <p><strong>Estos son los
-                resultados que se muestran al público.</strong></p>"
-              title: "¿Cómo interpretar estos resultados?"
-              totals_html: "<p>Los resultados que se muestran a continuación muestran
-                los totales de cada pregunta, sumando todos los votos recibidos por
-                cada opción de respuesta aplicando los pesos de membresía y no aplicándolos.</p>
-                <p>Además, puede ver el número de participantes y cuántos votos delegados
-                se emitieron para cada opción.</p> <p>⚠️ Estos resultados no se muestran
-                al público.</p>"
+              by_type_and_weight_html: <p>The results shown below are broken down by membership type and weighted by the membership weights defined in the Corporate Governance settings.</p> <p>Each response option shows the number of votes it received from each membership type but no weights are applied in this view.</p> <p>For example, if option A received 2 votes from members with weight "3.0" and 1 vote from a member with weight "1.0", the results will show 2 votes from members with weight "3.0" and 1 vote from members with weight "1.0".</p> <p>⚠️ These results are not shown to the public.</p>
+              normal_count_html: "<p>These results are calculated by counting each vote equally, regardless of the membership weight of the participant that cast it.</p> <p>⚠️ These results are not shown to the public.</p>"
+              sum_of_weights_html: <p>The results shown below are weighted by the membership weights defined in the Corporate Governance settings.</p> <p>Each vote is multiplied by the weight of the member who cast it.</p> <p>For example, if a member with weight "3.0" votes for option A, and a member with weight "1.0" votes for option B, the results will show 3 votes for option A and 1 vote for option B.</p> <p><strong>⚠️ These are the results shown to the public.</strong></p>
+              title: How to interpret these results?
+              totals_html: "<p>The results shown below show the totals for each question, summing all the votes received by each response option applying the membership weights and not applying them.</p> <p>Also, you can see the number of participants and how many delegated votes were cast for each option.</p> <p>⚠️ These results are not shown to the public.</p>"
         delegation_buttons:
-          delegations_active: Tienes votos delegados.
-          delegations_mobile_button: Votos delegados
-          per_question_delegations: 'Puedes votar en nombre de los siguientes participantes
-            en esta elección:'
-          vote_for: Votar en nombre de %{name}
+          delegations_active: You have delegated votes.
+          delegations_mobile_button: Delegated votes
+          per_question_delegations: 'You can vote on behalf of the following participants in this election:'
+          vote_for: Vote on behalf of %{name}
         votes:
-          delegated_voting: Estás votando en nombre de %{name}
-          edit_vote_for: Editar voto para %{name}
-          self_voting: Estás votándote a ti mismo (%{name}).
-          waiting_for: Estás votando en nombre de %{name}
+          delegated_voting: You are voting on behalf of %{name}
+          edit_vote_for: Edit vote for %{name}
+          self_voting: You are voting for yourself (%{name}).
+          waiting_for: Continue voting on behalf of %{name}
       import_mailer:
         import:
-          errors_present: Se han producido errores durante la importación
+          errors_present: There were errors in the import
           errors_title: "<b>Se han encontrado:</b> %{errors_count} errores"
           greeting: Hola %{name},
           info_messages: Motivo de omisión
-          instructions: |-
-            <p>Se adjunta un archivo con detalles de importación, contiene filas que no fueron importadas.</p>
-            <p>Si desea continuar con la importación, corrija las filas especificadas, elimine la última columna del archivo, guarde el archivo e importar de nuevo.</p>
+          instructions: "<p>Se adjunta un archivo con detalles de importación, contiene filas que no fueron importadas.</p>\n<p>Si desea continuar con la importación, corrija las filas especificadas, elimine la última columna del archivo, guarde el archivo e importar de nuevo.</p>"
           result: "<b>Importado:</b> %{rows_count} filas de %{total_rows_count}."
           row_number: Numero fila
           skipped_rows: "<b>Omitidas:</b> %{skipped_rows} filas."
@@ -386,10 +313,9 @@ es:
           text_error: Error
       invite_participants_mailer:
         confirmation:
-          body: Has sido invitado a participar en la consulta. Por favor, haz clic
-            en el enlace de abajo para confirmar tu participación.
+          body: Has sido invitado a participar en la consulta. Por favor, haz clic en el enlace de abajo para confirmar tu participación.
           confirm: Confirmar la participación
-          greeting: "¡Hola, %{recipient}!,"
+          greeting: '¡Hola, %{recipient}!,'
       participants_csv_importer:
         import:
           error: Se ha producido un error en importar las participantes
@@ -400,13 +326,12 @@ es:
           phone_exists: Ya existe un participante con esta dirección de correo electrónico
           ponderation_not_found: Tipo de ponderación no encontrado
           skip_import_info: El participante ya existe %{with_mismatched_fields}
-          with_mismatched_fields: 'con campos no coincidentes: %{fields}'
+          with_mismatched_fields: "con campos no coincidentes: %{fields}"
       sms_message: Su código de verificación es %{code}
       user_delegations:
         index:
-          no_active_delegations: No tienes ningún voto delegado activo en este momento.
-          vote_delegated: Puedes votar en nombre de %{name} en esta consulta
-          vote_delegated_html: Voto delegado por <strong>%{name}</strong>
+          no_active_delegations: You have no active delegated votes at the moment.
+          vote_delegated_html: Vote delegated by <strong>%{name}</strong>
       verification:
         admin:
           members:
@@ -416,28 +341,21 @@ es:
         delegations_verifier:
           authorizations:
             edit:
-              confirm_destroy: "¿Seguro que quieres restablecer el código de verificación?"
+              confirm_destroy: '¿Seguro que quieres restablecer el código de verificación?'
               destroy: Reiniciar código de verificación
-              resend: "¿No has recibido el código de verificación?"
+              resend: '¿No has recibido el código de verificación?'
               send: Confirmar
-              title: Introduce el código de verificación que recibiste
+              title: Enter the verification code you received
             new:
               authorize: Autorizar mi cuenta
               missing_phone_error: Falta el teléfono de miembro
-              no_resources_found: No se han encontrado recursos. Si cree que esto
-                es un error, póngase en contacto con el administrador (es posible
-                que no haya nada activo ahora mismo).
-              not_in_census: Lo sentimos, pero no puede ser autorizado porque su correo
-                electrónico no está en el censo. Póngase en contacto con el administrador
-                si cree que se trata de un error.
-              participate_in: 'Esta autorización le permite participar en las siguientes
-                consultas: %{consultations}'
-              phone_warning: Este número de teléfono ha sido importado por el administrador.
-                Por favor, contacta si no es correcto.
+              no_resources_found: No resources found, If you think this is a mistake, please contact the administrator (it is possible that there is nothing active right now).
+              not_in_census: Lo sentimos, pero no puede ser autorizado porque su correo electrónico no está en el censo. Póngase en contacto con el administrador si cree que se trata de un error.
+              participate_in: 'This authorization allows you to participate in the following resources:'
+              phone_warning: Este número de teléfono ha sido importado por el administrador. Por favor, contacta si no es correcto.
               send_code: Enviar código de verificación
               title: Autorizar con el Verificador de Gobernanza Societaria
-          not_active: No es posible verificar con Gobernanza Corporativa debido a
-            que actualmente no hay ningún espacio de voto activo.
+          not_active: No es posible verificar con Gobernanza Corporativa debido a que actualmente no hay ningún espacio de voto activo.
     admin:
       actions:
         invite: Enviar invitación
@@ -447,24 +365,20 @@ es:
       admin:
         delegations_verifier:
           help:
-          - - censo.
+            - 
+              - census.
       delegations_verifier:
-        explanation: Las participantes verificadas con este método pueden delegar
-          votos a otras participantes
+        explanation: Las participantes verificadas con este método pueden delegar votos a otras participantes
         fields:
           phone: Número de teléfono
           setting: Setting
-          setting_ids: Configuración
+          setting_ids: Settings
         name: Gobernanza Societaria
     elections:
       censuses:
         action_delegator_census:
-          authorizer_handler_admin_callout_html: Elija el método de autorización "Gobernanza
-            Societaria" si desea utilizar la lista de participantes del grupo de configuración
-            elegido para validar quién puede votar.<br>También puede utilizar otro
-            método de autorización si su fuente de censo es externa o si no desea
-            utilizar un censo en absoluto (y todos los registrados pueden votar).
-          label: Censo Gobernanza Societaria
+          authorizer_handler_admin_callout_html: Choose the "Corporate Governance" authorization method if you want to use the participants list from the chosen setting group to validate who can vote.<br> You can also use another authorization method if your source of census is external or if you don't want to use a census at all (and everyone registered can vote).
+          label: Corporate Governance census
     verifications:
       authorizations:
         first_login:
