@@ -57,6 +57,16 @@ module Decidim
         let(:question) { create(:election_question, :with_response_options, skip_injection: true, election: election) }
         let!(:vote) { create(:election_vote, question: question, response_option: question.response_options.first, voter_uid: granter.to_global_id.to_s) }
 
+        before do
+          PaperTrail::Version.create!(
+            item_type: "Decidim::Elections::Election",
+            item_id: election.id,
+            event: "create",
+            whodunnit: grantee.id.to_s,
+            decidim_action_delegator_delegation_id: delegation.id
+          )
+        end
+
         context "when grantee has not voted on behalf of granter" do
           it "returns false" do
             expect(delegation.grantee_voted?).to be(false)
