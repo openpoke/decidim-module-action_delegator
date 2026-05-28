@@ -27,7 +27,8 @@ module Decidim
 
         @grantee_voted ||= PaperTrail::Version.exists?(
           whodunnit: grantee.id.to_s,
-          decidim_action_delegator_delegation_id: id
+          decidim_action_delegator_delegation_id: id,
+          item_type: "Decidim::Elections::Vote"
         )
       end
 
