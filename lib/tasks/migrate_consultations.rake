@@ -100,7 +100,11 @@ namespace :action_delegator do
         self.table_name = "decidim_consultations_votes"
         belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultation_question_id
         belongs_to :response, class_name: "Legacy::Response", foreign_key: :decidim_consultations_response_id
-        belongs_to :author, class_name: "Decidim::User", foreign_key: :decidim_author_id
+        belongs_to :author, class_name: "Legacy::User", foreign_key: :decidim_author_id
+      end
+
+      class User < LegacyBase
+        self.table_name = "decidim_users"
       end
     end
 
@@ -274,10 +278,20 @@ namespace :action_delegator do
           next
         end
 
+        organization_id = new_question.election.component.organization.id
+        new_user = Decidim::User.find_by(email: user.email, decidim_organization_id: organization_id)
+
+        if new_user.nil?
+          votes_skipped += 1
+          migrated_stats[:skipped_votes] += 1
+          puts "    ✗ Skipping Vote ##{old_vote.id} - User ##{user.id} (#{user.email}) not found in organization #{organization_id}"
+          next
+        end
+
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
-          voter_uid: user.to_global_id.to_s,
+          voter_uid: new_user.to_global_id.to_s,
           created_at: old_vote.created_at,
           updated_at: old_vote.updated_at
         )
