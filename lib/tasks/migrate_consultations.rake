@@ -67,7 +67,7 @@ namespace :action_delegator do
       class LegacyBase < ApplicationRecord
         self.abstract_class = true
 
-        legacy_db_config = ActiveRecord::Base.configurations.configurations.find { |config| config.name == "legacy" }
+        legacy_db_config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: "legacy", include_hidden: true)
 
         connects_to database: { writing: :legacy, reading: :legacy } if legacy_db_config.present?
       end
@@ -152,7 +152,8 @@ namespace :action_delegator do
     puts "\nStarting migration of #{source_stats[:consultations]} consultations from decidim-consultations to decidim-elections"
     puts "Component: ##{component.id} - #{component.name}"
 
-    legacy_db_config = ActiveRecord::Base.configurations.configurations.find { |config| config.name == "legacy" }
+    legacy_db_config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: "legacy", include_hidden: true)
+
     if legacy_db_config.present?
       puts "Reading from database: '#{legacy_db_config.database}' (#{legacy_db_config.host || "localhost"})"
       puts "Note: Using 'legacy' database configured in database.yml"
