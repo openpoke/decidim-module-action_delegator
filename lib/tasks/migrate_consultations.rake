@@ -105,6 +105,7 @@ namespace :action_delegator do
 
       class User < LegacyBase
         self.table_name = "decidim_users"
+        self.inheritance_column = :_type_disabled
       end
     end
 
@@ -279,19 +280,11 @@ namespace :action_delegator do
         end
 
         organization_id = new_question.election.component.organization.id
-        new_user = Decidim::User.find_by(email: user.email, decidim_organization_id: organization_id)
-
-        if new_user.nil?
-          votes_skipped += 1
-          migrated_stats[:skipped_votes] += 1
-          puts "    ✗ Skipping Vote ##{old_vote.id} - User ##{user.id} (#{user.email}) not found in organization #{organization_id}"
-          next
-        end
 
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
-          voter_uid: new_user.to_global_id.to_s,
+          voter_uid: user.email,
           created_at: old_vote.created_at,
           updated_at: old_vote.updated_at
         )
