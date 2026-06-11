@@ -279,8 +279,6 @@ namespace :action_delegator do
           next
         end
 
-        organization_id = new_question.election.component.organization.id
-
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
