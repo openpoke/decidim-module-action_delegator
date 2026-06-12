@@ -279,10 +279,11 @@ namespace :action_delegator do
           next
         end
 
+        new_voter_uid = user.email.present? ? user.email : "#{user.id}_#{old_question.id}"
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
-          voter_uid: user.email,
+          voter_uid: new_voter_uid,
           created_at: old_vote.created_at,
           updated_at: old_vote.updated_at
         )
@@ -293,7 +294,11 @@ namespace :action_delegator do
         else
           votes_skipped += 1
           migrated_stats[:skipped_votes] += 1
-          puts "    ✗ Failed to migrate Vote ##{old_vote.id}: #{new_vote.errors.full_messages.join(", ")}"
+          if Decidim::Elections::Vote.exists?(question_id: new_question.id, voter_uid: new_voter_uid, response_option_id: new_response_id)
+            puts "    ✗ Skipped duplicate Vote for Question ##{new_question.id}, User #{new_voter_uid}, ResponseOption ##{new_response_id}"
+          else
+            puts "    ✗ Failed to migrate Vote ##{old_vote.id}: #{new_vote.errors.full_messages.join(", ")}"
+          end
         end
       end
 
