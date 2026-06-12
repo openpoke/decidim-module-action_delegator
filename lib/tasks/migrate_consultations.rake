@@ -279,7 +279,7 @@ namespace :action_delegator do
           next
         end
 
-        new_voter_uid = user.email.present? ? user.email : "#{user.id}_#{old_question.id}"
+        new_voter_uid = user.email.presence || "#{user.id}_#{old_question.id}"
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
