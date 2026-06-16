@@ -107,6 +107,10 @@ namespace :action_delegator do
         self.table_name = "decidim_users"
         self.inheritance_column = :_type_disabled
       end
+
+      class Versions < LegacyBase
+        self.table_name = "versions"
+      end
     end
 
     legacy_connection = Legacy::Consultation.connection
@@ -267,6 +271,13 @@ namespace :action_delegator do
       consultation = old_question.consultation
       old_question.votes.find_each do |old_vote|
         user = old_vote.author
+
+        granter = ""
+        versions = Legacy::Versions.where(item_type: "Decidim::Consultations::Vote", item_id: old_vote.id)
+        if versions.last&.whodunnit.present? && versions.last.whodunnit != user&.id.to_s
+          granter = "/granter-#{versions.last&.whodunnit}"
+        end
+
         unless user
           votes_skipped += 1
           migrated_stats[:skipped_votes] += 1
@@ -280,7 +291,7 @@ namespace :action_delegator do
           next
         end
 
-        new_voter_uid = "consultation-#{consultation.id}/#{user.email.presence || user.id}/#{user.nickname.presence}"
+        new_voter_uid = "consultation-#{consultation.id}/#{user.id}/#{user.username}#{granter}"
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
