@@ -264,6 +264,7 @@ namespace :action_delegator do
       votes_migrated = 0
       votes_skipped = 0
 
+      consultation = old_question.consultation
       old_question.votes.find_each do |old_vote|
         user = old_vote.author
         unless user
@@ -279,7 +280,7 @@ namespace :action_delegator do
           next
         end
 
-        new_voter_uid = "consultation-#{c.id}/#{user.email.presence || user.id}"
+        new_voter_uid = "consultation-#{consultation.id}/#{user.email.presence || user.id}/#{user.nickname.presence}"
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
