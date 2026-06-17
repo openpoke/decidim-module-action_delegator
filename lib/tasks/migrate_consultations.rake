@@ -1,5 +1,41 @@
 # frozen_string_literal: true
 
+# This task migrates legacy consultations data to the elections component.
+#
+# CONFIGURATION:
+#
+# By default, the task reads from the primary Rails database.
+#
+# To import from a different database, add a 'legacy' database configuration to config/database.yml:
+#
+#   development:
+#     primary:
+#       adapter: postgresql
+#       database: decidim_dev
+#       host: localhost
+#       # ... other config
+#
+#     legacy:
+#       adapter: postgresql
+#       database: legacy_consultations_db
+#       host: legacy-database-host  # Can be different from primary
+#       username: legacy_user
+#       password: <%= ENV.fetch("LEGACY_DB_PASSWORD", "") %>
+#       replica: true # Needed to not make rails want to execute migrations on this legacy database
+#       # ... other config
+#
+#   production:
+#     primary:
+#       # ... primary config
+#
+#     legacy:
+#       # ... legacy config for production
+#
+# The task will automatically:
+# - Use the 'legacy' database if configured
+# - Fall back to the primary database if 'legacy' is not defined
+# - Display which database is being used at startup
+
 namespace :action_delegator do
   desc "Migrate old decidim-consultations data to decidim-elections component"
   task :migrate_consultations, [:component_id, :consultation_id] => :environment do |_task, args|
@@ -8,7 +44,16 @@ namespace :action_delegator do
 
     if component_id.blank?
       puts "ERROR: component_id is required"
-      puts "Usage: rake action_delegator:migrate_consultations[COMPONENT_ID] or rake action_delegator:migrate_consultations[COMPONENT_ID,CONSULTATION_ID]"
+      puts ""
+      puts "Usage:"
+      puts "  rake action_delegator:migrate_consultations[COMPONENT_ID]"
+      puts "  rake action_delegator:migrate_consultations[COMPONENT_ID,CONSULTATION_ID]"
+      puts ""
+      puts "Environment variables (optional):"
+      puts "  FORCE_MIGRATION=true - Skip confirmation prompt"
+      puts ""
+      puts "For detailed configuration instructions, see the task comments or run:"
+      puts "  head -40 lib/tasks/migrate_consultations.rake"
       exit 1
     end
 
@@ -18,42 +63,59 @@ namespace :action_delegator do
       exit 1
     end
 
-    # Define inline models for old consultation tables (module no longer exists in Decidim)
     module Legacy
-      class Consultation < ApplicationRecord
+      class LegacyBase < ApplicationRecord
+        self.abstract_class = true
+
+        legacy_db_config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: "legacy", include_hidden: true)
+
+        connects_to database: { writing: :legacy, reading: :legacy } if legacy_db_config.present?
+      end
+
+      class Consultation < LegacyBase
         self.table_name = "decidim_consultations"
         has_many :questions, class_name: "Legacy::Question", foreign_key: :decidim_consultation_id
       end
 
-      class Question < ApplicationRecord
+      class Question < LegacyBase
         self.table_name = "decidim_consultations_questions"
         belongs_to :consultation, class_name: "Legacy::Consultation", foreign_key: :decidim_consultation_id
         has_many :responses, class_name: "Legacy::Response", foreign_key: :decidim_consultations_questions_id
         has_many :votes, class_name: "Legacy::Vote", foreign_key: :decidim_consultation_question_id
       end
 
-      class Response < ApplicationRecord
+      class Response < LegacyBase
         self.table_name = "decidim_consultations_responses"
         belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultations_questions_id
         belongs_to :response_group, class_name: "Legacy::ResponseGroup", foreign_key: :decidim_consultations_response_group_id, optional: true
       end
 
-      class ResponseGroup < ApplicationRecord
+      class ResponseGroup < LegacyBase
         self.table_name = "decidim_consultations_response_groups"
         belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultations_questions_id
         has_many :responses, class_name: "Legacy::Response", foreign_key: :decidim_consultations_response_group_id
       end
 
-      class Vote < ApplicationRecord
+      class Vote < LegacyBase
         self.table_name = "decidim_consultations_votes"
         belongs_to :question, class_name: "Legacy::Question", foreign_key: :decidim_consultation_question_id
         belongs_to :response, class_name: "Legacy::Response", foreign_key: :decidim_consultations_response_id
-        belongs_to :author, class_name: "Decidim::User", foreign_key: :decidim_author_id
+        belongs_to :author, class_name: "Legacy::User", foreign_key: :decidim_author_id
+      end
+
+      class User < LegacyBase
+        self.table_name = "decidim_users"
+        self.inheritance_column = :_type_disabled
+      end
+
+      class Versions < LegacyBase
+        self.table_name = "versions"
       end
     end
 
-    # Check if consultations table exists
-    unless ActiveRecord::Base.connection.table_exists?("decidim_consultations")
+    legacy_connection = Legacy::Consultation.connection
+
+    unless legacy_connection.table_exists?("decidim_consultations")
       puts "ERROR: decidim_consultations table not found. Make sure you have legacy data to migrate."
       exit 1
     end
@@ -98,6 +160,19 @@ namespace :action_delegator do
 
     puts "\nStarting migration of #{source_stats[:consultations]} consultations from decidim-consultations to decidim-elections"
     puts "Component: ##{component.id} - #{component.name}"
+
+    legacy_db_config = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: "legacy", include_hidden: true)
+
+    if legacy_db_config.present?
+      puts "Reading from database: '#{legacy_db_config.database}' (#{legacy_db_config.host || "localhost"})"
+      puts "Note: Using 'legacy' database configured in database.yml"
+    else
+      puts "Reading from database: Primary Rails database (no 'legacy' config found)"
+      puts "Note: To use a separate database, add a 'legacy' entry to config/database.yml"
+    end
+
+    puts "Writing to database: Primary Rails database"
+    puts ""
     puts "Consultations:"
     consultations.each do |c|
       puts "  • ##{c.id} - #{c.title}"
@@ -193,8 +268,14 @@ namespace :action_delegator do
       votes_migrated = 0
       votes_skipped = 0
 
+      consultation = old_question.consultation
       old_question.votes.find_each do |old_vote|
         user = old_vote.author
+
+        granter = ""
+        versions = Legacy::Versions.where(item_type: "Decidim::Consultations::Vote", item_id: old_vote.id)
+        granter = "/granter-#{versions.last&.whodunnit}" if versions.last&.whodunnit.present? && versions.last.whodunnit != user&.id.to_s
+
         unless user
           votes_skipped += 1
           migrated_stats[:skipped_votes] += 1
@@ -208,10 +289,11 @@ namespace :action_delegator do
           next
         end
 
+        new_voter_uid = "consultation-#{consultation.id}/#{user.id}/#{user.try(:username) || user.nickname}#{granter}"
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
-          voter_uid: user.to_global_id.to_s,
+          voter_uid: new_voter_uid,
           created_at: old_vote.created_at,
           updated_at: old_vote.updated_at
         )
@@ -222,7 +304,11 @@ namespace :action_delegator do
         else
           votes_skipped += 1
           migrated_stats[:skipped_votes] += 1
-          puts "    ✗ Failed to migrate Vote ##{old_vote.id}: #{new_vote.errors.full_messages.join(", ")}"
+          if Decidim::Elections::Vote.exists?(question_id: new_question.id, voter_uid: new_voter_uid, response_option_id: new_response_id)
+            puts "    ✗ Skipped duplicate Vote for Question ##{new_question.id}, User #{new_voter_uid}, ResponseOption ##{new_response_id}"
+          else
+            puts "    ✗ Failed to migrate Vote ##{old_vote.id}: #{new_vote.errors.full_messages.join(", ")}"
+          end
         end
       end
 
@@ -272,7 +358,7 @@ namespace :action_delegator do
           consultation.questions.order(:order).each_with_index do |old_question, index|
             new_question = Decidim::Elections::Question.new(
               election: election,
-              body: old_question.title.transform_values { |t| ActionController::Base.helpers.strip_tags(t) },
+              body: old_question.title.transform_values { |t| t.is_a?(String) ? ActionController::Base.helpers.strip_tags(t) : t },
               description: build_question_description(old_question),
               position: old_question.order || index,
               question_type: (old_question.max_votes.to_i > 1 ? "multiple_option" : "single_option"),
