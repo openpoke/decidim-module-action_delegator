@@ -291,7 +291,7 @@ namespace :action_delegator do
           next
         end
 
-        new_voter_uid = "consultation-#{consultation.id}/#{user.id}/#{user.username}#{granter}"
+        new_voter_uid = "consultation-#{consultation.id}/#{user.id}/#{user.try(:username) || user.nickname }#{granter}"
         new_vote = Decidim::Elections::Vote.new(
           question: new_question,
           response_option_id: new_response_id,
