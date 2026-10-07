@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email = %w(saulopefa@gmail.com ivan@pokecode.net)
   s.license = "AGPL-3.0"
   s.homepage = "https://github.com/Openpoke/decidim-module-action_delegator"
-  s.required_ruby_version = "~> 3.3.0"
+  s.required_ruby_version = "~> 3.4"
 
   s.name = "decidim-action_delegator"
   s.summary = "A Decidim ActionDelegator module"

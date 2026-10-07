@@ -19,7 +19,7 @@ gem "decidim-action_delegator", path: "."
 gem "decidim-elections", DECIDIM_VERSION
 gem "decidim-initiatives", DECIDIM_VERSION
 
-gem "decidim-extra_censuses", github: "Openpoke/decidim-module-extra_censuses", branch: "main"
+gem "decidim-extra_censuses", github: "platoniq/decidim-module-extra_censuses", branch: "main"
 
 gem "bootsnap", "~> 1.4"
 
