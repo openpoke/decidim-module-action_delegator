@@ -14,7 +14,7 @@ module Decidim
             form = InvitationParticipantForm.new(
               name: participant.email.split("@").first&.gsub(/\W/, ""),
               email: participant.email.downcase,
-              organization: organization,
+              organization:,
               admin: false
             )
 

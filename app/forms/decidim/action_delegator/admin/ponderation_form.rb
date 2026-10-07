@@ -15,7 +15,7 @@ module Decidim
 
         def name_uniqueness
           return unless setting
-          return unless setting.ponderations.where(name: name).where.not(id: id).any?
+          return unless setting.ponderations.where(name:).where.not(id:).any?
 
           errors.add(:name, :taken)
         end

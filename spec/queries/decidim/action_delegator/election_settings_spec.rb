@@ -6,15 +6,15 @@ module Decidim
   module ActionDelegator
     describe ElectionSettings do
       let(:organization) { create(:organization) }
-      let(:component) { create(:elections_component, organization: organization) }
-      let!(:setting1) { create(:setting, organization: organization) }
-      let!(:setting2) { create(:setting, organization: organization) }
-      let!(:other_setting) { create(:setting, organization: organization) }
+      let(:component) { create(:elections_component, organization:) }
+      let!(:setting1) { create(:setting, organization:) }
+      let!(:setting2) { create(:setting, organization:) }
+      let!(:other_setting) { create(:setting, organization:) }
 
       subject { described_class.new(election) }
 
       describe "#initialize" do
-        let(:election) { create(:election, component: component) }
+        let(:election) { create(:election, component:) }
 
         it "assigns the election" do
           expect(subject.instance_variable_get(:@election)).to eq(election)
@@ -28,7 +28,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users",
               census_settings: {
                 "authorization_handlers" => {
@@ -56,7 +56,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users",
               census_settings: {
                 "authorization_handlers" => {
@@ -84,7 +84,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users",
               census_settings: {
                 "authorization_handlers" => {
@@ -106,7 +106,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users",
               census_settings: {
                 "authorization_handlers" => {
@@ -131,7 +131,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users",
               census_settings: {
                 "authorization_handlers" => {
@@ -158,7 +158,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users",
               census_settings: {
                 "authorization_handlers" => {
@@ -185,7 +185,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users",
               census_settings: {
                 "authorization_handlers" => {
@@ -211,7 +211,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "internal_users"
             )
           end
@@ -276,7 +276,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: nil,
               census_settings: {
                 "authorization_handlers" => {
@@ -302,7 +302,7 @@ module Decidim
               :election,
               :published,
               :ongoing,
-              component: component,
+              component:,
               census_manifest: "unknown_census",
               census_settings: {
                 "authorization_handlers" => {

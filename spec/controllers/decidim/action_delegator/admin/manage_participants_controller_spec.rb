@@ -92,7 +92,7 @@ module Decidim
         end
 
         describe "DELETE #destroy_all" do
-          let!(:participants) { create_list(:participant, 3, setting: setting) }
+          let!(:participants) { create_list(:participant, 3, setting:) }
           let(:params) { { setting_id: setting.id } }
 
           it "removes all and redirects to the participants page" do

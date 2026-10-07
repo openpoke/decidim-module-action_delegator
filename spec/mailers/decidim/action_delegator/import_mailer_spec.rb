@@ -18,7 +18,7 @@ module Decidim
           {
             email: "email@example.org",
             phone: "600000000",
-            weight: weight,
+            weight:,
             decidim_action_delegator_ponderation_id: ponderation.id
           }
         end
@@ -76,8 +76,8 @@ module Decidim
         let(:invalid_csv_file) { File.open("spec/fixtures/invalid_delegations.csv") }
         let!(:granter_email) { "granter@example.org" }
         let!(:grantee_email) { "grantee@example.org" }
-        let!(:granter) { create(:user, email: granter_email, organization: organization) }
-        let!(:grantee) { create(:user, email: grantee_email, organization: organization) }
+        let!(:granter) { create(:user, email: granter_email, organization:) }
+        let!(:grantee) { create(:user, email: grantee_email, organization:) }
 
         let(:params) do
           {

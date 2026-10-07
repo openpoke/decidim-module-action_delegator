@@ -5,7 +5,7 @@ require "spec_helper"
 describe "Admin manages participants" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization) }
-  let(:user) { create(:user, :admin, :confirmed, organization: organization) }
+  let(:user) { create(:user, :admin, :confirmed, organization:) }
 
   before do
     switch_to_host(organization.host)
@@ -14,8 +14,8 @@ describe "Admin manages participants" do
 
   context "when listing participants" do
     let(:setting) { create(:setting, organization:) }
-    let!(:participant) { create(:participant, setting: setting) }
-    let!(:collection) { create_list(:participant, collection_size, setting: setting) }
+    let!(:participant) { create(:participant, setting:) }
+    let!(:collection) { create_list(:participant, collection_size, setting:) }
     let(:collection_size) { 50 }
 
     before do
@@ -55,7 +55,7 @@ describe "Admin manages participants" do
 
   context "when destroying a participant" do
     let(:setting) { create(:setting, organization:) }
-    let!(:participant) { create(:participant, setting: setting, decidim_user: user) }
+    let!(:participant) { create(:participant, setting:, decidim_user: user) }
 
     before do
       visit decidim_admin_action_delegator.setting_participants_path(setting)
@@ -79,7 +79,7 @@ describe "Admin manages participants" do
 
   context "when removing census" do
     let(:setting) { create(:setting, organization:) }
-    let!(:collection) { create_list(:participant, 3, setting: setting) }
+    let!(:collection) { create_list(:participant, 3, setting:) }
 
     before do
       visit decidim_admin_action_delegator.setting_participants_path(setting)
@@ -100,7 +100,7 @@ describe "Admin manages participants" do
     end
 
     context "when participant has voted" do
-      let!(:participant) { create(:participant, setting: setting, decidim_user: user) }
+      let!(:participant) { create(:participant, setting:, decidim_user: user) }
 
       it "does not remove the census" do
         expect(page).to have_content(user.email)
@@ -122,11 +122,11 @@ describe "Admin manages participants" do
 
   context "when inviting participants" do
     let(:setting) { create(:setting, organization:, authorization_method:) }
-    let(:user_exists) { create(:user, organization: organization, last_sign_in_at: 1.day.ago) }
-    let(:user_with_invitation) { create(:user, organization: organization, invitation_sent_at: 1.day.ago) }
-    let!(:participant_exists) { create(:participant, setting: setting, decidim_user_id: user_exists.id) }
-    let!(:participant_non_exists) { create(:participant, setting: setting, decidim_user_id: nil, email: email) }
-    let!(:participant_with_invitation) { create(:participant, setting: setting, decidim_user_id: user_with_invitation.id) }
+    let(:user_exists) { create(:user, organization:, last_sign_in_at: 1.day.ago) }
+    let(:user_with_invitation) { create(:user, organization:, invitation_sent_at: 1.day.ago) }
+    let!(:participant_exists) { create(:participant, setting:, decidim_user_id: user_exists.id) }
+    let!(:participant_non_exists) { create(:participant, setting:, decidim_user_id: nil, email:) }
+    let!(:participant_with_invitation) { create(:participant, setting:, decidim_user_id: user_with_invitation.id) }
 
     def participant_name(participant)
       participant.email.split("@").first&.gsub(/\W/, "")

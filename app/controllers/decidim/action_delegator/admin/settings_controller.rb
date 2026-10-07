@@ -29,7 +29,7 @@ module Decidim
           CreateSetting.call(@form, copy_from_setting) do
             on(:ok) do
               notice = I18n.t("settings.create.success", scope: "decidim.action_delegator.admin")
-              redirect_to decidim_admin_action_delegator.settings_path, notice: notice
+              redirect_to decidim_admin_action_delegator.settings_path, notice:
             end
 
             on(:invalid) do |_error|
@@ -53,7 +53,7 @@ module Decidim
           UpdateSetting.call(@form, current_setting, copy_from_setting) do
             on(:ok) do
               notice = I18n.t("settings.update.success", scope: "decidim.action_delegator.admin")
-              redirect_to decidim_admin_action_delegator.settings_path, notice: notice
+              redirect_to decidim_admin_action_delegator.settings_path, notice:
             end
 
             on(:invalid) do |_error|
@@ -78,7 +78,7 @@ module Decidim
         private
 
         def setting_params
-          params.require(:setting).permit(:max_grants)
+          params.expect(setting: [:max_grants])
         end
 
         def build_setting

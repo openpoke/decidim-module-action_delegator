@@ -5,7 +5,7 @@ require "spec_helper"
 module Decidim
   module ActionDelegator
     describe SettingPresenter do
-      let!(:setting) { create(:setting, title: title, description: description) }
+      let!(:setting) { create(:setting, title:, description:) }
       let(:title) do
         {
           "en" => "Action Delegator",

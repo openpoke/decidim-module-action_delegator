@@ -9,7 +9,7 @@ module Decidim
       helper_method :delegations, :active_pairs
 
       def index
-        enforce_permission_to :read, :user, current_user: current_user
+        enforce_permission_to :read, :user, current_user:
       end
 
       private

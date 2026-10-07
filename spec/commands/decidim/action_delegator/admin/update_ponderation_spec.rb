@@ -14,9 +14,9 @@ describe Decidim::ActionDelegator::Admin::UpdatePonderation do
   let(:form) do
     double(
       invalid?: invalid,
-      weight: weight,
-      name: name,
-      setting: setting
+      weight:,
+      name:,
+      setting:
     )
   end
 

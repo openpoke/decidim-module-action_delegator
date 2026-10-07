@@ -57,9 +57,9 @@ module Decidim
           {
             id: option.id,
             body: translated_attribute(option.body),
-            votes_count: votes_count,
-            votes_count_text: votes_count_text,
-            votes_percent: votes_percent,
+            votes_count:,
+            votes_count_text:,
+            votes_percent:,
             votes_percent_text: number_to_percentage(votes_percent, precision: 1),
             ponderation_id: ponderation&.id,
             ponderation_title: ponderation&.title || "-"
@@ -85,9 +85,9 @@ module Decidim
             id: option.id,
             question_id: question.id,
             body: translated_attribute(option.body),
-            votes_count: votes_count,
+            votes_count:,
             votes_count_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: votes_count),
-            votes_percent: votes_percent,
+            votes_percent:,
             votes_percent_text: number_to_percentage(votes_percent, precision: 1)
           }
         end
@@ -109,13 +109,13 @@ module Decidim
         participants = votes.map(&:voter_uid).uniq.size
 
         {
-          participants: participants,
+          participants:,
           participants_text: I18n.t("participants_count", scope: "decidim.action_delegator.elections.admin.dashboard.questions_table", count: participants),
-          unweighted_votes: unweighted_votes,
+          unweighted_votes:,
           unweighted_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: unweighted_votes),
-          weighted_votes: weighted_votes,
+          weighted_votes:,
           weighted_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: weighted_votes),
-          delegated_votes: delegated_votes,
+          delegated_votes:,
           delegated_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: delegated_votes)
         }
       end
@@ -149,13 +149,13 @@ module Decidim
         participants = votes.map(&:voter_uid).uniq.size
 
         {
-          participants: participants,
+          participants:,
           participants_text: I18n.t("participants_count", scope: "decidim.action_delegator.elections.admin.dashboard.questions_table", count: participants),
-          unweighted_votes: unweighted_votes,
+          unweighted_votes:,
           unweighted_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: unweighted_votes),
-          weighted_votes: weighted_votes,
+          weighted_votes:,
           weighted_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: weighted_votes),
-          delegated_votes: delegated_votes,
+          delegated_votes:,
           delegated_votes_text: I18n.t("votes_count", scope: "decidim.elections.admin.dashboard.questions_table", count: delegated_votes)
         }
       end

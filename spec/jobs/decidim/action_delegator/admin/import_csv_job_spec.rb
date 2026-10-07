@@ -58,7 +58,7 @@ RSpec.describe Decidim::ActionDelegator::Admin::ImportCsvJob do
       {
         email: "email@example.org",
         phone: "600000000",
-        weight: weight,
+        weight:,
         decidim_action_delegator_ponderation_id: ponderation.id
       }
     end

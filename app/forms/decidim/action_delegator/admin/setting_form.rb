@@ -26,7 +26,7 @@ module Decidim
         def only_one_active_setting_per_phone_required
           return unless active && authorization_method.in?(%w(phone both))
 
-          errors.add(:base, :only_one_active_setting_per_phone_required) if Setting.active.phone_required.where.not(id: id).any?
+          errors.add(:base, :only_one_active_setting_per_phone_required) if Setting.active.phone_required.where.not(id:).any?
         end
       end
     end

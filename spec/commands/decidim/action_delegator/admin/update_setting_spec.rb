@@ -17,11 +17,11 @@ describe Decidim::ActionDelegator::Admin::UpdateSetting do
   let(:form) do
     double(
       invalid?: invalid,
-      max_grants: max_grants,
-      authorization_method: authorization_method,
-      title: title,
-      description: description,
-      active: active
+      max_grants:,
+      authorization_method:,
+      title:,
+      description:,
+      active:
     )
   end
 
@@ -59,11 +59,11 @@ describe Decidim::ActionDelegator::Admin::UpdateSetting do
     let(:form) do
       double(
         invalid?: invalid,
-        max_grants: max_grants,
-        authorization_method: authorization_method,
-        title: title,
-        description: description,
-        active: active,
+        max_grants:,
+        authorization_method:,
+        title:,
+        description:,
+        active:,
         copy_from_setting: copy_from_setting.id
       )
     end

@@ -6,10 +6,10 @@ describe "delegations_verifier code verification" do
   let(:organization) do
     create(:organization, available_authorizations: ["delegations_verifier"])
   end
-  let!(:user) { create(:user, :confirmed, organization: organization) }
-  let(:setting) { create(:setting, organization: organization, active: true, authorization_method: authorization_method, skip_injection: true) }
+  let!(:user) { create(:user, :confirmed, organization:) }
+  let(:setting) { create(:setting, organization:, active: true, authorization_method:, skip_injection: true) }
   let(:authorization_method) { :both }
-  let!(:participant) { create(:participant, phone: phone, email: email, setting: setting) }
+  let!(:participant) { create(:participant, phone:, email:, setting:) }
   let(:phone) { "612345678" }
   let(:email) { user.email }
 
@@ -18,7 +18,7 @@ describe "delegations_verifier code verification" do
       :authorization,
       :pending,
       name: "delegations_verifier",
-      user: user,
+      user:,
       verification_metadata: prior_verification_metadata
     )
   end
@@ -81,7 +81,7 @@ describe "delegations_verifier code verification" do
 
         expect(page).to have_content("Verification code successfully reset. Please re-enter your phone number.")
 
-        expect(Decidim::Authorization.where(user: user, name: "delegations_verifier").count).to eq(0)
+        expect(Decidim::Authorization.where(user:, name: "delegations_verifier").count).to eq(0)
       end
     end
   end

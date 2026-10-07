@@ -10,7 +10,7 @@ module Decidim
       let(:organization) { create(:organization) }
       let(:setting) { create(:setting, organization:, authorization_method:) }
       let(:authorization_method) { :both }
-      let(:participant) { create(:participant, setting: setting) }
+      let(:participant) { create(:participant, setting:) }
       let(:user) { create(:user, :admin, :confirmed, organization:) }
       let(:params) do
         { setting_id: setting.id }
@@ -26,14 +26,14 @@ module Decidim
 
       describe "#index" do
         it "returns a success response" do
-          get :index, params: params
+          get(:index, params:)
           expect(response).to be_successful
         end
       end
 
       describe "#new" do
         it "returns a success response" do
-          get :new, params: params
+          get(:new, params:)
           expect(response).to be_successful
         end
       end
@@ -45,7 +45,7 @@ module Decidim
           end
 
           it "redirects to the participants list" do
-            expect { post :create, params: params }.to change(Participant, :count).by(1)
+            expect { post :create, params: }.to change(Participant, :count).by(1)
 
             expect(flash[:notice]).to eq(I18n.t("decidim.action_delegator.admin.participants.create.success"))
             expect(response).to redirect_to(setting_participants_path(setting))
@@ -58,7 +58,7 @@ module Decidim
           end
 
           it "renders the new form" do
-            post :create, params: params
+            post(:create, params:)
 
             expect(flash[:error]).to eq(I18n.t("decidim.action_delegator.admin.participants.create.error"))
             expect(response).to render_template(:new)
@@ -105,7 +105,7 @@ module Decidim
 
       describe "#destroy" do
         context "when successful" do
-          let!(:participant) { create(:participant, setting: setting) }
+          let!(:participant) { create(:participant, setting:) }
 
           it "redirects to the participants list" do
             expect { delete :destroy, params: edit_params }.to change(Participant, :count).by(-1)
@@ -116,7 +116,7 @@ module Decidim
         end
 
         context "when unsuccessful" do
-          let!(:participant) { create(:participant, setting: setting) }
+          let!(:participant) { create(:participant, setting:) }
 
           before do
             allow_any_instance_of(Participant).to receive(:destroy).and_return(false) # rubocop:disable RSpec/AnyInstance

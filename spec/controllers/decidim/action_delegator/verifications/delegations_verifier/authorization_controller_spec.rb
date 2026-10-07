@@ -10,17 +10,17 @@ module Decidim
           routes { Decidim::ActionDelegator::Verifications::DelegationsVerifier::Engine.routes }
 
           let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier)) }
-          let(:user) { create(:user, :confirmed, organization: organization) }
-          let(:setting) { create(:setting, organization: organization, authorization_method: method, active: true, skip_injection: true) }
+          let(:user) { create(:user, :confirmed, organization:) }
+          let(:setting) { create(:setting, organization:, authorization_method: method, active: true, skip_injection: true) }
           let(:method) { :email }
-          let!(:participant) { create(:participant, setting: setting, decidim_user: decidim_user, email: email, phone: phone) }
-          let(:decidim_user) { create(:user, organization: organization) }
+          let!(:participant) { create(:participant, setting:, decidim_user:, email:, phone:) }
+          let(:decidim_user) { create(:user, organization:) }
           let(:email) { user.email }
           let(:phone) { "1234" }
           let(:params) do
             {
-              email: email,
-              phone: phone
+              email:,
+              phone:
             }
           end
 
@@ -34,7 +34,7 @@ module Decidim
               expect(Decidim::Authorization.last).to be_nil
               expect(participant.decidim_user).not_to eq(user)
 
-              post :create, params: params
+              post(:create, params:)
 
               expect(response).to have_http_status(:ok)
               expect(response).to render_template(:new)
@@ -50,7 +50,7 @@ module Decidim
               expect(Decidim::Authorization.last).to be_nil
               expect(participant.decidim_user).not_to eq(user)
 
-              post :create, params: params
+              post(:create, params:)
 
               expect(response).to have_http_status(:redirect)
               expect(flash.notice).to include("Congratulations. You have been successfully verified.")
@@ -65,7 +65,7 @@ module Decidim
               expect(Decidim::Authorization.last).to be_nil
               expect(participant.decidim_user).not_to eq(user)
 
-              post :create, params: params
+              post(:create, params:)
 
               expect(response).to have_http_status(:redirect)
               expect(flash.notice).to include("Thanks! We have sent an SMS to your phone.")

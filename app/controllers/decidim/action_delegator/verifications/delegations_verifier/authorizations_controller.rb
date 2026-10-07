@@ -20,8 +20,8 @@ module Decidim
           def new # rubocop:disable Metrics/CyclomaticComplexity
             authorization.destroy! if authorization&.persisted? && !authorization&.granted?
 
-            enforce_permission_to :create, :authorization, authorization: authorization
-            @form = delegation_form = form(DelegationsVerifierForm).instance(active_settings: active_settings)
+            enforce_permission_to(:create, :authorization, authorization:)
+            @form = delegation_form = form(DelegationsVerifierForm).instance(active_settings:)
 
             return unless ActionDelegator.authorize_on_login && @form&.setting&.verify_with_email?
 
@@ -36,16 +36,16 @@ module Decidim
           end
 
           def create
-            enforce_permission_to :create, :authorization, authorization: authorization
+            enforce_permission_to(:create, :authorization, authorization:)
 
-            @form = delegation_form = form(DelegationsVerifierForm).from_params(params, active_settings: active_settings)
+            @form = delegation_form = form(DelegationsVerifierForm).from_params(params, active_settings:)
 
             Decidim::Verifications::PerformAuthorizationStep.call(authorization, @form) do
               on(:ok) do
                 if delegation_form&.setting&.phone_required?
                   flash[:notice] = t("authorizations.create.success", scope: "decidim.verifications.sms")
                   authorization_method = Decidim::Verifications::Adapter.from_element(authorization.name)
-                  redirect_to authorization_method.resume_authorization_path(redirect_url: redirect_url)
+                  redirect_to authorization_method.resume_authorization_path(redirect_url:)
                 else
                   grant_and_redirect(delegation_form&.participant)
                 end
@@ -58,13 +58,13 @@ module Decidim
           end
 
           def edit
-            enforce_permission_to :update, :authorization, authorization: authorization
+            enforce_permission_to(:update, :authorization, authorization:)
 
             @form = form(Decidim::Verifications::Sms::ConfirmationForm).from_params(params)
           end
 
           def update
-            enforce_permission_to :update, :authorization, authorization: authorization
+            enforce_permission_to(:update, :authorization, authorization:)
 
             @form = form(Decidim::Verifications::Sms::ConfirmationForm).from_params(params)
 
@@ -83,7 +83,7 @@ module Decidim
           end
 
           def destroy
-            enforce_permission_to :destroy, :authorization, authorization: authorization
+            enforce_permission_to(:destroy, :authorization, authorization:)
 
             authorization.destroy!
             flash[:notice] = t("authorizations.destroy.success", scope: "decidim.verifications.sms")

@@ -17,11 +17,11 @@ describe Decidim::ActionDelegator::Admin::CreateSetting do
   let(:form) do
     double(
       invalid?: invalid,
-      max_grants: max_grants,
-      authorization_method: authorization_method,
-      title: title,
-      description: description,
-      active: active,
+      max_grants:,
+      authorization_method:,
+      title:,
+      description:,
+      active:,
       context: double(current_organization: organization)
     )
   end
@@ -62,11 +62,11 @@ describe Decidim::ActionDelegator::Admin::CreateSetting do
     let(:form) do
       double(
         invalid?: invalid,
-        max_grants: max_grants,
-        authorization_method: authorization_method,
-        title: title,
-        description: description,
-        active: active,
+        max_grants:,
+        authorization_method:,
+        title:,
+        description:,
+        active:,
         context: double(current_organization: organization),
         copy_from_setting: copy_from_setting.id
       )

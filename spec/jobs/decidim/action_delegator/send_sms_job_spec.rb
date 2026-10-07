@@ -12,7 +12,7 @@ module Decidim::ActionDelegator
 
     let(:client) { double("client") }
     let(:response) { double("response") }
-    let(:response_body) { { send_sms_response: { result: result } } }
+    let(:response_body) { { send_sms_response: { result: } } }
 
     describe "queue" do
       it "is queued to default" do

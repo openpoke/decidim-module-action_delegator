@@ -5,9 +5,9 @@ require "spec_helper"
 module Decidim
   module ActionDelegator
     describe Participant do
-      subject { build(:participant, ponderation: ponderation, email: email, phone: phone, setting: setting, decidim_user: decidim_user) }
+      subject { build(:participant, ponderation:, email:, phone:, setting:, decidim_user:) }
 
-      let(:setting) { create(:setting, authorization_method: authorization_method) }
+      let(:setting) { create(:setting, authorization_method:) }
       let(:organization) { setting.organization }
       let(:authorization_method) { :email }
       let(:ponderation) { create(:ponderation) }
@@ -74,10 +74,10 @@ module Decidim
                  skip_injection: true,
                  census_settings: { "setting_id" => setting.id.to_s })
         end
-        let!(:question) { create(:election_question, :with_response_options, skip_injection: true, election: election) }
+        let!(:question) { create(:election_question, :with_response_options, skip_injection: true, election:) }
         let!(:vote) do
           create(:election_vote,
-                 question: question,
+                 question:,
                  response_option: question.response_options.first,
                  voter_uid: user.to_global_id.to_s)
         end
@@ -126,7 +126,7 @@ module Decidim
       end
 
       context "when creating a new user" do
-        let(:new_user) { create(:participant, email: email, setting: setting) }
+        let(:new_user) { create(:participant, email:, setting:) }
 
         it "sets the decidim_user on creation" do
           expect(new_user.decidim_user).to eq(user)
@@ -163,7 +163,7 @@ module Decidim
         it { is_expected.not_to be_valid }
 
         context "and setting is different" do
-          let(:existing_setting) { create(:setting, organization: organization) }
+          let(:existing_setting) { create(:setting, organization:) }
 
           it { is_expected.to be_valid }
         end
@@ -177,7 +177,7 @@ module Decidim
         it { is_expected.not_to be_valid }
 
         context "and setting is different" do
-          let(:existing_setting) { create(:setting, organization: organization) }
+          let(:existing_setting) { create(:setting, organization:) }
 
           it { is_expected.to be_valid }
         end
@@ -202,7 +202,7 @@ module Decidim
           it { is_expected.not_to be_valid }
 
           context "and setting is different" do
-            let(:existing_setting) { create(:setting, organization: organization) }
+            let(:existing_setting) { create(:setting, organization:) }
 
             it { is_expected.to be_valid }
           end
@@ -210,7 +210,7 @@ module Decidim
 
         context "and an authorization exists" do
           let(:user_phone) { phone }
-          let!(:authorization) { create(:authorization, user: user, name: "delegations_verifier", metadata: { phone: user_phone }, unique_id: uniq_id) }
+          let!(:authorization) { create(:authorization, user:, name: "delegations_verifier", metadata: { phone: user_phone }, unique_id: uniq_id) }
           let(:uniq_id) { Digest::MD5.hexdigest("#{user_phone}-#{user.organization.id}-#{Digest::MD5.hexdigest(Rails.application.secret_key_base)}") }
 
           it "has a related user" do

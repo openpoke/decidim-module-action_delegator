@@ -5,7 +5,7 @@ require "spec_helper"
 module Decidim
   module ActionDelegator
     describe Setting do
-      subject { build(:setting, authorization_method: authorization_method) }
+      subject { build(:setting, authorization_method:) }
 
       let(:authorization_method) { :email }
       let(:start_voting_date) { 1.day.ago }

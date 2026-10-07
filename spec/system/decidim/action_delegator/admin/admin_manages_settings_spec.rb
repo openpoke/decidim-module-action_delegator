@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe "Admin manages settings" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
-  let(:organization) { create(:organization, available_authorizations: available_authorizations) }
+  let(:organization) { create(:organization, available_authorizations:) }
   let(:available_authorizations) { ["delegations_verifier"] }
   let(:user) { create(:user, :admin, :confirmed, organization:) }
 

@@ -29,7 +29,7 @@ module Decidim
           CreatePonderation.call(@form) do
             on(:ok) do
               notice = I18n.t("ponderations.create.success", scope: "decidim.action_delegator.admin")
-              redirect_to setting_ponderations_path(current_setting), notice: notice
+              redirect_to setting_ponderations_path(current_setting), notice:
             end
 
             on(:invalid) do |_error|
@@ -52,7 +52,7 @@ module Decidim
           UpdatePonderation.call(@form, ponderation) do
             on(:ok) do
               notice = I18n.t("ponderations.update.success", scope: "decidim.action_delegator.admin")
-              redirect_to setting_ponderations_path(current_setting), notice: notice
+              redirect_to setting_ponderations_path(current_setting), notice:
             end
 
             on(:invalid) do |_error|
@@ -67,10 +67,10 @@ module Decidim
 
           if ponderation.destroy
             notice = I18n.t("ponderations.destroy.success", scope: "decidim.action_delegator.admin")
-            redirect_to setting_ponderations_path(current_setting), notice: notice
+            redirect_to setting_ponderations_path(current_setting), notice:
           else
             error = I18n.t("ponderations.destroy.error", scope: "decidim.action_delegator.admin")
-            redirect_to setting_ponderations_path(current_setting), flash: { error: error }
+            redirect_to setting_ponderations_path(current_setting), flash: { error: }
           end
         end
 

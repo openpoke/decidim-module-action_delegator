@@ -44,7 +44,7 @@ module Decidim
       end
 
       def message
-        I18n.t("decidim.action_delegator.sms_message", code: code)
+        I18n.t("decidim.action_delegator.sms_message", code:)
       end
     end
   end

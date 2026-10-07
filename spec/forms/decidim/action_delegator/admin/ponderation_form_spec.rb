@@ -7,14 +7,14 @@ describe Decidim::ActionDelegator::Admin::PonderationForm do
 
   let(:context) do
     {
-      setting: setting
+      setting:
     }
   end
   let(:setting) { create(:setting) }
   let(:attributes) do
     {
-      weight: weight,
-      name: name
+      weight:,
+      name:
     }
   end
 

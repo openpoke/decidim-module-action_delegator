@@ -7,16 +7,16 @@ describe Decidim::ActionDelegator::Admin::ParticipantForm do
 
   let(:context) do
     {
-      setting: setting
+      setting:
     }
   end
   let(:setting) { create(:setting, :with_ponderations, authorization_method:) }
   let(:authorization_method) { :both }
   let(:attributes) do
     {
-      email: email,
-      phone: phone,
-      decidim_action_delegator_ponderation_id: decidim_action_delegator_ponderation_id
+      email:,
+      phone:,
+      decidim_action_delegator_ponderation_id:
     }
   end
   let(:email) { "example@example.org" }

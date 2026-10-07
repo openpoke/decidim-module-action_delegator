@@ -30,7 +30,7 @@ module Decidim
           CreateDelegation.call(@form, current_user, current_setting) do
             on(:ok) do
               notice = I18n.t("delegations.create.success", scope: "decidim.action_delegator.admin")
-              redirect_to setting_delegations_path(current_setting), notice: notice
+              redirect_to setting_delegations_path(current_setting), notice:
             end
 
             on(:error) do |error|
@@ -45,10 +45,10 @@ module Decidim
 
           if delegation.destroy
             notice = I18n.t("delegations.destroy.success", scope: "decidim.action_delegator.admin")
-            redirect_to setting_delegations_path(current_setting), notice: notice
+            redirect_to setting_delegations_path(current_setting), notice:
           else
             error = I18n.t("delegations.destroy.error", scope: "decidim.action_delegator.admin")
-            redirect_to setting_delegations_path(current_setting), flash: { error: error }
+            redirect_to setting_delegations_path(current_setting), flash: { error: }
           end
         end
 

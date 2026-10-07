@@ -12,7 +12,7 @@ describe Decidim::ActionDelegator::SettingsHelper do
       :election,
       :published,
       :ongoing,
-      component: component,
+      component:,
       census_manifest: "internal_users",
       census_settings: {
         "authorization_handlers" => {
@@ -58,8 +58,8 @@ describe Decidim::ActionDelegator::SettingsHelper do
 
     context "when resource is an Election" do
       let(:resource) { election }
-      let!(:delegation) { create(:delegation, setting: setting, grantee: user) }
-      let!(:other_delegation) { create(:delegation, setting: setting) }
+      let!(:delegation) { create(:delegation, setting:, grantee: user) }
+      let!(:other_delegation) { create(:delegation, setting:) }
 
       it "returns delegations for the user as grantee" do
         expect(subject).to be_a(ActiveRecord::Relation)
@@ -88,7 +88,7 @@ describe Decidim::ActionDelegator::SettingsHelper do
 
       context "when user has voted" do
         before do
-          create(:election_vote, question: question, response_option: question.response_options.first, voter_uid: user.to_global_id.to_s)
+          create(:election_vote, question:, response_option: question.response_options.first, voter_uid: user.to_global_id.to_s)
         end
 
         it { is_expected.to be true }
@@ -100,7 +100,7 @@ describe Decidim::ActionDelegator::SettingsHelper do
 
       context "when user has voted with different voter_uid format" do
         before do
-          create(:election_vote, question: question, response_option: question.response_options.first, voter_uid: "different-uid")
+          create(:election_vote, question:, response_option: question.response_options.first, voter_uid: "different-uid")
         end
 
         it { is_expected.to be false }
@@ -291,7 +291,7 @@ describe Decidim::ActionDelegator::SettingsHelper do
 
       before do
         create(:election_vote, question:, response_option:, voter_uid: user.to_global_id.to_s)
-        create(:election_vote, question: question, response_option: response_option, voter_uid: user2.to_global_id.to_s)
+        create(:election_vote, question:, response_option:, voter_uid: user2.to_global_id.to_s)
       end
 
       it "counts multiple participants correctly" do

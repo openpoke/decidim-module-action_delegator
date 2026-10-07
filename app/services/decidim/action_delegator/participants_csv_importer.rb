@@ -39,9 +39,9 @@ module Decidim
         weight = ponderation_value(row["weight"].strip) if row["weight"].present?
 
         params = {
-          email: email,
-          phone: phone,
-          weight: weight,
+          email:,
+          phone:,
+          weight:,
           decidim_action_delegator_ponderation_id: find_ponderation(weight)&.id
         }
 
@@ -116,8 +116,8 @@ module Decidim
         when String
           @current_setting.ponderations.find_by(name: weight).presence
         when Numeric
-          ponderation = @current_setting.ponderations.find_by(weight: weight)
-          ponderation.presence || @current_setting.ponderations.create(name: "weight-#{weight}", weight: weight)
+          ponderation = @current_setting.ponderations.find_by(weight:)
+          ponderation.presence || @current_setting.ponderations.create(name: "weight-#{weight}", weight:)
         end
       end
 
