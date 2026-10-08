@@ -68,7 +68,7 @@ module Decidim
 
             @form = form(Decidim::Verifications::Sms::ConfirmationForm).from_params(params)
 
-            Decidim::Verifications::ConfirmUserAuthorization.call(authorization, @form, session) do
+            Decidim::Verifications::ConfirmUserAuthorization.call(authorization, @form) do
               on(:ok) do
                 flash[:notice] = t("authorizations.update.success", scope: "decidim.verifications.sms")
 
@@ -78,6 +78,16 @@ module Decidim
               on(:invalid) do
                 flash.now[:alert] = t("authorizations.update.error", scope: "decidim.verifications.sms")
                 render :edit
+              end
+
+              on(:locked) do
+                flash.now[:alert] = t("authorizations.update.locked", scope: "decidim.verifications.sms")
+                render :edit, status: :too_many_requests
+              end
+
+              on(:expired) do
+                flash[:alert] = t("authorizations.update.expired", scope: "decidim.verifications.sms")
+                redirect_to action: :new
               end
             end
           end
