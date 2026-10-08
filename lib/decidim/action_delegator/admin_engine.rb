@@ -44,6 +44,16 @@ module Decidim
         root to: "delegations#index"
       end
 
+      initializer "decidim_admin_action_delegator.admin_mount_routes" do
+        Decidim::Core::Engine.routes do
+          extend Decidim::Routes::LocaleRedirects
+
+          scope "/:locale", **locale_scope_options do
+            mount Decidim::ActionDelegator::AdminEngine, at: "/admin/action_delegator", as: "decidim_admin_action_delegator"
+          end
+        end
+      end
+
       initializer "decidim_admin_action_delegator.admin_user_menu" do
         Decidim.menu :admin_user_menu do |menu|
           menu.add_item :action_delegator,

@@ -84,7 +84,7 @@ describe "Admin manages delegations" do
 
       expect(page).to have_no_content("#{delegation.grantee.name} (#{delegation.grantee.email})")
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_delegations_path(setting.id))
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Delegation successfully destroyed")
     end
   end
 

@@ -46,7 +46,7 @@ describe "Admin manages ponderations" do
         find("*[type=submit]").click
       end
 
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("New ponderation created successfully")
       expect(page).to have_content("Producer")
       expect(page).to have_content("2.0")
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting.id))
@@ -72,7 +72,7 @@ describe "Admin manages ponderations" do
       expect(page).to have_no_content(ponderation.name)
       expect(page).to have_no_content(ponderation.weight)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting.id))
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Ponderation destroyed successfully")
     end
 
     context "when ponderation has participants" do

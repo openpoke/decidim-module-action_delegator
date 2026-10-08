@@ -46,7 +46,7 @@ describe "Admin manages participants" do
         find("*[type=submit]").click
       end
 
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Participants created successfully")
       expect(page).to have_content("foo@example.org")
       expect(page).to have_content("12345")
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_participants_path(setting.id))
@@ -73,7 +73,7 @@ describe "Admin manages participants" do
       expect(page).to have_no_content(participant.email)
       expect(page).to have_no_content(participant.phone)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_participants_path(setting.id))
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Participant successfully destroyed")
     end
   end
 
@@ -92,7 +92,7 @@ describe "Admin manages participants" do
 
       accept_confirm { click_on "Remove census" }
 
-      expect(page).to have_content("successfully")
+      expect(page).to have_content("3 entries were successfully deleted from the census")
 
       collection.each do |participant|
         expect(page).to have_no_content(participant.email)
@@ -151,7 +151,7 @@ describe "Admin manages participants" do
       it "invites all non-existent users" do
         perform_enqueued_jobs { click_on I18n.t("participants.index.send_invitation_link", scope: i18n_scope) }
 
-        expect(page).to have_admin_callout("successfully")
+        expect(page).to have_admin_callout("Users invited successfully")
         expect(page).to have_css("tr[data-participant-id=\"#{participant_non_exists.id}\"]")
         within "tr[data-participant-id=\"#{participant_non_exists.id}\"]" do
           expect(find("td:nth-of-type(1)")).to have_content(participant_non_exists.email)
@@ -167,7 +167,7 @@ describe "Admin manages participants" do
           expect(find("td:nth-of-type(4)")).to have_content(participant_name(participant_non_exists))
         end
 
-        expect(page).to have_admin_callout("successfully")
+        expect(page).to have_admin_callout("User invited successfully")
       end
 
       context "when resend invitation" do
@@ -177,7 +177,7 @@ describe "Admin manages participants" do
             click_on I18n.t("actions.resend", scope: "decidim.admin")
           end
 
-          expect(page).to have_admin_callout("successfully")
+          expect(page).to have_admin_callout("Invitation successfully resent")
         end
       end
     end

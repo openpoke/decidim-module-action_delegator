@@ -81,13 +81,15 @@ describe "Admin imports participants from csv" do
     end
 
     context "when users already exists" do
-      emails = %w(foo@example.org bar@example.org baz@example.org)
-      users = []
-
-      before do
-        users = emails.map do |email|
+      let(:emails) { %w(foo@example.org bar@example.org baz@example.org) }
+      let(:users) do
+        emails.map do |email|
           create(:user, :admin, :confirmed, organization:, email:)
         end
+      end
+
+      before do
+        users
       end
 
       it "shows user names" do
