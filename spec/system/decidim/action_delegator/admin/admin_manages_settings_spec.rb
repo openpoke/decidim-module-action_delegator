@@ -176,6 +176,7 @@ describe "Admin manages settings" do
       end
 
       expect(page).to have_admin_callout("successfully")
+      expect(page).to hve_content("XXXXXXX")
       expect(page).to have_content("Updated Setting")
       expect(page).to have_current_path(decidim_admin_action_delegator.settings_path)
     end

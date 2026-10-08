@@ -21,7 +21,7 @@ module Decidim
             post :invite_all_users, on: :collection
             post :resend_invitation, on: :member
           end
-          resources :manage_participants, only: [:new, :create, :destroy_all] do
+          resources :manage_participants, only: [:new, :create] do
             delete :destroy_all, on: :collection
           end
           resources :manage_delegations, only: [:new, :create]
@@ -105,9 +105,7 @@ module Decidim
                         decidim_admin_elections.results_election_path(current_election),
                         params
         end
-      end
 
-      initializer "decidim_admin_action_delegator.admin_election_menu" do
         Decidim.menu :admin_delegation_results_submenu do |menu|
           election = @election
           current_component_admin_proxy = election ? Decidim::EngineRouter.admin_proxy(election.component) : nil
