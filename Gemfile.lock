@@ -1112,7 +1112,6 @@ DEPENDENCIES
   letter_opener_web
   parallel_tests (~> 4.2)
   puma (>= 6.3.1)
-  selma (= 0.5.2)
   shoulda-matchers
   web-console
 
