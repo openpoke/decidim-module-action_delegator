@@ -59,11 +59,3 @@ Decidim.register_global_engine(
   Decidim::ActionDelegator::Engine,
   at: "/action_delegator"
 )
-
-# Admin side of the delegations management. Admins can overlook all delegations and
-# create their own
-Decidim.register_global_engine(
-  :decidim_admin_action_delegator,
-  Decidim::ActionDelegator::AdminEngine,
-  at: "/admin/action_delegator"
-)

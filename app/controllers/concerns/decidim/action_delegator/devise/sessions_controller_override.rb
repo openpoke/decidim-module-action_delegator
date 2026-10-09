@@ -25,7 +25,7 @@ module Decidim
 
             form = Decidim::ActionDelegator::Verifications::DelegationsVerifierForm.new.with_context(
               current_user: user,
-              active_settings: active_settings
+              active_settings:
             )
             return unless form.valid? && form&.setting&.verify_with_email? && !authorization.granted?
 
@@ -44,7 +44,7 @@ module Decidim
 
           def delegations_verifier_authorization(user)
             @delegations_verifier_authorization ||= Decidim::Authorization.find_or_initialize_by(
-              user: user,
+              user:,
               name: "delegations_verifier"
             )
           end

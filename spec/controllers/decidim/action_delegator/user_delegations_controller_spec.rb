@@ -8,10 +8,10 @@ module Decidim
       routes { Decidim::ActionDelegator::Engine.routes }
 
       let(:organization) { create(:organization) }
-      let(:user) { create(:user, :confirmed, organization: organization) }
-      let(:granter) { create(:user, :confirmed, organization: organization) }
-      let(:setting) { create(:setting, organization: organization) }
-      let!(:delegation) { create(:delegation, setting: setting, granter: granter, grantee: user) }
+      let(:user) { create(:user, :confirmed, organization:) }
+      let(:granter) { create(:user, :confirmed, organization:) }
+      let(:setting) { create(:setting, organization:) }
+      let!(:delegation) { create(:delegation, setting:, granter:, grantee: user) }
 
       before do
         request.env["decidim.current_organization"] = organization

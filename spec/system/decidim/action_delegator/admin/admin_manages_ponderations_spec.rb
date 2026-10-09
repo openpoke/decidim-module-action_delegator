@@ -5,7 +5,7 @@ require "spec_helper"
 describe "Admin manages ponderations" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization) }
-  let(:user) { create(:user, :admin, :confirmed, organization: organization) }
+  let(:user) { create(:user, :admin, :confirmed, organization:) }
 
   before do
     switch_to_host(organization.host)
@@ -14,8 +14,8 @@ describe "Admin manages ponderations" do
 
   context "when listing ponderations" do
     let(:setting) { create(:setting, organization:) }
-    let!(:ponderation) { create(:ponderation, setting: setting) }
-    let!(:collection) { create_list(:ponderation, collection_size, setting: setting) }
+    let!(:ponderation) { create(:ponderation, setting:) }
+    let!(:collection) { create_list(:ponderation, collection_size, setting:) }
     let(:collection_size) { 50 }
 
     before do
@@ -46,7 +46,7 @@ describe "Admin manages ponderations" do
         find("*[type=submit]").click
       end
 
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("New ponderation created successfully")
       expect(page).to have_content("Producer")
       expect(page).to have_content("2.0")
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting.id))
@@ -55,7 +55,7 @@ describe "Admin manages ponderations" do
 
   context "when destroying a ponderation" do
     let(:setting) { create(:setting, organization:) }
-    let!(:ponderation) { create(:ponderation, setting: setting) }
+    let!(:ponderation) { create(:ponderation, setting:) }
     let!(:participant) { nil }
 
     before do
@@ -72,11 +72,11 @@ describe "Admin manages ponderations" do
       expect(page).to have_no_content(ponderation.name)
       expect(page).to have_no_content(ponderation.weight)
       expect(page).to have_current_path(decidim_admin_action_delegator.setting_ponderations_path(setting.id))
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Ponderation destroyed successfully")
     end
 
     context "when ponderation has participants" do
-      let!(:participant) { create(:participant, setting: setting, ponderation: ponderation) }
+      let!(:participant) { create(:participant, setting:, ponderation:) }
 
       it "does not destroy the ponderation" do
         expect(page).to have_content(ponderation.name)

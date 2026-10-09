@@ -6,7 +6,7 @@ module Decidim
   module ActionDelegator
     describe ElectionCensusUsers do
       let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier dummy_authorization_workflow)) }
-      let(:election) { create(:election, component: component, census_manifest: census_manifest, census_settings: census_settings) }
+      let(:election) { create(:election, component:, census_manifest:, census_settings:) }
       let(:census_manifest) { "action_delegator_census" }
       let(:census_settings) do
         {
@@ -18,31 +18,31 @@ module Decidim
           }
         }
       end
-      let(:component) { create(:elections_component, organization: organization) }
-      let!(:setting) { create(:setting, max_grants: 2, organization: organization) }
-      let!(:user_unconfirmed) { create(:user, organization: organization) }
-      let!(:user_confirmed) { create(:user, :confirmed, organization: organization) }
-      let!(:user_blocked) { create(:user, :blocked, organization: organization) }
-      let!(:user_deleted) { create(:user, :deleted, organization: organization) }
+      let(:component) { create(:elections_component, organization:) }
+      let!(:setting) { create(:setting, max_grants: 2, organization:) }
+      let!(:user_unconfirmed) { create(:user, organization:) }
+      let!(:user_confirmed) { create(:user, :confirmed, organization:) }
+      let!(:user_blocked) { create(:user, :blocked, organization:) }
+      let!(:user_deleted) { create(:user, :deleted, organization:) }
       let!(:user_in_other_org) { create(:user) }
-      let!(:user_in_participants) { create(:user, :confirmed, organization: organization) }
-      let!(:granter_user_authorized_without_authorization) { create(:user, :confirmed, organization: organization) }
-      let!(:granter_user_unauthorized) { create(:user, :confirmed, organization: organization) }
-      let!(:grantee_user_unauthorized) { create(:user, :confirmed, organization: organization) }
-      let!(:grantee_user_authorized) { create(:user, :confirmed, organization: organization) }
-      let!(:user_authorized_by_dummy) { create(:user, :confirmed, organization: organization) }
-      let!(:user_authorized_by_dummy_invalid) { create(:user, :confirmed, organization: organization) }
-      let!(:user_authorized_by_delegations) { create(:user, :confirmed, organization: organization) }
-      let!(:user_authorized_by_both) { create(:user, :confirmed, organization: organization) }
+      let!(:user_in_participants) { create(:user, :confirmed, organization:) }
+      let!(:granter_user_authorized_without_authorization) { create(:user, :confirmed, organization:) }
+      let!(:granter_user_unauthorized) { create(:user, :confirmed, organization:) }
+      let!(:grantee_user_unauthorized) { create(:user, :confirmed, organization:) }
+      let!(:grantee_user_authorized) { create(:user, :confirmed, organization:) }
+      let!(:user_authorized_by_dummy) { create(:user, :confirmed, organization:) }
+      let!(:user_authorized_by_dummy_invalid) { create(:user, :confirmed, organization:) }
+      let!(:user_authorized_by_delegations) { create(:user, :confirmed, organization:) }
+      let!(:user_authorized_by_both) { create(:user, :confirmed, organization:) }
       let!(:authorization_dummy) { create(:authorization, user: user_authorized_by_dummy, name: "dummy_authorization_workflow", metadata: { "postal_code" => "08001" }) }
       let!(:authorization_dummy_invalid) { create(:authorization, user: user_authorized_by_dummy_invalid, name: "dummy_authorization_workflow", metadata: { "postal_code" => "08002" }) }
       let!(:authorization_delegations) { create(:authorization, user: user_authorized_by_delegations, name: "delegations_verifier", metadata: { "setting" => [setting.id] }) }
       let!(:authorization_both_dummy) { create(:authorization, user: user_authorized_by_both, name: "dummy_authorization_workflow", metadata: { "postal_code" => "08001" }) }
       let!(:authorization_both_delegations) { create(:authorization, user: user_authorized_by_both, name: "delegations_verifier", metadata: { "setting" => [setting.id] }) }
       let!(:authorization_grantee) { create(:authorization, user: grantee_user_authorized, name: "delegations_verifier", metadata: { "setting" => [setting.id] }) }
-      let!(:participant) { create(:participant, setting: setting, decidim_user: user_in_participants) }
-      let!(:delegation_authorized) { create(:delegation, setting: setting, grantee: grantee_user_authorized, granter: granter_user_authorized_without_authorization) }
-      let!(:delegation_unauthorized) { create(:delegation, setting: setting, grantee: grantee_user_unauthorized, granter: granter_user_unauthorized) }
+      let!(:participant) { create(:participant, setting:, decidim_user: user_in_participants) }
+      let!(:delegation_authorized) { create(:delegation, setting:, grantee: grantee_user_authorized, granter: granter_user_authorized_without_authorization) }
+      let!(:delegation_unauthorized) { create(:delegation, setting:, grantee: grantee_user_unauthorized, granter: granter_user_unauthorized) }
       let!(:authorization_unconfirmed) { create(:authorization, user: user_unconfirmed, name: "delegations_verifier", metadata: { "setting" => [setting.id] }) }
       let!(:authorization_blocked) { create(:authorization, user: user_blocked, name: "delegations_verifier", metadata: { "setting" => [setting.id] }) }
       let!(:authorization_deleted) { create(:authorization, user: user_deleted, name: "delegations_verifier", metadata: { "setting" => [setting.id] }) }

@@ -32,7 +32,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when subject is not delegation or setting" do
       let(:action) do
-        { scope: scope, action: :index, subject: :other }
+        { scope:, action: :index, subject: :other }
       end
 
       it_behaves_like "permission is not set"
@@ -40,7 +40,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when listing delegations" do
       let(:action) do
-        { scope: scope, action: :index, subject: :delegation }
+        { scope:, action: :index, subject: :delegation }
       end
 
       context "when the user is admin" do
@@ -56,7 +56,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when creating a delegation" do
       let(:action) do
-        { scope: scope, action: :create, subject: :delegation }
+        { scope:, action: :create, subject: :delegation }
       end
 
       context "when the user is admin" do
@@ -72,7 +72,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when destroying a delegation" do
       let(:action) do
-        { scope: scope, action: :destroy, subject: :delegation }
+        { scope:, action: :destroy, subject: :delegation }
       end
       let(:context) { { resource: create(:delegation) } }
 
@@ -89,7 +89,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when listing settings" do
       let(:action) do
-        { scope: scope, action: :index, subject: :setting }
+        { scope:, action: :index, subject: :setting }
       end
 
       context "when the user is admin" do
@@ -105,7 +105,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when creating a setting" do
       let(:action) do
-        { scope: scope, action: :create, subject: :setting }
+        { scope:, action: :create, subject: :setting }
       end
 
       context "when the user is admin" do
@@ -121,7 +121,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when destroying a setting" do
       let(:action) do
-        { scope: scope, action: :destroy, subject: :setting }
+        { scope:, action: :destroy, subject: :setting }
       end
       let(:context) { { resource: create(:setting) } }
 
@@ -144,7 +144,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when working with ponderations" do
       let(:action) do
-        { scope: scope, action: :index, subject: :ponderation }
+        { scope:, action: :index, subject: :ponderation }
       end
 
       context "when the user is admin" do
@@ -160,7 +160,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when destroying a ponderation" do
       let(:action) do
-        { scope: scope, action: :destroy, subject: :ponderation }
+        { scope:, action: :destroy, subject: :ponderation }
       end
       let(:context) { { resource: create(:ponderation) } }
 
@@ -177,7 +177,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when working with participants" do
       let(:action) do
-        { scope: scope, action: :create, subject: :participant }
+        { scope:, action: :create, subject: :participant }
       end
 
       context "when the user is admin" do
@@ -193,7 +193,7 @@ describe Decidim::ActionDelegator::Admin::Permissions do
 
     context "when destroying a participant" do
       let(:action) do
-        { scope: scope, action: :destroy, subject: :participant }
+        { scope:, action: :destroy, subject: :participant }
       end
       let(:context) { { resource: create(:participant) } }
 

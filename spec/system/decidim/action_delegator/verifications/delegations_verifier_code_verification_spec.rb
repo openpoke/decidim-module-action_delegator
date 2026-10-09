@@ -6,10 +6,10 @@ describe "delegations_verifier code verification" do
   let(:organization) do
     create(:organization, available_authorizations: ["delegations_verifier"])
   end
-  let!(:user) { create(:user, :confirmed, organization: organization) }
-  let(:setting) { create(:setting, organization: organization, active: true, authorization_method: authorization_method, skip_injection: true) }
+  let!(:user) { create(:user, :confirmed, organization:) }
+  let(:setting) { create(:setting, organization:, active: true, authorization_method:, skip_injection: true) }
   let(:authorization_method) { :both }
-  let!(:participant) { create(:participant, phone: phone, email: email, setting: setting) }
+  let!(:participant) { create(:participant, phone:, email:, setting:) }
   let(:phone) { "612345678" }
   let(:email) { user.email }
 
@@ -18,10 +18,12 @@ describe "delegations_verifier code verification" do
       :authorization,
       :pending,
       name: "delegations_verifier",
-      user: user,
-      verification_metadata: prior_verification_metadata
+      user:,
+      verification_metadata: prior_verification_metadata,
+      locked_at:
     )
   end
+  let(:locked_at) { nil }
 
   let(:verification_metadata) do
     authorization.reload.verification_metadata
@@ -38,9 +40,10 @@ describe "delegations_verifier code verification" do
     let(:prior_verification_metadata) do
       {
         verification_code: "111111",
-        code_sent_at: 1.day.ago
+        code_sent_at:
       }
     end
+    let(:code_sent_at) { 1.minute.ago }
 
     it "shows a form to the user to fill in the verification code" do
       expect(page).to have_content("Enter the verification code you received")
@@ -73,6 +76,26 @@ describe "delegations_verifier code verification" do
           expect(page).to have_content("Congratulations. You have been successfully verified.")
         end
       end
+
+      context "when verification code has expired" do
+        let(:code_sent_at) { 1.day.ago }
+        let(:attempted_verification_code) { verification_code }
+
+        it "shows an expired message" do
+          expect(page).to have_content("The verification code has expired. Please request a new one.")
+          expect(Decidim::Authorization.where(user:, name: "delegations_verifier").where.not(granted_at: nil)).to be_empty
+        end
+      end
+
+      context "when authorization is locked" do
+        let(:locked_at) { Time.current }
+        let(:attempted_verification_code) { verification_code }
+
+        it "shows a locked message" do
+          expect(page).to have_content("Too many failed attempts. Please try again later or request a new code.")
+          expect(authorization.reload).not_to be_granted
+        end
+      end
     end
 
     context "when resetting the code" do
@@ -81,7 +104,7 @@ describe "delegations_verifier code verification" do
 
         expect(page).to have_content("Verification code successfully reset. Please re-enter your phone number.")
 
-        expect(Decidim::Authorization.where(user: user, name: "delegations_verifier").count).to eq(0)
+        expect(Decidim::Authorization.where(user:, name: "delegations_verifier").count).to eq(0)
       end
     end
   end

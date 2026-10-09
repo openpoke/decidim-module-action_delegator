@@ -17,7 +17,7 @@ module Decidim
       end
 
       describe "#index" do
-        let!(:delegation) { create(:delegation, setting: setting) }
+        let!(:delegation) { create(:delegation, setting:) }
 
         it "renders decidim/action_delegator/admin/delegations layout" do
           get :index
@@ -61,7 +61,7 @@ module Decidim
           let(:setting) { create(:setting) }
 
           it "does not create the delegation" do
-            expect { post :create, params: params }.not_to change(Delegation, :count)
+            expect { post :create, params: }.not_to change(Delegation, :count)
           end
         end
 
@@ -69,7 +69,7 @@ module Decidim
           let(:granter) { create(:user) }
 
           it "does not create the delegation" do
-            expect { post :create, params: params }.not_to change(Delegation, :count)
+            expect { post :create, params: }.not_to change(Delegation, :count)
           end
         end
 
@@ -77,17 +77,17 @@ module Decidim
           let(:grantee) { create(:user) }
 
           it "does not create the delegation" do
-            expect { post :create, params: params }.not_to change(Delegation, :count)
+            expect { post :create, params: }.not_to change(Delegation, :count)
           end
         end
 
         context "when successful" do
           it "creates a delegation" do
-            expect { post :create, params: params }.to change(Delegation, :count).by(1)
+            expect { post :create, params: }.to change(Delegation, :count).by(1)
           end
 
           it "redirects to the setting index" do
-            post :create, params: params
+            post(:create, params:)
             expect(response).to redirect_to(setting_delegations_path(setting))
           end
         end
@@ -102,7 +102,7 @@ module Decidim
       end
 
       describe "#destroy" do
-        let!(:delegation) { create(:delegation, setting: setting) }
+        let!(:delegation) { create(:delegation, setting:) }
         let(:params) { { id: delegation.id, setting_id: setting.id } }
 
         context "when the setting belongs to another organization" do
@@ -117,7 +117,7 @@ module Decidim
 
         context "when successful" do
           it "destroys the specified delegation" do
-            expect { delete :destroy, params: params }.to change(Delegation, :count).by(-1)
+            expect { delete :destroy, params: }.to change(Delegation, :count).by(-1)
 
             expect(response).to redirect_to(setting_delegations_path(setting.id))
             expect(flash[:notice]).to eq(I18n.t("decidim.action_delegator.admin.delegations.destroy.success"))
@@ -130,7 +130,7 @@ module Decidim
           end
 
           it "shows an error" do
-            delete :destroy, params: params
+            delete(:destroy, params:)
 
             expect(response).to redirect_to(setting_delegations_path(setting.id))
             expect(flash[:error]).to eq(I18n.t("decidim.action_delegator.admin.delegations.destroy.error"))

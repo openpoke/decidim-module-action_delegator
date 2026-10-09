@@ -14,8 +14,8 @@ describe Decidim::ActionDelegator::Admin::DelegationForm do
     {
       granter_id: granter&.id,
       grantee_id: grantee&.id,
-      granter_email: granter_email,
-      grantee_email: grantee_email
+      granter_email:,
+      grantee_email:
     }
   end
   let!(:granter_user) { create(:user, organization:) }
@@ -176,8 +176,8 @@ describe Decidim::ActionDelegator::Admin::DelegationForm do
         {
           granter_id: granter&.id,
           grantee_id: grantee&.id,
-          granter_email: granter_email,
-          grantee_email: grantee_email
+          granter_email:,
+          grantee_email:
         }
       end
 

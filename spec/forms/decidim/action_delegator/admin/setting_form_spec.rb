@@ -11,9 +11,9 @@ describe Decidim::ActionDelegator::Admin::SettingForm do
       title:,
       description:,
       max_grants: 5,
-      authorization_method: authorization_method,
-      copy_from_setting_id: copy_from_setting_id,
-      active: active
+      authorization_method:,
+      copy_from_setting_id:,
+      active:
     }
   end
   let(:title) { { ca: "Títol", es: "Título", en: "Title" } }

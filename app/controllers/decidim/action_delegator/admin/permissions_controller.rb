@@ -9,7 +9,7 @@ module Decidim
 
           SyncParticipantsJob.perform_later(current_setting)
           notice = I18n.t("permissions.sync.started", scope: "decidim.action_delegator.admin")
-          redirect_to decidim_admin_action_delegator.settings_path, notice: notice
+          redirect_to decidim_admin_action_delegator.settings_path, notice:
         end
       end
     end

@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe "Admin manages settings" do
   let(:i18n_scope) { "decidim.action_delegator.admin" }
-  let(:organization) { create(:organization, available_authorizations: available_authorizations) }
+  let(:organization) { create(:organization, available_authorizations:) }
   let(:available_authorizations) { ["delegations_verifier"] }
   let(:user) { create(:user, :admin, :confirmed, organization:) }
 
@@ -84,7 +84,7 @@ describe "Admin manages settings" do
         find("*[type=submit]").click
       end
 
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Settings saved successfully")
       expect(page).to have_content("Test Setting")
       expect(page).to have_current_path(decidim_admin_action_delegator.settings_path)
     end
@@ -143,7 +143,7 @@ describe "Admin manages settings" do
         click_on "Create"
       end
 
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Settings saved successfully")
       expect(page).to have_content("Copied Setting")
 
       new_setting = Decidim::ActionDelegator::Setting.where("title ->> 'en' = ?", "Copied Setting").first
@@ -175,7 +175,7 @@ describe "Admin manages settings" do
         find("*[type=submit]").click
       end
 
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Settings saved successfully")
       expect(page).to have_content("Updated Setting")
       expect(page).to have_current_path(decidim_admin_action_delegator.settings_path)
     end
@@ -212,7 +212,7 @@ describe "Admin manages settings" do
         click_on "Save"
       end
 
-      expect(page).to have_admin_callout("successfully")
+      expect(page).to have_admin_callout("Settings saved successfully")
       first_setting.reload
       expect(first_setting.participants.count).to eq(first_setting_count + second_setting_count)
     end

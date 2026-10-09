@@ -12,8 +12,8 @@ describe Decidim::ActionDelegator::Admin::CsvImportForm do
   let(:setting_id) { setting.id }
   let(:attributes) do
     {
-      csv_file: csv_file,
-      setting_id: setting_id
+      csv_file:,
+      setting_id:
     }
   end
 

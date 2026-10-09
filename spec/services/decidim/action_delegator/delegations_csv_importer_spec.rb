@@ -3,9 +3,9 @@
 require "spec_helper"
 
 describe Decidim::ActionDelegator::DelegationsCsvImporter do
-  let(:current_user) { create(:user, :confirmed, :admin, organization: organization) }
+  let(:current_user) { create(:user, :confirmed, :admin, organization:) }
   let(:organization) { create(:organization) }
-  let(:current_setting) { create(:setting, organization: organization) }
+  let(:current_setting) { create(:setting, organization:) }
   let(:valid_csv_file) { File.open("spec/fixtures/valid_delegations.csv") }
   let(:invalid_csv_file) { File.open("spec/fixtures/invalid_delegations.csv") }
   let(:valid_csv_with_uppercase) { File.open("spec/fixtures/valid_delegations_with_uppercase.csv") }
@@ -20,8 +20,8 @@ describe Decidim::ActionDelegator::DelegationsCsvImporter do
 
   let!(:granter_email) { "granter@example.org" }
   let!(:grantee_email) { "grantee@example.org" }
-  let!(:granter) { create(:user, email: granter_email, organization: organization) }
-  let!(:grantee) { create(:user, email: grantee_email, organization: organization) }
+  let!(:granter) { create(:user, email: granter_email, organization:) }
+  let!(:grantee) { create(:user, email: grantee_email, organization:) }
 
   describe "#import!" do
     context "when the rows in the csv file are valid" do

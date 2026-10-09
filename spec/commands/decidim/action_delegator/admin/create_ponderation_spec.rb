@@ -13,9 +13,9 @@ describe Decidim::ActionDelegator::Admin::CreatePonderation do
   let(:form) do
     double(
       invalid?: invalid,
-      weight: weight,
-      name: name,
-      setting: setting
+      weight:,
+      name:,
+      setting:
     )
   end
 

@@ -9,15 +9,15 @@ describe Decidim::ActionDelegator::Admin::CreateParticipant do
   let(:phone) { "123456789" }
   let(:setting) { create(:setting) }
   let(:invalid) { false }
-  let(:ponderation) { create(:ponderation, setting: setting) }
+  let(:ponderation) { create(:ponderation, setting:) }
 
   let(:form) do
     double(
       invalid?: invalid,
-      email: email,
-      phone: phone,
+      email:,
+      phone:,
       decidim_action_delegator_ponderation_id: ponderation.id,
-      setting: setting
+      setting:
     )
   end
 

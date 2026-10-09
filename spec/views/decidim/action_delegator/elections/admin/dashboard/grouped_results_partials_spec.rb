@@ -87,7 +87,7 @@ describe "Grouped admin results partials" do # rubocop:disable RSpec/DescribeCla
       )
 
       render partial: "decidim/action_delegator/elections/admin/dashboard/by_type_and_weight",
-             locals: { election: election, election_questions: [question] }
+             locals: { election:, election_questions: [question] }
     end
 
     it "renders grouped headers and options included in the groups" do
@@ -126,7 +126,7 @@ describe "Grouped admin results partials" do # rubocop:disable RSpec/DescribeCla
       allow(view).to receive(:elections_question_weighted_responses).with(question).and_return(responses_by_weight)
 
       render partial: "decidim/action_delegator/elections/admin/dashboard/sum_of_weights",
-             locals: { election: election, election_questions: [question] }
+             locals: { election:, election_questions: [question] }
     end
 
     it "renders options normally when question is not grouped" do

@@ -25,3 +25,4 @@ npm_debug.log
 
 tags
 *.gem
+/public/sw.js*

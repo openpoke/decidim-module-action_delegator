@@ -8,7 +8,7 @@ module Decidim::ActionDelegator
 
     let(:mobile_phone_number) { "+12 345 678 901" }
     let(:code) { "1a4s9b" }
-    let(:response_body) { { send_sms_response: { result: result } } }
+    let(:response_body) { { send_sms_response: { result: } } }
 
     describe "#deliver_code" do
       before do

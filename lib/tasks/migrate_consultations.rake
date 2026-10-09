@@ -132,7 +132,7 @@ namespace :action_delegator do
       return [] unless ActiveRecord::Base.connection.table_exists?("decidim_resource_permissions") && question_ids.any?
 
       handlers = []
-      perms = ActiveRecord::Base.connection.execute(<<-SQL.squish)
+      perms = ActiveRecord::Base.connection.execute(<<~SQL.squish)
         SELECT permissions FROM decidim_resource_permissions
         WHERE resource_type = 'Decidim::Consultations::Question'
         AND resource_id IN (#{question_ids.join(",")})
@@ -237,7 +237,7 @@ namespace :action_delegator do
 
         # Check if already migrated (idempotency check by matching title)
         existing_election = Decidim::Elections::Election.joins(:component)
-                                                        .where(component: component, title: consultation.title)
+                                                        .where(component:, title: consultation.title)
                                                         .first
 
         if existing_election
@@ -251,7 +251,7 @@ namespace :action_delegator do
 
         # Create Election from Consultation
         election = Decidim::Elections::Election.new(
-          component: component,
+          component:,
           title: consultation.title,
           description: consultation.description,
           start_at: consultation.start_voting_date&.to_time&.beginning_of_day,
@@ -259,8 +259,8 @@ namespace :action_delegator do
           published_at: consultation.published_at,
           published_results_at: consultation.results_published_at,
           results_availability: "after_end",
-          census_manifest: census_manifest,
-          census_settings: census_settings,
+          census_manifest:,
+          census_settings:,
           created_at: consultation.created_at,
           updated_at: consultation.updated_at
         )
@@ -271,7 +271,7 @@ namespace :action_delegator do
 
           consultation.questions.order(:order).each_with_index do |old_question, index|
             new_question = Decidim::Elections::Question.new(
-              election: election,
+              election:,
               body: old_question.title.transform_values { |t| ActionController::Base.helpers.strip_tags(t) },
               description: build_question_description(old_question),
               position: old_question.order || index,

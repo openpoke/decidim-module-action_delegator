@@ -7,9 +7,9 @@ module Decidim
     subject { authorizer }
 
     let(:organization) { create(:organization, available_authorizations: %w(delegations_verifier)) }
-    let(:user) { create(:user, organization: organization) }
-    let(:participatory_process) { create(:participatory_process, organization: organization) }
-    let(:component) { create(:elections_component, permissions: permissions, organization: organization, participatory_space: participatory_process) }
+    let(:user) { create(:user, organization:) }
+    let(:participatory_process) { create(:participatory_process, organization:) }
+    let(:component) { create(:elections_component, permissions:, organization:, participatory_space: participatory_process) }
     let(:resource) { nil }
     let(:action) { "vote" }
     let(:permissions) { { action => permission } }
@@ -20,7 +20,7 @@ module Decidim
     let(:authorization_method) { :email }
 
     let!(:authorization) do
-      create(:authorization, :granted, user: user, name: "delegations_verifier", metadata: metadata)
+      create(:authorization, :granted, user:, name: "delegations_verifier", metadata:)
     end
 
     let(:metadata) { {} }
@@ -64,24 +64,24 @@ module Decidim
     end
 
     context "when there are settings" do
-      let!(:setting) { create(:setting, organization:, authorization_method: authorization_method, active: true, skip_injection: true) }
+      let!(:setting) { create(:setting, organization:, authorization_method:, active: true, skip_injection: true) }
       let(:options) { { "setting" => setting.id } }
       let(:explanations) { %w(not_in_census_html email) }
-      let!(:participants) { [create(:participant, email: email, phone: phone, setting: setting, decidim_user: decidim_user)] }
-      let(:decidim_user) { create(:user, organization: organization) }
-      let!(:ponderations) { create_list(:ponderation, 2, setting: setting) }
+      let!(:participants) { [create(:participant, email:, phone:, setting:, decidim_user:)] }
+      let(:decidim_user) { create(:user, organization:) }
+      let!(:ponderations) { create_list(:ponderation, 2, setting:) }
 
       it_behaves_like "authorized"
 
       context "and is in another participatory space" do
-        let(:participatory_process) { create(:participatory_process, organization: organization) }
-        let(:component) { create(:elections_component, permissions: permissions, organization: organization, participatory_space: participatory_process) }
+        let(:participatory_process) { create(:participatory_process, organization:) }
+        let(:component) { create(:elections_component, permissions:, organization:, participatory_space: participatory_process) }
 
         it_behaves_like "authorized"
       end
 
       context "and authorization is not granted" do
-        before { authorization.update!(user: user, granted_at: nil) }
+        before { authorization.update!(user:, granted_at: nil) }
 
         it_behaves_like "pending"
       end

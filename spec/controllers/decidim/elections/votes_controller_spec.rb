@@ -28,14 +28,14 @@ module Decidim
           }
         )
       end
-      let!(:existing_vote) { create(:election_vote, question: question, response_option: question.response_options.first, voter_uid: "some-id") }
+      let!(:existing_vote) { create(:election_vote, question:, response_option: question.response_options.first, voter_uid: "some-id") }
       let!(:question) { create(:election_question, :with_response_options, :voting_enabled, election:) }
       let!(:second_question) { create(:election_question, :with_response_options, :voting_enabled, election:) }
       let(:setting) { create(:setting, organization: component.organization) }
       let(:delegate_user) { create(:user, :confirmed, organization: component.organization) }
-      let!(:participant) { create(:participant, setting: setting, decidim_user: user) }
-      let!(:delegation) { create(:delegation, setting: setting, granter: user, grantee: delegate_user) }
-      let!(:user_authorization) { create(:authorization, :granted, user: user, name: "delegations_verifier", metadata: { setting: setting.id }) }
+      let!(:participant) { create(:participant, setting:, decidim_user: user) }
+      let!(:delegation) { create(:delegation, setting:, granter: user, grantee: delegate_user) }
+      let!(:user_authorization) { create(:authorization, :granted, user:, name: "delegations_verifier", metadata: { setting: setting.id }) }
       let!(:delegate_user_authorization) { create(:authorization, :granted, user: delegate_user, name: "delegations_verifier", metadata: { setting: setting.id }) }
 
       let(:params) do
@@ -70,7 +70,7 @@ module Decidim
 
       describe "GET new" do
         it "renders the new vote form" do
-          get :new, params: params
+          get(:new, params:)
           expect(response).to have_http_status(:ok)
           expect(assigns(:form)).to be_a(Decidim::Elections::Censuses::InternalUsersForm)
           expect(subject).to render_template("decidim/elections/votes/new")
@@ -82,7 +82,7 @@ module Decidim
           end
 
           it "renders the new vote form (delegation logic affects redirect)" do
-            get :new, params: params
+            get(:new, params:)
             expect(response).to have_http_status(:ok)
             expect(subject).to render_template("decidim/elections/votes/new")
           end
@@ -91,7 +91,7 @@ module Decidim
 
       describe "GET show" do
         it "redirects to the election path" do
-          get :show, params: params
+          get(:show, params:)
           expect(response).to redirect_to(election_path)
         end
       end
@@ -103,7 +103,7 @@ module Decidim
         end
 
         it "renders the voting form" do
-          get :show, params: params
+          get(:show, params:)
           expect(response).to have_http_status(:ok)
           expect(controller.helpers.question).to eq(question)
           expect(subject).to render_template(:show)
@@ -148,7 +148,7 @@ module Decidim
 
       describe "GET confirm" do
         it "redirects to the election path" do
-          get :confirm, params: params
+          get(:confirm, params:)
           expect(response).to redirect_to(election_path)
         end
 
@@ -159,7 +159,7 @@ module Decidim
           end
 
           it "renders the confirmation page" do
-            get :confirm, params: params
+            get(:confirm, params:)
             expect(response).to have_http_status(:ok)
             expect(subject).to render_template(:confirm)
           end
@@ -168,7 +168,7 @@ module Decidim
 
       describe "PATCH cast" do
         it "redirects to the election path" do
-          post :cast, params: params
+          post(:cast, params:)
           expect(response).to redirect_to(election_path)
         end
 
@@ -191,7 +191,7 @@ module Decidim
             expect(controller.send(:session_attributes)).to receive(:clear)
             # Mock the voter_uid to be set properly
             allow(controller).to receive(:voter_uid).and_return(user.to_global_id.to_s)
-            post :cast, params: params
+            post(:cast, params:)
             expect(session[:voter_uid]).to eq(user.to_global_id.to_s)
             expect(response).to redirect_to(receipt_election_votes_path)
             expect(flash[:notice]).to eq(I18n.t("votes.cast.success", scope: "decidim.elections"))
@@ -205,7 +205,7 @@ module Decidim
             end
 
             it "redirects to the confirm page if votes are incomplete" do
-              post :cast, params: params
+              post(:cast, params:)
               expect(response).to redirect_to(confirm_election_votes_path)
               expect(flash[:alert]).to eq(I18n.t("votes.cast.invalid", scope: "decidim.elections"))
             end
@@ -215,7 +215,7 @@ module Decidim
 
       describe "GET receipt" do
         it "redirects to the election path" do
-          get :receipt, params: params
+          get(:receipt, params:)
           expect(response).to redirect_to(election_path)
         end
 
@@ -225,7 +225,7 @@ module Decidim
           end
 
           it "redirects to the election path" do
-            get :receipt, params: params
+            get(:receipt, params:)
             expect(response).to redirect_to(election_path)
           end
         end
@@ -237,13 +237,13 @@ module Decidim
 
           context "when the election has votes for the voter UID" do
             before do
-              create(:election_vote, voter_uid: session[:voter_uid], question: question, response_option: question.response_options.first)
+              create(:election_vote, voter_uid: session[:voter_uid], question:, response_option: question.response_options.first)
             end
 
             it "renders the receipt page and clears votes buffer" do
               expect(controller.send(:votes_buffer)).to receive(:clear)
               expect(controller.send(:session_attributes)).not_to receive(:clear)
-              get :receipt, params: params
+              get(:receipt, params:)
               expect(response).to have_http_status(:ok)
               expect(subject).to render_template(:receipt)
             end
@@ -267,7 +267,7 @@ module Decidim
           end
 
           it "loads delegations for the current user" do
-            get :show, params: params
+            get(:show, params:)
             expect(assigns(:delegations)).to include(delegation)
           end
 
@@ -296,13 +296,13 @@ module Decidim
             end
 
             it "loads delegation from session" do
-              get :show, params: params
+              get(:show, params:)
               expect(assigns(:delegation)).to eq(delegation)
               expect(assigns(:delegator)).to eq(user)
             end
 
             it "uses delegator's voter_uid" do
-              get :show, params: params
+              get(:show, params:)
               expect(controller.send(:voter_uid)).to eq(user.to_global_id.to_s)
             end
           end
@@ -318,14 +318,14 @@ module Decidim
           end
 
           it "does not load any delegations" do
-            get :show, params: params
+            get(:show, params:)
             expect(assigns(:delegator)).to be_nil
             expect(assigns(:delegation)).to be_nil
           end
 
           it "uses standard voter_uid logic" do
             allow(election.census).to receive(:voter_uid).and_return("standard-voter-uid")
-            get :show, params: params
+            get(:show, params:)
             expect(controller.send(:voter_uid)).to eq("standard-voter-uid")
           end
         end
@@ -347,7 +347,7 @@ module Decidim
           end
 
           it "casts votes as the delegator with PaperTrail tracking" do
-            post :cast, params: params
+            post(:cast, params:)
 
             # Check that a delegation is properly set
             expect(assigns(:delegator)).to eq(user)
@@ -369,7 +369,7 @@ module Decidim
           end
 
           it "clears delegations when visiting new vote" do
-            get :new, params: params
+            get(:new, params:)
             expect(session[:delegation_id]).to be_nil
           end
         end
@@ -384,13 +384,13 @@ module Decidim
 
           it "sets PaperTrail whodunnit to current user" do
             # Just verify that the action loads delegation properly
-            get :show, params: params
+            get(:show, params:)
             expect(assigns(:delegator)).to eq(user)
           end
 
           it "includes delegation_id in PaperTrail info" do
             allow(controller).to receive(:info_for_paper_trail).and_call_original
-            get :show, params: params
+            get(:show, params:)
             info = controller.send(:info_for_paper_trail)
             expect(info[:decidim_action_delegator_delegation_id]).to eq(delegation.id)
           end

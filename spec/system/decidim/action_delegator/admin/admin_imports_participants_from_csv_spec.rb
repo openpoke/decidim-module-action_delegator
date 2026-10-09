@@ -7,7 +7,7 @@ describe "Admin imports participants from csv" do
 
   let(:i18n_scope) { "decidim.action_delegator.admin" }
   let(:organization) { create(:organization) }
-  let(:user) { create(:user, :admin, :confirmed, organization: organization) }
+  let(:user) { create(:user, :admin, :confirmed, organization:) }
 
   before do
     switch_to_host(organization.host)
@@ -24,7 +24,7 @@ describe "Admin imports participants from csv" do
   describe "import participants from csv" do
     let(:authorization_method) { "both" }
     let(:setting) { create(:setting, organization:, authorization_method:, active: true) }
-    let!(:ponderation) { create(:ponderation, setting: setting, name: "consumer", weight: 1) }
+    let!(:ponderation) { create(:ponderation, setting:, name: "consumer", weight: 1) }
     let(:valid_csv_file) { File.open("spec/fixtures/valid_participants.csv") }
     let(:invalid_csv_file) { File.open("spec/fixtures/invalid_participants.csv") }
     let(:repeated_data_csv_file) { File.open("spec/fixtures/repeated_data_participants.csv") }
@@ -81,13 +81,15 @@ describe "Admin imports participants from csv" do
     end
 
     context "when users already exists" do
-      emails = %w(foo@example.org bar@example.org baz@example.org)
-      users = []
+      let(:emails) { %w(foo@example.org bar@example.org baz@example.org) }
+      let(:users) do
+        emails.map do |email|
+          create(:user, :admin, :confirmed, organization:, email:)
+        end
+      end
 
       before do
-        users = emails.map do |email|
-          create(:user, :admin, :confirmed, organization: organization, email: email)
-        end
+        users
       end
 
       it "shows user names" do

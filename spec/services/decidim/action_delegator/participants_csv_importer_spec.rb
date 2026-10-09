@@ -3,10 +3,10 @@
 require "spec_helper"
 
 describe Decidim::ActionDelegator::ParticipantsCsvImporter do
-  let(:current_user) { create(:user, :confirmed, :admin, organization: organization) }
+  let(:current_user) { create(:user, :confirmed, :admin, organization:) }
   let(:organization) { create(:organization) }
   let(:authorization_method) { "both" }
-  let(:current_setting) { create(:setting, organization:, authorization_method: authorization_method) }
+  let(:current_setting) { create(:setting, organization:, authorization_method:) }
   let(:valid_csv_file) { File.open("spec/fixtures/valid_participants.csv") }
   let(:invalid_csv_file) { File.open("spec/fixtures/invalid_participants.csv") }
   let(:csv_file_without_emails) { File.open("spec/fixtures/without_email.csv") }
@@ -21,7 +21,7 @@ describe Decidim::ActionDelegator::ParticipantsCsvImporter do
       {
         email: "user@example.org",
         phone: "600000000",
-        weight: weight,
+        weight:,
         decidim_action_delegator_ponderation_id: ponderation.id
       }
     end
@@ -65,7 +65,7 @@ describe Decidim::ActionDelegator::ParticipantsCsvImporter do
     context "when participant with this email already exists" do
       subject { described_class.new(valid_csv_file, current_user, current_setting) }
 
-      let!(:participant) { create(:participant, ponderation: ponderation, email: "user_@example.org", setting: current_setting) }
+      let!(:participant) { create(:participant, ponderation:, email: "user_@example.org", setting: current_setting) }
 
       it "does not create a new participant" do
         expect do
@@ -77,7 +77,7 @@ describe Decidim::ActionDelegator::ParticipantsCsvImporter do
     context "when participant exists with another data" do
       subject { described_class.new(valid_csv_file, current_user, current_setting) }
 
-      let!(:participant) { create(:participant, ponderation: ponderation, phone: "123456789", setting: current_setting) }
+      let!(:participant) { create(:participant, ponderation:, phone: "123456789", setting: current_setting) }
 
       it "does not change the data of the existing participant" do
         expect do
@@ -89,7 +89,7 @@ describe Decidim::ActionDelegator::ParticipantsCsvImporter do
     context "when participant with this phone already exists" do
       subject { described_class.new(csv_file_with_same_phones, current_user, current_setting) }
 
-      let!(:participant) { create(:participant, ponderation: ponderation, phone: "123456789", setting: current_setting) }
+      let!(:participant) { create(:participant, ponderation:, phone: "123456789", setting: current_setting) }
 
       it "does not create a new participant" do
         expect do
@@ -110,7 +110,7 @@ describe Decidim::ActionDelegator::ParticipantsCsvImporter do
       subject { described_class.new(csv_file_without_emails, current_user, current_setting2) }
 
       let(:authorization_method) { "phone" }
-      let(:current_setting2) { create(:setting, organization:, authorization_method: authorization_method) }
+      let(:current_setting2) { create(:setting, organization:, authorization_method:) }
 
       it "imports all rows from the CSV file with phone numbers only" do
         expect do
@@ -131,7 +131,7 @@ describe Decidim::ActionDelegator::ParticipantsCsvImporter do
       subject { described_class.new(csv_file_without_phone, current_user, current_setting3) }
 
       let(:authorization_method) { "email" }
-      let(:current_setting3) { create(:setting, organization:, authorization_method: authorization_method) }
+      let(:current_setting3) { create(:setting, organization:, authorization_method:) }
 
       it "imports all rows from the CSV file with emails only" do
         expect do
@@ -179,8 +179,8 @@ describe Decidim::ActionDelegator::ParticipantsCsvImporter do
       let(:form) do
         double(
           invalid?: invalid,
-          email: email,
-          phone: phone,
+          email:,
+          phone:,
           decidim_action_delegator_ponderation_id: nil,
           setting: current_setting,
           weight: 1

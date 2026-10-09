@@ -32,13 +32,13 @@ FactoryBot.define do
 
     trait :with_ponderations do
       after(:create) do |setting|
-        create_list(:ponderation, 3, setting: setting)
+        create_list(:ponderation, 3, setting:)
       end
     end
 
     trait :with_participants do
       after(:create) do |setting|
-        create_list(:participant, 3, setting: setting)
+        create_list(:participant, 3, setting:)
       end
     end
   end

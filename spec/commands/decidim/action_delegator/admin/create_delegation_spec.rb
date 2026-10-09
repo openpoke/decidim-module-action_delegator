@@ -18,8 +18,8 @@ describe Decidim::ActionDelegator::Admin::CreateDelegation do
       invalid?: invalid,
       grantee_id: grantee.id,
       granter_id: granter.id,
-      granter: granter,
-      grantee: grantee,
+      granter:,
+      grantee:,
       setting: current_setting,
       attributes: {
         granter_id: granter.id,

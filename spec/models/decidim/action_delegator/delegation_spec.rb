@@ -15,7 +15,7 @@ module Decidim
         let(:setting) { create(:setting) }
         let(:grantee) { create(:user, organization: setting.organization) }
 
-        subject { build(:delegation, setting: setting, grantee: grantee, granter: grantee) }
+        subject { build(:delegation, setting:, grantee:, granter: grantee) }
 
         it { is_expected.not_to be_valid }
       end
@@ -23,7 +23,7 @@ module Decidim
       context "when users from different organizations" do
         let(:grantee) { create(:user) }
 
-        subject { build(:delegation, grantee: grantee) }
+        subject { build(:delegation, grantee:) }
 
         it { is_expected.not_to be_valid }
       end
@@ -33,7 +33,7 @@ module Decidim
         let(:grantee) { create(:user) }
         let(:granter) { create(:user, organization: grantee.organization) }
 
-        subject { build(:delegation, grantee: grantee, granter: granter, setting: setting) }
+        subject { build(:delegation, grantee:, granter:, setting:) }
 
         it { is_expected.not_to be_valid }
       end
@@ -41,9 +41,9 @@ module Decidim
       context "when granter already has a delegation in the same setting" do
         let(:setting) { create(:setting) }
         let(:granter) { create(:user, organization: setting.organization) }
-        let!(:existing_delegation) { create(:delegation, setting: setting, granter: granter) }
+        let!(:existing_delegation) { create(:delegation, setting:, granter:) }
 
-        subject { build(:delegation, setting: setting, granter: granter) }
+        subject { build(:delegation, setting:, granter:) }
 
         it { is_expected.not_to be_valid }
       end
@@ -52,10 +52,10 @@ module Decidim
         let(:setting) { create(:setting) }
         let(:granter) { create(:user, organization: setting.organization) }
         let(:grantee) { create(:user, organization: setting.organization) }
-        let(:delegation) { create(:delegation, setting: setting, granter: granter, grantee: grantee) }
+        let(:delegation) { create(:delegation, setting:, granter:, grantee:) }
         let(:election) { create(:election, :ongoing, skip_injection: true) }
-        let(:question) { create(:election_question, :with_response_options, skip_injection: true, election: election) }
-        let!(:vote) { create(:election_vote, question: question, response_option: question.response_options.first, voter_uid: granter.to_global_id.to_s) }
+        let(:question) { create(:election_question, :with_response_options, skip_injection: true, election:) }
+        let!(:vote) { create(:election_vote, question:, response_option: question.response_options.first, voter_uid: granter.to_global_id.to_s) }
 
         before do
           PaperTrail::Version.create!(

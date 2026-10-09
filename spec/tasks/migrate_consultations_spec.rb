@@ -4,11 +4,11 @@ require "spec_helper"
 
 describe "rake action_delegator:migrate_consultations", type: :task do
   let(:organization) { create(:organization) }
-  let!(:component) { create(:elections_component, organization: organization) }
+  let!(:component) { create(:elections_component, organization:) }
 
   before do
     # Create legacy consultation tables
-    ActiveRecord::Base.connection.execute <<-SQL.squish
+    ActiveRecord::Base.connection.execute <<~SQL.squish
       CREATE TABLE IF NOT EXISTS decidim_consultations (
         id bigserial PRIMARY KEY,
         decidim_organization_id bigint NOT NULL,
@@ -70,7 +70,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
 
   after do
     # Clean up tables
-    ActiveRecord::Base.connection.execute <<-SQL.squish
+    ActiveRecord::Base.connection.execute <<~SQL.squish
       DROP TABLE IF EXISTS decidim_consultations_votes CASCADE;
       DROP TABLE IF EXISTS decidim_consultations_responses CASCADE;
       DROP TABLE IF EXISTS decidim_consultations_response_groups CASCADE;
@@ -80,9 +80,9 @@ describe "rake action_delegator:migrate_consultations", type: :task do
   end
 
   context "when migrating a simple consultation without verification" do
-    let!(:user) { create(:user, organization: organization) }
+    let!(:user) { create(:user, organization:) }
     let!(:consultation_id) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
+      ActiveRecord::Base.connection.execute(<<~SQL.squish).first["id"]
         INSERT INTO decidim_consultations (
           decidim_organization_id,
           title,
@@ -113,7 +113,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     end
 
     let!(:question_id) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
+      ActiveRecord::Base.connection.execute(<<~SQL.squish).first["id"]
         INSERT INTO decidim_consultations_questions (
           decidim_consultation_id,
           decidim_organization_id,
@@ -144,7 +144,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     end
 
     let!(:response_yes_id) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
+      ActiveRecord::Base.connection.execute(<<~SQL.squish).first["id"]
         INSERT INTO decidim_consultations_responses (
           decidim_consultations_questions_id,
           title,
@@ -163,7 +163,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     end
 
     let!(:response_no_id) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
+      ActiveRecord::Base.connection.execute(<<~SQL.squish).first["id"]
         INSERT INTO decidim_consultations_responses (
           decidim_consultations_questions_id,
           title,
@@ -182,7 +182,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     end
 
     let!(:vote) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish)
+      ActiveRecord::Base.connection.execute(<<~SQL.squish)
         INSERT INTO decidim_consultations_votes (
           decidim_consultation_question_id,
           decidim_author_id,
@@ -265,9 +265,9 @@ describe "rake action_delegator:migrate_consultations", type: :task do
   end
 
   context "when migrating consultation with Setting (delegations_verifier)" do
-    let!(:user) { create(:user, organization: organization) }
+    let!(:user) { create(:user, organization:) }
     let!(:consultation_id) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
+      ActiveRecord::Base.connection.execute(<<~SQL.squish).first["id"]
         INSERT INTO decidim_consultations (
           decidim_organization_id,
           title,
@@ -298,7 +298,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     let!(:setting) do
       create(
         :setting,
-        organization: organization,
+        organization:,
         decidim_consultation_id: consultation_id,
         authorization_method: :email,
         title: { en: "Email Verification Setting" },
@@ -307,21 +307,21 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     end
 
     let!(:ponderation) do
-      create(:ponderation, setting: setting, name: "producer", weight: 2)
+      create(:ponderation, setting:, name: "producer", weight: 2)
     end
 
     let!(:participant) do
       create(
         :participant,
-        setting: setting,
+        setting:,
         decidim_user: user,
         email: user.email,
-        ponderation: ponderation
+        ponderation:
       )
     end
 
     let!(:question_id) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
+      ActiveRecord::Base.connection.execute(<<~SQL.squish).first["id"]
         INSERT INTO decidim_consultations_questions (
           decidim_consultation_id,
           decidim_organization_id,
@@ -352,7 +352,7 @@ describe "rake action_delegator:migrate_consultations", type: :task do
     end
 
     let!(:response_id) do
-      ActiveRecord::Base.connection.execute(<<-SQL.squish).first["id"]
+      ActiveRecord::Base.connection.execute(<<~SQL.squish).first["id"]
         INSERT INTO decidim_consultations_responses (
           decidim_consultations_questions_id,
           title,

@@ -30,7 +30,7 @@ module Decidim
           CreateParticipant.call(@form) do
             on(:ok) do
               notice = I18n.t("participants.create.success", scope: "decidim.action_delegator.admin")
-              redirect_to setting_participants_path(current_setting), notice: notice
+              redirect_to setting_participants_path(current_setting), notice:
             end
 
             on(:invalid) do |_error|
@@ -53,7 +53,7 @@ module Decidim
           UpdateParticipant.call(@form, participant) do
             on(:ok) do
               notice = I18n.t("participants.update.success", scope: "decidim.action_delegator.admin")
-              redirect_to setting_participants_path(current_setting), notice: notice
+              redirect_to setting_participants_path(current_setting), notice:
             end
 
             on(:invalid) do |_error|
@@ -68,10 +68,10 @@ module Decidim
 
           if participant.destroy
             notice = I18n.t("participants.destroy.success", scope: "decidim.action_delegator.admin")
-            redirect_to setting_participants_path(current_setting), notice: notice
+            redirect_to setting_participants_path(current_setting), notice:
           else
             error = I18n.t("participants.destroy.error", scope: "decidim.action_delegator.admin")
-            redirect_to setting_participants_path(current_setting), flash: { error: error }
+            redirect_to setting_participants_path(current_setting), flash: { error: }
           end
         end
 

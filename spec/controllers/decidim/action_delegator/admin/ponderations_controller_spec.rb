@@ -10,7 +10,7 @@ module Decidim
       let(:organization) { create(:organization) }
       let(:setting) { create(:setting, organization:, authorization_method:) }
       let(:authorization_method) { :both }
-      let(:ponderation) { create(:ponderation, setting: setting) }
+      let(:ponderation) { create(:ponderation, setting:) }
       let(:user) { create(:user, :admin, :confirmed, organization:) }
       let(:params) do
         { setting_id: setting.id }
@@ -28,7 +28,7 @@ module Decidim
         it "authorizes the action" do
           expect(controller).to receive(:allowed_to?).with(:index, :ponderation, {})
 
-          get :index, params: params
+          get :index, params:
         end
       end
 
@@ -36,7 +36,7 @@ module Decidim
         it "authorizes the action" do
           expect(controller).to receive(:allowed_to?).with(:create, :ponderation, {})
 
-          get :new, params: params
+          get :new, params:
         end
       end
 
@@ -44,7 +44,7 @@ module Decidim
         it "authorizes the action" do
           expect(controller).to receive(:allowed_to?).with(:create, :ponderation, {})
 
-          get :create, params: params
+          get :create, params:
         end
 
         context "when successful" do
@@ -53,7 +53,7 @@ module Decidim
           end
 
           it "redirects to the ponderations list" do
-            expect { post :create, params: params }.to change(Ponderation, :count).by(1)
+            expect { post :create, params: }.to change(Ponderation, :count).by(1)
 
             expect(flash[:notice]).to eq(I18n.t("decidim.action_delegator.admin.ponderations.create.success"))
             expect(response).to redirect_to(setting_ponderations_path(setting))
@@ -66,7 +66,7 @@ module Decidim
           end
 
           it "renders the new form" do
-            post :create, params: params
+            post(:create, params:)
 
             expect(flash[:error]).to eq(I18n.t("decidim.action_delegator.admin.ponderations.create.error"))
             expect(response).to render_template(:new)
@@ -126,7 +126,7 @@ module Decidim
         end
 
         context "when successful" do
-          let!(:ponderation) { create(:ponderation, setting: setting) }
+          let!(:ponderation) { create(:ponderation, setting:) }
 
           it "redirects to the ponderations list" do
             expect { delete :destroy, params: edit_params }.to change(Ponderation, :count).by(-1)
@@ -137,7 +137,7 @@ module Decidim
         end
 
         context "when unsuccessful" do
-          let!(:ponderation) { create(:ponderation, setting: setting) }
+          let!(:ponderation) { create(:ponderation, setting:) }
 
           before do
             allow_any_instance_of(Ponderation).to receive(:destroy).and_return(false) # rubocop:disable RSpec/AnyInstance

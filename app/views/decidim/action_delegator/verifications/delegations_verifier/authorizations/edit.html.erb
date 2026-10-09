@@ -7,7 +7,7 @@
 
   <div class="page__container page__container-open_data">
     <div class="editor-content">
-      <%= decidim_form_for(@form, url: authorization_path(redirect_url: redirect_url), method: :put, html: { class: "form" }) do |form| %>
+      <%= decidim_form_for(@form, url: authorization_path(redirect_url:), method: :put, html: { class: "form" }) do |form| %>
         <div class="form__wrapper">
           <%= form_required_explanation %>
 

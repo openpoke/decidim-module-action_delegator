@@ -50,7 +50,7 @@ module Decidim
       end
 
       def handle_import_error(row, details_csv, import_summary, row_number, error_messages)
-        import_summary[:error_rows] << { row_number: row_number - 1, error_messages: error_messages }
+        import_summary[:error_rows] << { row_number: row_number - 1, error_messages: }
         row["reason"] = error_messages
         details_csv << row
       end
@@ -61,7 +61,7 @@ module Decidim
 
       def generate_info_message(mismatch_fields)
         with_mismatched_fields = mismatch_fields.present? ? I18n.t("decidim.action_delegator.participants_csv_importer.import.with_mismatched_fields", fields: mismatch_fields) : ""
-        I18n.t("decidim.action_delegator.participants_csv_importer.import.skip_import_info", with_mismatched_fields: with_mismatched_fields)
+        I18n.t("decidim.action_delegator.participants_csv_importer.import.skip_import_info", with_mismatched_fields:)
       end
 
       def headers(csv, details_csv)

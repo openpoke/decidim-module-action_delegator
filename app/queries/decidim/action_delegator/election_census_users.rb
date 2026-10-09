@@ -36,7 +36,7 @@ module Decidim
 
       def authorized_users_query
         Decidim::AuthorizedUsers.new(
-          organization: organization,
+          organization:,
           handlers: @authorization_handlers,
           strict: true
         ).query

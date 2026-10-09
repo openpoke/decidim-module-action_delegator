@@ -16,7 +16,7 @@ module Decidim
           Decidim::InviteUser.call(form) do
             on(:ok) do
               notice = t("invite_user.success", scope: "decidim.action_delegator.admin.invite_participants")
-              redirect_to decidim_admin_action_delegator.setting_participants_path(current_setting), notice: notice
+              redirect_to decidim_admin_action_delegator.setting_participants_path(current_setting), notice:
             end
           end
         end
@@ -27,7 +27,7 @@ module Decidim
           InviteParticipantsJob.perform_later(current_setting, current_organization)
 
           notice = t("invite_all_users.success", scope: "decidim.action_delegator.admin.invite_participants")
-          redirect_to decidim_admin_action_delegator.setting_participants_path(current_setting), notice: notice
+          redirect_to decidim_admin_action_delegator.setting_participants_path(current_setting), notice:
         end
 
         def resend_invitation
