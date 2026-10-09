@@ -30,7 +30,6 @@ group :development, :test do
   gem "brakeman", "~> 7.0"
   gem "decidim-dev", DECIDIM_VERSION
   gem "parallel_tests", "~> 4.2"
-  gem "selma", "0.5.2"
 end
 
 group :development do
